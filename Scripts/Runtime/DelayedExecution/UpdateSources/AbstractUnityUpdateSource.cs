@@ -24,8 +24,8 @@ namespace Anvil.Unity.DelayedExecution
         protected override void Initialize()
         {
             GameObject gameObject = new GameObject($"[UpdateSource - {typeof(T)}]");
-            gameObject.transform.SetParent(UpdateSourceRoot);
             GameObject.DontDestroyOnLoad(gameObject);
+            gameObject.transform.SetParent(UpdateSourceRoot);
             T updateSource = gameObject.AddComponent<T>();
             updateSource.SetOnUpdateDispatchFunction(DispatchOnUpdateEvent);
         }
