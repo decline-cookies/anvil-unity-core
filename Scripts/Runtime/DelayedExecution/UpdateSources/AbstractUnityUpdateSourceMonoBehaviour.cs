@@ -18,7 +18,7 @@ namespace Anvil.Unity.DelayedExecution
             m_OnUpdateDispatchFunction = onUpdateDispatchFunction;
         }
 
-        public void TriggerOnUpdateDispatchFunction()
+        protected void TriggerOnUpdateDispatchFunction()
         {
             m_OnUpdateDispatchFunction?.Invoke();
         }

@@ -21,7 +21,7 @@ namespace Anvil.Unity.DelayedExecution
                 return s_UpdateSourceRoot;
             }
         }
-        protected override void Initialize()
+        protected override void Init()
         {
             GameObject gameObject = new GameObject($"[UpdateSource - {typeof(T)}]");
             GameObject.DontDestroyOnLoad(gameObject);
