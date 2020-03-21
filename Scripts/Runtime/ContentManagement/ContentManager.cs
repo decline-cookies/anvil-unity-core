@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Anvil.CSharp.Core;
 
-namespace Anvil.Unity.Core
+namespace Anvil.Unity.ContentManagement
 {
-    public class ContentManager : AnvilAbstractDisposable
+    public class ContentManager : AbstractAnvilDisposable
     {
         private Dictionary<string, ContentGroup> m_ContentGroups = new Dictionary<string, ContentGroup>();
 

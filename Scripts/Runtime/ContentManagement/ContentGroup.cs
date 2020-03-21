@@ -1,8 +1,8 @@
 ﻿using Anvil.CSharp.Core;
 
-namespace Anvil.Unity.Core
+namespace Anvil.Unity.ContentManagement
 {
-    public class ContentGroup : AnvilAbstractDisposable
+    public class ContentGroup : AbstractAnvilDisposable
     {
         public ContentGroupConfigVO ConfigVO { get; private set; }
 

@@ -1,6 +1,8 @@
-﻿namespace Anvil.Unity.Core
+﻿using Anvil.Unity.Core;
+
+namespace Anvil.Unity.ContentManagement
 {
-    public abstract class AbstractContentView : AnvilAbstractMonoBehaviour
+    public abstract class AbstractContentView : AbstractAnvilMonoBehaviour
     {
         
     }

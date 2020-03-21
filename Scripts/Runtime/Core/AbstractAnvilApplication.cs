@@ -1,6 +1,6 @@
 ﻿namespace Anvil.Unity.Core
 {
-    public abstract class AnvilAbstractApplication : AnvilAbstractMonoBehaviour
+    public abstract class AbstractAnvilApplication : AbstractAnvilMonoBehaviour
     {
         private void Awake()
         {

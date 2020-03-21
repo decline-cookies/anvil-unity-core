@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Anvil.Unity.Core
 {
-    public abstract class AnvilAbstractMonoBehaviour : MonoBehaviour, IDisposable
+    public abstract class AbstractAnvilMonoBehaviour : MonoBehaviour, IDisposable
     {
         public bool IsDisposed { get; private set; }
         public bool IsGameObjectDestroyed { get; private set; }

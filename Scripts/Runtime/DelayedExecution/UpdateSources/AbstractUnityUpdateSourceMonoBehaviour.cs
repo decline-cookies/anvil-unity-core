@@ -3,7 +3,7 @@ using Anvil.Unity.Core;
 
 namespace Anvil.Unity.DelayedExecution
 {
-    public class AbstractUnityUpdateSourceMonoBehaviour : AnvilAbstractMonoBehaviour
+    public class AbstractUnityUpdateSourceMonoBehaviour : AbstractAnvilMonoBehaviour
     {
         private Action m_OnUpdateDispatchFunction;
 

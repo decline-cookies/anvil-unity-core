@@ -1,8 +1,8 @@
 ﻿using Anvil.CSharp.Data;
 
-namespace Anvil.Unity.Core
+namespace Anvil.Unity.ContentManagement
 {
-    public class ContentControllerConfigVO : AnvilAbstractVO
+    public class ContentControllerConfigVO : AbstractAnvilVO
     {
         public string ContentGroupID;
     }
