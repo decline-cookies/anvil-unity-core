@@ -10,17 +10,17 @@ namespace Anvil.Unity.ContentManagement
         public ContentLayerConfigVO ConfigVO { get; private set; }
         public Transform ContentLayerRoot { get; private set; }
         
-        public ContentGroup ContentGroup { get; private set; }
+        public ContentManager ContentManager { get; private set; }
         
         private AbstractContentController m_ActiveContentController;
         private AbstractContentController m_PendingContentController;
 
         private UpdateHandle m_UpdateHandle;
 
-        public ContentLayer(ContentLayerConfigVO contentGroupLayerVO, ContentGroup contentGroup)
+        public ContentLayer(ContentLayerConfigVO contentGroupLayerVO, ContentManager contentManager)
         {
             ConfigVO = contentGroupLayerVO;
-            ContentGroup = contentGroup;
+            ContentManager = contentManager;
             
             m_UpdateHandle = UpdateHandle.Create<UnityUpdateSource>();
 
@@ -41,7 +41,7 @@ namespace Anvil.Unity.ContentManagement
         {
             GameObject groupRootGO = new GameObject($"[CL - {ConfigVO.ID}]");
             ContentLayerRoot = groupRootGO.transform;
-            ContentLayerRoot.SetParent(ContentGroup.ContentGroupRoot);
+            ContentLayerRoot.SetParent(ContentManager.ContentRoot);
             ContentLayerRoot.localPosition = ConfigVO.LocalPosition;
             ContentLayerRoot.localRotation = Quaternion.identity;
             ContentLayerRoot.localScale = Vector3.one;
@@ -51,18 +51,34 @@ namespace Anvil.Unity.ContentManagement
         {
             //Validate the passed in controller to ensure we avoid weird cases such as:
             // - Showing the same instance that is already showing or about to be shown
+            // - Might have a pending controller in the process of loading
             
             
             m_PendingContentController = contentController;
 
             //If there's an Active Controller currently being shown, we need to clear it.
-            
-            //Otherwise we can just show the pending controller
-            ShowPendingContentController();
+            if (m_ActiveContentController != null)
+            {
+                m_ActiveContentController.PlayOut();
+            }
+            else
+            {
+                //Otherwise we can just show the pending controller
+                ShowPendingContentController();
+            }
+        }
+
+        public void Clear()
+        {
+            Show(null);
         }
 
         private void ShowPendingContentController()
         {
+            if (m_PendingContentController == null)
+            {
+                return;
+            }
             //We can't show the pending controller right away because we may not have the necessary assets loaded. 
             //So we need to construct a Sequential Command and populate with the required commands to load the assets needed. 
 
@@ -83,19 +99,44 @@ namespace Anvil.Unity.ContentManagement
             transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one;
 
-            m_PendingContentController.OnPlayInComplete += HandleOnPendingContentControllerPlayInComplete;
+            AttachLifeCycleListeners(m_PendingContentController);
             m_PendingContentController.PlayIn();
         }
 
-        private void HandleOnPendingContentControllerPlayInComplete()
+        private void AttachLifeCycleListeners(AbstractContentController contentController)
         {
-            m_PendingContentController.OnPlayInComplete -= HandleOnPendingContentControllerPlayInComplete;
+            contentController.OnPlayInComplete += HandleOnPlayInComplete;
+            contentController.OnPlayOutComplete += HandleOnPlayOutComplete;
+        }
+        
+        private void RemoveLifeCycleListeners(AbstractContentController contentController)
+        {
+            contentController.OnPlayInComplete -= HandleOnPlayInComplete;
+            contentController.OnPlayOutComplete -= HandleOnPlayOutComplete;
+        }
+
+        private void HandleOnPlayInComplete()
+        {
+            m_PendingContentController.OnPlayInComplete -= HandleOnPlayInComplete;
 
             m_ActiveContentController = m_PendingContentController;
             m_PendingContentController = null;
-
+            
             m_ActiveContentController.InitAfterPlayInComplete();
         }
+
+        private void HandleOnPlayOutComplete()
+        {
+            if (m_ActiveContentController != null)
+            {
+                RemoveLifeCycleListeners(m_ActiveContentController);
+                m_ActiveContentController.Dispose();
+            }
+
+            ShowPendingContentController();
+        }
+
+        
         
         
     }

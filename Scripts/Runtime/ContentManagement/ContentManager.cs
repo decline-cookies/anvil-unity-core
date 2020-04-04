@@ -7,61 +7,67 @@ namespace Anvil.Unity.ContentManagement
 {
     public class ContentManager : AbstractAnvilDisposable
     {
-        private Dictionary<string, ContentGroup> m_ContentGroups = new Dictionary<string, ContentGroup>();
+        private Dictionary<string, ContentLayer> m_ContentLayers = new Dictionary<string, ContentLayer>();
+        
+        public string ID { get; private set; }
+        public Transform ContentRoot { get; private set; }
 
+        public ContentManager(string id, Transform contentRoot)
+        {
+            ID = id;
+            ContentRoot = contentRoot;
+        }
+        
         protected override void DisposeSelf()
         {
-            if (m_ContentGroups != null)
+            if (m_ContentLayers != null)
             {
-                foreach (ContentGroup contentGroup in m_ContentGroups.Values)
+                foreach (ContentLayer contentLayer in m_ContentLayers.Values)
                 {
-                    contentGroup.Dispose();
+                    contentLayer.Dispose();
                 }
-                m_ContentGroups.Clear();
-                m_ContentGroups = null;
+                m_ContentLayers.Clear();
+                m_ContentLayers = null;
             }
             
             base.DisposeSelf();
         }
-
-        public void CreateContentGroup(ContentGroupConfigVO contentGroupConfigVO, Transform groupRoot)
+        
+        public ContentManager CreateContentLayer(ContentLayerConfigVO contentLayerConfigVO)
         {
-            if (m_ContentGroups.ContainsKey(contentGroupConfigVO.ID))
+            if (m_ContentLayers.ContainsKey(contentLayerConfigVO.ID))
             {
-                throw new Exception($"ContentGroupID of {contentGroupConfigVO.ID} is already registered with the Content Manager!");
+                throw new Exception($"Content Layer ID of {contentLayerConfigVO.ID} is already registered with the Content Manager with ID {ID}!");
             }
             
-            ContentGroup contentGroup = new ContentGroup(contentGroupConfigVO, groupRoot);
-            m_ContentGroups.Add(contentGroupConfigVO.ID, contentGroup);
-
-            foreach (ContentLayerConfigVO contentLayerConfigVO in contentGroupConfigVO.ContentLayers.Values)
-            {
-                contentGroup.CreateContentLayer(contentLayerConfigVO);
-            }
+            ContentLayer contentLayer = new ContentLayer(contentLayerConfigVO, this);
+            m_ContentLayers.Add(contentLayerConfigVO.ID, contentLayer);
+            return this;
         }
 
-        public ContentGroup GetContentGroup(string id)
+        public ContentLayer GetContentLayer(string id)
         {
-            if (!m_ContentGroups.ContainsKey(id))
+            if (!m_ContentLayers.ContainsKey(id))
             {
-                throw new Exception($"Tried to get Content Group with ID {id} but none exists!");
+                throw new Exception($"Tried to get Content Layer with ID {id} but none exists!");
             }
 
-            return m_ContentGroups[id];
+            return m_ContentLayers[id];
         }
+        
 
 
         public void Show(AbstractContentController contentController)
         {
-            string contentGroupID = contentController.ConfigVO.ContentGroupID;
+            string contentLayerID = contentController.ConfigVO.ContentLayerID;
 
-            if (!m_ContentGroups.ContainsKey(contentGroupID))
+            if (!m_ContentLayers.ContainsKey(contentLayerID))
             {
-                throw new Exception($"ContentGroupID of {contentGroupID} does not exist in the Content Manager. Did you add the Content Group to the Content Manager?");
+                throw new Exception($"ContentLayerID of {contentLayerID} does not exist in the Content Manager with ID {ID}. Did you add the Content Layer?");
             }
 
-            ContentGroup contentGroup = m_ContentGroups[contentGroupID];
-            contentGroup.Show(contentController);
+            ContentLayer contentLayer = m_ContentLayers[contentLayerID];
+            contentLayer.Show(contentController);
         }
     }
 }

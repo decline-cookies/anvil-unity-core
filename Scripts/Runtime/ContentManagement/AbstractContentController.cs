@@ -71,7 +71,7 @@ namespace Anvil.Unity.ContentManagement
         
         protected virtual void PlayInComplete()
         {
-            
+            OnPlayInComplete?.Invoke();
         }
 
         public virtual void InitAfterPlayInComplete()
@@ -83,9 +83,13 @@ namespace Anvil.Unity.ContentManagement
 
         protected virtual void PlayOutComplete()
         {
-            
+            OnPlayOutComplete?.Invoke();
         }
-        
+
+        public void Clear()
+        {
+            PlayOut();
+        }
         
 
     }
