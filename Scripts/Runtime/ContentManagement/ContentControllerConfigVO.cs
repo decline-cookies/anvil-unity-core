@@ -4,7 +4,6 @@ namespace Anvil.Unity.ContentManagement
 {
     public class ContentControllerConfigVO : AbstractAnvilVO
     {
-        public string ContentGroupID;
         public string ContentLayerID;
         public string ContentLoadingID;
         

@@ -9,8 +9,11 @@ namespace Anvil.Unity.ContentManagement
         public event Action OnPlayInComplete;
         public event Action OnPlayOutComplete;
         public event Action OnLoadComplete;
+
+        public event Action OnClear;
         
         public ContentControllerConfigVO ConfigVO { get; private set; }
+        public ContentLayer ContentLayer { get; internal set; }
 
         private AbstractContentView m_ContentView;
 
@@ -38,6 +41,7 @@ namespace Anvil.Unity.ContentManagement
             OnPlayInComplete = null;
             OnPlayOutComplete = null;
             OnLoadComplete = null;
+            OnClear = null;
 
             if (m_ContentView != null && !m_ContentView.IsContentViewDisposing)
             {
@@ -74,30 +78,44 @@ namespace Anvil.Unity.ContentManagement
             //TODO: Properly sanitize the name with a Regex via util method
             instance.name = instance.name.Replace("(Clone)", string.Empty);
             m_ContentView = instance.GetComponent<AbstractContentView>();
-            m_ContentView.SetContentController(this);
+            m_ContentView.ContentController = this;
             
             m_ResourceRequest.completed -= HandleOnResourceLoaded;
             OnLoadComplete?.Invoke();
         }
 
-        public virtual void InitAfterLoadComplete()
+        internal void InternalInitAfterLoadComplete()
         {
-            
+            InitAfterLoadComplete();
         }
 
-        public abstract void PlayIn();
+        protected abstract void InitAfterLoadComplete();
+
+        internal void InternalPlayIn()
+        {
+            PlayIn();
+        }
+
+        protected abstract void PlayIn();
         
         protected virtual void PlayInComplete()
         {
             OnPlayInComplete?.Invoke();
         }
 
-        public virtual void InitAfterPlayInComplete()
+        internal void InternalInitAfterPlayInComplete()
         {
-            
+            InitAfterPlayInComplete();
+        }
+
+        protected abstract void InitAfterPlayInComplete();
+
+        internal void InternalPlayOut()
+        {
+            PlayOut();
         }
         
-        public abstract void PlayOut();
+        protected abstract void PlayOut();
 
         protected virtual void PlayOutComplete()
         {
@@ -106,7 +124,7 @@ namespace Anvil.Unity.ContentManagement
 
         public void Clear()
         {
-            PlayOut();
+            OnClear?.Invoke();
         }
         
 
