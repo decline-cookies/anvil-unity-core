@@ -17,6 +17,9 @@ namespace Anvil.Unity.ContentManagement
         //TODO: Remove later on
         private ResourceRequest m_ResourceRequest;
 
+
+        internal bool IsContentControllerDisposing { get; private set; }
+
         protected AbstractContentController()
         {
             ConfigVO = new ContentControllerConfigVO();
@@ -25,9 +28,23 @@ namespace Anvil.Unity.ContentManagement
 
         protected override void DisposeSelf()
         {
+            if (IsContentControllerDisposing)
+            {
+                return;
+            }
+            IsContentControllerDisposing = true;
+            
+            
             OnPlayInComplete = null;
             OnPlayOutComplete = null;
             OnLoadComplete = null;
+
+            if (m_ContentView != null && !m_ContentView.IsContentViewDisposing)
+            {
+                m_ContentView.Dispose();
+                m_ContentView = null;
+            }
+            
             base.DisposeSelf();
         }
 
@@ -57,6 +74,7 @@ namespace Anvil.Unity.ContentManagement
             //TODO: Properly sanitize the name with a Regex via util method
             instance.name = instance.name.Replace("(Clone)", string.Empty);
             m_ContentView = instance.GetComponent<AbstractContentView>();
+            m_ContentView.SetContentController(this);
             
             m_ResourceRequest.completed -= HandleOnResourceLoaded;
             OnLoadComplete?.Invoke();
