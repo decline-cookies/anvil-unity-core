@@ -2,19 +2,19 @@
 
 namespace Anvil.Unity.ContentManagement
 {
-    public abstract class AbstractContentView : AbstractAnvilMonoBehaviour
+    public abstract class AbstractContent : AbstractAnvilMonoBehaviour
     {
         internal AbstractContentController ContentController { private get; set; }
         
-        internal bool IsContentViewDisposing { get; private set; }
+        internal bool IsContentDisposing { get; private set; }
 
         protected override void DisposeSelf()
         {
-            if (IsContentViewDisposing)
+            if (IsContentDisposing)
             {
                 return;
             }
-            IsContentViewDisposing = true;
+            IsContentDisposing = true;
 
             if (ContentController != null && !ContentController.IsContentControllerDisposing)
             {

@@ -109,8 +109,8 @@ namespace Anvil.Unity.ContentManagement
             
             ActiveContentController.InternalInitAfterLoadComplete();
 
-            AbstractContentView contentView = ActiveContentController.GetContentView<AbstractContentView>();
-            Transform transform = contentView.transform;
+            AbstractContent content = ActiveContentController.GetContent<AbstractContent>();
+            Transform transform = content.transform;
             transform.SetParent(ContentLayerRoot);
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;

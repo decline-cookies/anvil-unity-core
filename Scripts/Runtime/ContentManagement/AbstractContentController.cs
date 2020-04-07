@@ -15,7 +15,7 @@ namespace Anvil.Unity.ContentManagement
         public ContentControllerConfigVO ConfigVO { get; private set; }
         public ContentLayer ContentLayer { get; internal set; }
 
-        private AbstractContentView m_ContentView;
+        private AbstractContent m_Content;
 
         //TODO: Remove later on
         private ResourceRequest m_ResourceRequest;
@@ -43,18 +43,18 @@ namespace Anvil.Unity.ContentManagement
             OnLoadComplete = null;
             OnClear = null;
 
-            if (m_ContentView != null && !m_ContentView.IsContentViewDisposing)
+            if (m_Content != null && !m_Content.IsContentDisposing)
             {
-                m_ContentView.Dispose();
-                m_ContentView = null;
+                m_Content.Dispose();
+                m_Content = null;
             }
             
             base.DisposeSelf();
         }
 
-        public T GetContentView<T>() where T : AbstractContentView
+        public T GetContent<T>() where T : AbstractContent
         {
-            return (T)m_ContentView;
+            return (T)m_Content;
         }
 
         protected abstract void InitConfigVO(ContentControllerConfigVO configVO);
@@ -77,8 +77,8 @@ namespace Anvil.Unity.ContentManagement
             GameObject instance = (GameObject)GameObject.Instantiate(m_ResourceRequest.asset);
             //TODO: Properly sanitize the name with a Regex via util method
             instance.name = instance.name.Replace("(Clone)", string.Empty);
-            m_ContentView = instance.GetComponent<AbstractContentView>();
-            m_ContentView.ContentController = this;
+            m_Content = instance.GetComponent<AbstractContent>();
+            m_Content.ContentController = this;
             
             m_ResourceRequest.completed -= HandleOnResourceLoaded;
             OnLoadComplete?.Invoke();
