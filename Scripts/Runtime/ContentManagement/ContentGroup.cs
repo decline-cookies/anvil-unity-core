@@ -4,9 +4,9 @@ using Anvil.CSharp.DelayedExecution;
 using Anvil.Unity.DelayedExecution;
 using UnityEngine;
 
-namespace Anvil.Unity.ContentManagement
+namespace Anvil.Unity.Content
 {
-    public class ContentLayer : AbstractAnvilDisposable
+    public class ContentGroup : AbstractAnvilDisposable
     {
         public event Action<AbstractContentController> OnLoadStart;
         public event Action<AbstractContentController> OnLoadComplete;
@@ -17,8 +17,8 @@ namespace Anvil.Unity.ContentManagement
         
         
         
-        public ContentLayerConfigVO ConfigVO { get; private set; }
-        public Transform ContentLayerRoot { get; private set; }
+        public ContentGroupConfigVO ConfigVO { get; private set; }
+        public Transform ContentGroupRoot { get; private set; }
         
         public ContentManager ContentManager { get; private set; }
         
@@ -27,9 +27,9 @@ namespace Anvil.Unity.ContentManagement
 
         private UpdateHandle m_UpdateHandle;
 
-        public ContentLayer(ContentLayerConfigVO contentGroupLayerVO, ContentManager contentManager)
+        public ContentGroup(ContentGroupConfigVO contentGroupGroupVO, ContentManager contentManager)
         {
-            ConfigVO = contentGroupLayerVO;
+            ConfigVO = contentGroupGroupVO;
             ContentManager = contentManager;
             
             m_UpdateHandle = UpdateHandle.Create<UnityUpdateSource>();
@@ -50,11 +50,11 @@ namespace Anvil.Unity.ContentManagement
         private void InitGameObject()
         {
             GameObject groupRootGO = new GameObject($"[CL - {ConfigVO.ID}]");
-            ContentLayerRoot = groupRootGO.transform;
-            ContentLayerRoot.SetParent(ContentManager.ContentRoot);
-            ContentLayerRoot.localPosition = ConfigVO.LocalPosition;
-            ContentLayerRoot.localRotation = Quaternion.identity;
-            ContentLayerRoot.localScale = Vector3.one;
+            ContentGroupRoot = groupRootGO.transform;
+            ContentGroupRoot.SetParent(ConfigVO.AlternativeGameObjectRoot == null ? ContentManager.ContentRoot : ConfigVO.AlternativeGameObjectRoot);
+            ContentGroupRoot.localPosition = ConfigVO.LocalPosition;
+            ContentGroupRoot.localRotation = Quaternion.identity;
+            ContentGroupRoot.localScale = Vector3.one;
         }
 
         public void Show(AbstractContentController contentController)
@@ -95,7 +95,7 @@ namespace Anvil.Unity.ContentManagement
             
             ActiveContentController = m_PendingContentController;
             m_PendingContentController = null;
-            ActiveContentController.ContentLayer = this;
+            ActiveContentController.ContentGroup = this;
 
             OnLoadStart?.Invoke(ActiveContentController);
             ActiveContentController.OnLoadComplete += HandleOnLoadComplete;
@@ -111,7 +111,7 @@ namespace Anvil.Unity.ContentManagement
 
             AbstractContent content = ActiveContentController.GetContent<AbstractContent>();
             Transform transform = content.transform;
-            transform.SetParent(ContentLayerRoot);
+            transform.SetParent(ContentGroupRoot);
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one;

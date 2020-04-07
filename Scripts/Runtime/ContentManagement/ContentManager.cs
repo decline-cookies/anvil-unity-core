@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Anvil.CSharp.Core;
 using UnityEngine;
 
-namespace Anvil.Unity.ContentManagement
+namespace Anvil.Unity.Content
 {
     public class ContentManager : AbstractAnvilDisposable
     {
@@ -14,7 +14,7 @@ namespace Anvil.Unity.ContentManagement
         public event Action<AbstractContentController> OnPlayOutStart;
         public event Action<AbstractContentController> OnPlayOutComplete;
         
-        private Dictionary<string, ContentLayer> m_ContentLayers = new Dictionary<string, ContentLayer>();
+        private Dictionary<string, ContentGroup> m_ContentGroups = new Dictionary<string, ContentGroup>();
         
         public string ID { get; private set; }
         public Transform ContentRoot { get; private set; }
@@ -34,78 +34,78 @@ namespace Anvil.Unity.ContentManagement
             OnPlayOutStart = null;
             OnPlayOutComplete = null;
             
-            if (m_ContentLayers != null)
+            if (m_ContentGroups != null)
             {
-                foreach (ContentLayer contentLayer in m_ContentLayers.Values)
+                foreach (ContentGroup contentGroup in m_ContentGroups.Values)
                 {
-                    contentLayer.Dispose();
+                    contentGroup.Dispose();
                 }
-                m_ContentLayers.Clear();
-                m_ContentLayers = null;
+                m_ContentGroups.Clear();
+                m_ContentGroups = null;
             }
             
             base.DisposeSelf();
         }
         
-        public ContentManager CreateContentLayer(ContentLayerConfigVO contentLayerConfigVO)
+        public ContentManager CreateContentGroup(ContentGroupConfigVO contentGroupConfigVO)
         {
-            if (m_ContentLayers.ContainsKey(contentLayerConfigVO.ID))
+            if (m_ContentGroups.ContainsKey(contentGroupConfigVO.ID))
             {
-                throw new Exception($"Content Layer ID of {contentLayerConfigVO.ID} is already registered with the Content Manager with ID {ID}!");
+                throw new Exception($"Content Groups ID of {contentGroupConfigVO.ID} is already registered with the Content Manager with ID {ID}!");
             }
             
-            ContentLayer contentLayer = new ContentLayer(contentLayerConfigVO, this);
-            m_ContentLayers.Add(contentLayerConfigVO.ID, contentLayer);
+            ContentGroup contentGroup = new ContentGroup(contentGroupConfigVO, this);
+            m_ContentGroups.Add(contentGroupConfigVO.ID, contentGroup);
 
-            AddLifeCycleListeners(contentLayer);
+            AddLifeCycleListeners(contentGroup);
             
             return this;
         }
 
-        public ContentLayer GetContentLayer(string id)
+        public ContentGroup GetContentGroup(string id)
         {
-            if (!m_ContentLayers.ContainsKey(id))
+            if (!m_ContentGroups.ContainsKey(id))
             {
-                throw new Exception($"Tried to get Content Layer with ID {id} but none exists!");
+                throw new Exception($"Tried to get Content Group with ID {id} but none exists!");
             }
 
-            return m_ContentLayers[id];
+            return m_ContentGroups[id];
         }
         
 
 
         public void Show(AbstractContentController contentController)
         {
-            string contentLayerID = contentController.ConfigVO.ContentLayerID;
+            string contentGroupID = contentController.ConfigVO.ContentGroupID;
 
-            if (!m_ContentLayers.ContainsKey(contentLayerID))
+            if (!m_ContentGroups.ContainsKey(contentGroupID))
             {
-                throw new Exception($"ContentLayerID of {contentLayerID} does not exist in the Content Manager with ID {ID}. Did you add the Content Layer?");
+                throw new Exception($"ContentGroupID of {contentGroupID} does not exist in the Content Manager with ID {ID}. Did you add the Content Group?");
             }
 
-            ContentLayer contentLayer = m_ContentLayers[contentLayerID];
-            contentLayer.Show(contentController);
+            ContentGroup contentGroup = m_ContentGroups[contentGroupID];
+            contentGroup.Show(contentController);
         }
 
-        public void ClearContentLayer(string contentLayerID)
+        public void ClearContentGroup(string contentGroupID)
         {
-            if (!m_ContentLayers.ContainsKey(contentLayerID))
+            if (!m_ContentGroups.ContainsKey(contentGroupID))
             {
-                throw new Exception($"ContentLayerID of {contentLayerID} does not exist in the Content Manager with ID {ID}. Did you add the Content Layer?");
+                throw new Exception($"ContentGroupID of {contentGroupID} does not exist in the Content Manager with ID {ID}. Did you add the Content Group?");
             }
             
-            ContentLayer contentLayer = m_ContentLayers[contentLayerID];
-            contentLayer.Clear();
+            ContentGroup contentGroup = m_ContentGroups[contentGroupID];
+            contentGroup.Clear();
         }
 
-        private void AddLifeCycleListeners(ContentLayer contentLayer)
+        private void AddLifeCycleListeners(ContentGroup contentGroup)
         {
-            contentLayer.OnLoadStart += HandleOnLoadStart;
-            contentLayer.OnLoadComplete += HandleOnLoadComplete;
-            contentLayer.OnPlayInStart += HandleOnPlayInStart;
-            contentLayer.OnPlayInComplete += HandleOnPlayInComplete;
-            contentLayer.OnPlayOutStart += HandleOnPlayOutStart;
-            contentLayer.OnPlayOutComplete += HandleOnPlayOutComplete;
+            contentGroup.OnLoadStart += HandleOnLoadStart;
+            contentGroup.OnLoadComplete += HandleOnLoadComplete;
+            contentGroup.OnPlayInStart += HandleOnPlayInStart;
+            contentGroup.OnPlayInComplete += HandleOnPlayInComplete;
+            contentGroup.OnPlayOutStart += HandleOnPlayOutStart;
+            contentGroup.OnPlayOutComplete += HandleOnPlayOutComplete;
         }
 
         private void HandleOnLoadStart(AbstractContentController contentController)

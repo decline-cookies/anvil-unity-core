@@ -1,6 +1,6 @@
 ﻿using Anvil.Unity.Core;
 
-namespace Anvil.Unity.ContentManagement
+namespace Anvil.Unity.Content
 {
     public abstract class AbstractContent : AbstractAnvilMonoBehaviour
     {

@@ -2,7 +2,7 @@
 using Anvil.CSharp.Core;
 using UnityEngine;
 
-namespace Anvil.Unity.ContentManagement
+namespace Anvil.Unity.Content
 {
     public abstract class AbstractContentController : AbstractAnvilDisposable
     {
@@ -13,7 +13,7 @@ namespace Anvil.Unity.ContentManagement
         public event Action OnClear;
         
         public ContentControllerConfigVO ConfigVO { get; private set; }
-        public ContentLayer ContentLayer { get; internal set; }
+        public ContentGroup ContentGroup { get; internal set; }
 
         private AbstractContent m_Content;
 
