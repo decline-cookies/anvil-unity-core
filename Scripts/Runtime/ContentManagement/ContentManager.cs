@@ -16,12 +16,10 @@ namespace Anvil.Unity.Content
         
         private Dictionary<string, ContentGroup> m_ContentGroups = new Dictionary<string, ContentGroup>();
         
-        public string ID { get; private set; }
-        public Transform ContentRoot { get; private set; }
+        public readonly Transform ContentRoot;
 
-        public ContentManager(string id, Transform contentRoot)
+        public ContentManager(Transform contentRoot)
         {
-            ID = id;
             ContentRoot = contentRoot;
         }
         
@@ -47,15 +45,15 @@ namespace Anvil.Unity.Content
             base.DisposeSelf();
         }
         
-        public ContentManager CreateContentGroup(ContentGroupConfigVO contentGroupConfigVO)
+        public ContentManager CreateContentGroup(string id, Vector3 localPosition, Transform gameObjectRoot = null)
         {
-            if (m_ContentGroups.ContainsKey(contentGroupConfigVO.ID))
+            if (m_ContentGroups.ContainsKey(id))
             {
-                throw new Exception($"Content Groups ID of {contentGroupConfigVO.ID} is already registered with the Content Manager with ID {ID}!");
+                throw new Exception($"Content Groups ID of {id} is already registered with the Content Manager!");
             }
             
-            ContentGroup contentGroup = new ContentGroup(contentGroupConfigVO, this);
-            m_ContentGroups.Add(contentGroupConfigVO.ID, contentGroup);
+            ContentGroup contentGroup = new ContentGroup(this, id, localPosition, gameObjectRoot);
+            m_ContentGroups.Add(contentGroup.ID, contentGroup);
 
             AddLifeCycleListeners(contentGroup);
             
@@ -76,11 +74,11 @@ namespace Anvil.Unity.Content
 
         public void Show(AbstractContentController contentController)
         {
-            string contentGroupID = contentController.ConfigVO.ContentGroupID;
+            string contentGroupID = contentController.ContentGroupID;
 
             if (!m_ContentGroups.ContainsKey(contentGroupID))
             {
-                throw new Exception($"ContentGroupID of {contentGroupID} does not exist in the Content Manager with ID {ID}. Did you add the Content Group?");
+                throw new Exception($"ContentGroupID of {contentGroupID} does not exist in the Content Manager. Did you add the Content Group?");
             }
 
             ContentGroup contentGroup = m_ContentGroups[contentGroupID];
@@ -91,7 +89,7 @@ namespace Anvil.Unity.Content
         {
             if (!m_ContentGroups.ContainsKey(contentGroupID))
             {
-                throw new Exception($"ContentGroupID of {contentGroupID} does not exist in the Content Manager with ID {ID}. Did you add the Content Group?");
+                throw new Exception($"ContentGroupID of {contentGroupID} does not exist in the Content Manager. Did you add the Content Group?");
             }
             
             ContentGroup contentGroup = m_ContentGroups[contentGroupID];

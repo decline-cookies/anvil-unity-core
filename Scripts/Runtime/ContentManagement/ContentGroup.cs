@@ -14,10 +14,9 @@ namespace Anvil.Unity.Content
         public event Action<AbstractContentController> OnPlayInComplete;
         public event Action<AbstractContentController> OnPlayOutStart;
         public event Action<AbstractContentController> OnPlayOutComplete;
-        
-        
-        
-        public ContentGroupConfigVO ConfigVO { get; private set; }
+
+
+        public readonly string ID;
         public Transform ContentGroupRoot { get; private set; }
         
         public ContentManager ContentManager { get; private set; }
@@ -26,15 +25,22 @@ namespace Anvil.Unity.Content
         private AbstractContentController m_PendingContentController;
 
         private UpdateHandle m_UpdateHandle;
+        
+        //TODO: Snippet about the gameObjectRoot. To be cleaned up when docs pass happens on this class.
+        // /// <summary>
+        // /// A custom user supplied <see cref="GameObject"/> <see cref="Transform"/> to parent this
+        // /// <see cref="ContentGroup"/> to. If left null (the default), the <see cref="ContentGroup"/> will be parented
+        // /// to the <see cref="ContentManager"/>'s ContentRoot.
+        // /// </summary>
 
-        public ContentGroup(ContentGroupConfigVO contentGroupGroupVO, ContentManager contentManager)
+        public ContentGroup(ContentManager contentManager, string id, Vector3 localPosition, Transform gameObjectRoot = null)
         {
-            ConfigVO = contentGroupGroupVO;
             ContentManager = contentManager;
-            
+            ID = id;
+
             m_UpdateHandle = UpdateHandle.Create<UnityUpdateSource>();
 
-            InitGameObject();
+            InitGameObject(localPosition, gameObjectRoot);
         }
 
         protected override void DisposeSelf()
@@ -47,12 +53,15 @@ namespace Anvil.Unity.Content
             base.DisposeSelf();
         }
 
-        private void InitGameObject()
+        private void InitGameObject(Vector3 localPosition, Transform gameObjectRoot)
         {
-            GameObject groupRootGO = new GameObject($"[CL - {ConfigVO.ID}]");
+            GameObject groupRootGO = new GameObject($"[CL - {ID}]");
             ContentGroupRoot = groupRootGO.transform;
-            ContentGroupRoot.SetParent(ConfigVO.AlternativeGameObjectRoot == null ? ContentManager.ContentRoot : ConfigVO.AlternativeGameObjectRoot);
-            ContentGroupRoot.localPosition = ConfigVO.LocalPosition;
+            Transform parent = gameObjectRoot == null
+                ? ContentManager.ContentRoot
+                : gameObjectRoot;
+            ContentGroupRoot.SetParent(parent);
+            ContentGroupRoot.localPosition = localPosition;
             ContentGroupRoot.localRotation = Quaternion.identity;
             ContentGroupRoot.localScale = Vector3.one;
         }

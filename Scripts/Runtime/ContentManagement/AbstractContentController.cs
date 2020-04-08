@@ -11,9 +11,10 @@ namespace Anvil.Unity.Content
         public event Action OnLoadComplete;
 
         public event Action OnClear;
-        
-        public ContentControllerConfigVO ConfigVO { get; private set; }
-        public ContentGroup ContentGroup { get; internal set; }
+
+
+        public readonly string ContentGroupID;
+        public readonly string ContentLoadingID;
 
         private AbstractContent m_Content;
 
@@ -21,12 +22,14 @@ namespace Anvil.Unity.Content
         private ResourceRequest m_ResourceRequest;
 
 
+        public ContentGroup ContentGroup { get; internal set; }
         internal bool IsContentControllerDisposing { get; private set; }
 
-        protected AbstractContentController()
+        protected AbstractContentController(string contentGroupID, string contentLoadingID)
         {
-            ConfigVO = new ContentControllerConfigVO();
-            InitConfigVO(ConfigVO);
+            ContentGroupID = contentGroupID;
+            ContentLoadingID = contentLoadingID;
+            //TODO: Handle overrides for additional loading dependency settings.
         }
 
         protected override void DisposeSelf()
@@ -57,8 +60,6 @@ namespace Anvil.Unity.Content
             return (T)m_Content;
         }
 
-        protected abstract void InitConfigVO(ContentControllerConfigVO configVO);
-
         internal void Load()
         {
             //TODO: Need to load all the required assets.
@@ -68,7 +69,7 @@ namespace Anvil.Unity.Content
             //For now we'll just assume it's a prefab and we're Resources.Loading it.
             //TODO: Support addressables
 
-            m_ResourceRequest = Resources.LoadAsync<GameObject>(ConfigVO.ContentLoadingID);
+            m_ResourceRequest = Resources.LoadAsync<GameObject>(ContentLoadingID);
             m_ResourceRequest.completed += HandleOnResourceLoaded;
         }
 
