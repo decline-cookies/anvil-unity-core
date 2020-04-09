@@ -14,7 +14,7 @@ namespace Anvil.Unity.Content
         public event Action<AbstractContentController> OnPlayOutStart;
         public event Action<AbstractContentController> OnPlayOutComplete;
         
-        private Dictionary<string, ContentGroup> m_ContentGroups = new Dictionary<string, ContentGroup>();
+        private readonly Dictionary<string, ContentGroup> m_ContentGroups = new Dictionary<string, ContentGroup>();
         
         public readonly Transform ContentRoot;
 
@@ -32,16 +32,12 @@ namespace Anvil.Unity.Content
             OnPlayOutStart = null;
             OnPlayOutComplete = null;
             
-            if (m_ContentGroups != null)
+            foreach (ContentGroup contentGroup in m_ContentGroups.Values)
             {
-                foreach (ContentGroup contentGroup in m_ContentGroups.Values)
-                {
-                    contentGroup.Dispose();
-                }
-                m_ContentGroups.Clear();
-                m_ContentGroups = null;
+                contentGroup.Dispose();
             }
-            
+            m_ContentGroups.Clear();
+
             base.DisposeSelf();
         }
         
@@ -49,7 +45,7 @@ namespace Anvil.Unity.Content
         {
             if (m_ContentGroups.ContainsKey(id))
             {
-                throw new Exception($"Content Groups ID of {id} is already registered with the Content Manager!");
+                throw new ArgumentException($"Content Groups ID of {id} is already registered with the Content Manager!");
             }
             
             ContentGroup contentGroup = new ContentGroup(this, id, localPosition, gameObjectRoot);
@@ -64,7 +60,7 @@ namespace Anvil.Unity.Content
         {
             if (!m_ContentGroups.ContainsKey(id))
             {
-                throw new Exception($"Tried to get Content Group with ID {id} but none exists!");
+                throw new ArgumentException($"Tried to get Content Group with ID {id} but none exists!");
             }
 
             return m_ContentGroups[id];
@@ -85,15 +81,17 @@ namespace Anvil.Unity.Content
             contentGroup.Show(contentController);
         }
 
-        public void ClearContentGroup(string contentGroupID)
+        public bool ClearContentGroup(string contentGroupID)
         {
             if (!m_ContentGroups.ContainsKey(contentGroupID))
             {
-                throw new Exception($"ContentGroupID of {contentGroupID} does not exist in the Content Manager. Did you add the Content Group?");
+                Debug.LogWarning($"[CONTENT MANAGER] - ContentGroupID of {contentGroupID} does not exist in the Content Manager. Did you add the Content Group?");
+                return false;
             }
             
             ContentGroup contentGroup = m_ContentGroups[contentGroupID];
             contentGroup.Clear();
+            return true;
         }
 
         private void AddLifeCycleListeners(ContentGroup contentGroup)
