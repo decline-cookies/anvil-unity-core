@@ -50,6 +50,7 @@ namespace Anvil.Unity.Content
             IEnumerable<FieldInfo> unsetSerializedFields = fields.Where(
                 (field) =>
                     field.IsDefined(typeof(SerializeField))
+                    && !field.IsDefined(typeof(PermitDefaultValue))
                     && field.GetValue(this) == field.FieldType.CreateDefaultValue()
                 );
 
