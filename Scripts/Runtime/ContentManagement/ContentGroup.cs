@@ -4,9 +4,9 @@ using Anvil.CSharp.DelayedExecution;
 using Anvil.Unity.DelayedExecution;
 using UnityEngine;
 
-namespace Anvil.Unity.ContentManagement
+namespace Anvil.Unity.Content
 {
-    public class ContentLayer : AbstractAnvilDisposable
+    public class ContentGroup : AbstractAnvilDisposable
     {
         public event Action<AbstractContentController> OnLoadStart;
         public event Action<AbstractContentController> OnLoadComplete;
@@ -14,11 +14,10 @@ namespace Anvil.Unity.ContentManagement
         public event Action<AbstractContentController> OnPlayInComplete;
         public event Action<AbstractContentController> OnPlayOutStart;
         public event Action<AbstractContentController> OnPlayOutComplete;
-        
-        
-        
-        public ContentLayerConfigVO ConfigVO { get; private set; }
-        public Transform ContentLayerRoot { get; private set; }
+
+
+        public readonly string ID;
+        public Transform ContentGroupRoot { get; private set; }
         
         public ContentManager ContentManager { get; private set; }
         
@@ -26,15 +25,22 @@ namespace Anvil.Unity.ContentManagement
         private AbstractContentController m_PendingContentController;
 
         private UpdateHandle m_UpdateHandle;
+        
+        //TODO: Snippet about the gameObjectRoot. To be cleaned up when docs pass happens on this class.
+        // /// <summary>
+        // /// A custom user supplied <see cref="GameObject"/> <see cref="Transform"/> to parent this
+        // /// <see cref="ContentGroup"/> to. If left null (the default), the <see cref="ContentGroup"/> will be parented
+        // /// to the <see cref="ContentManager"/>'s ContentRoot.
+        // /// </summary>
 
-        public ContentLayer(ContentLayerConfigVO contentGroupLayerVO, ContentManager contentManager)
+        public ContentGroup(ContentManager contentManager, string id, Vector3 localPosition, Transform gameObjectRoot = null)
         {
-            ConfigVO = contentGroupLayerVO;
             ContentManager = contentManager;
-            
+            ID = id;
+
             m_UpdateHandle = UpdateHandle.Create<UnityUpdateSource>();
 
-            InitGameObject();
+            InitGameObject(localPosition, gameObjectRoot);
         }
 
         protected override void DisposeSelf()
@@ -47,14 +53,17 @@ namespace Anvil.Unity.ContentManagement
             base.DisposeSelf();
         }
 
-        private void InitGameObject()
+        private void InitGameObject(Vector3 localPosition, Transform gameObjectRoot)
         {
-            GameObject groupRootGO = new GameObject($"[CL - {ConfigVO.ID}]");
-            ContentLayerRoot = groupRootGO.transform;
-            ContentLayerRoot.SetParent(ContentManager.ContentRoot);
-            ContentLayerRoot.localPosition = ConfigVO.LocalPosition;
-            ContentLayerRoot.localRotation = Quaternion.identity;
-            ContentLayerRoot.localScale = Vector3.one;
+            GameObject groupRootGO = new GameObject($"[CL - {ID}]");
+            ContentGroupRoot = groupRootGO.transform;
+            Transform parent = gameObjectRoot == null
+                ? ContentManager.ContentRoot
+                : gameObjectRoot;
+            ContentGroupRoot.SetParent(parent);
+            ContentGroupRoot.localPosition = localPosition;
+            ContentGroupRoot.localRotation = Quaternion.identity;
+            ContentGroupRoot.localScale = Vector3.one;
         }
 
         public void Show(AbstractContentController contentController)
@@ -95,7 +104,7 @@ namespace Anvil.Unity.ContentManagement
             
             ActiveContentController = m_PendingContentController;
             m_PendingContentController = null;
-            ActiveContentController.ContentLayer = this;
+            ActiveContentController.ContentGroup = this;
 
             OnLoadStart?.Invoke(ActiveContentController);
             ActiveContentController.OnLoadComplete += HandleOnLoadComplete;
@@ -111,7 +120,7 @@ namespace Anvil.Unity.ContentManagement
 
             AbstractContent content = ActiveContentController.GetContent<AbstractContent>();
             Transform transform = content.transform;
-            transform.SetParent(ContentLayerRoot);
+            transform.SetParent(ContentGroupRoot);
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one;

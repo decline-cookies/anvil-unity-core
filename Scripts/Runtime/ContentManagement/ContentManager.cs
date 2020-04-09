@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Anvil.CSharp.Core;
 using UnityEngine;
 
-namespace Anvil.Unity.ContentManagement
+namespace Anvil.Unity.Content
 {
     public class ContentManager : AbstractAnvilDisposable
     {
@@ -14,14 +14,12 @@ namespace Anvil.Unity.ContentManagement
         public event Action<AbstractContentController> OnPlayOutStart;
         public event Action<AbstractContentController> OnPlayOutComplete;
         
-        private Dictionary<string, ContentLayer> m_ContentLayers = new Dictionary<string, ContentLayer>();
+        private readonly Dictionary<string, ContentGroup> m_ContentGroups = new Dictionary<string, ContentGroup>();
         
-        public string ID { get; private set; }
-        public Transform ContentRoot { get; private set; }
+        public readonly Transform ContentRoot;
 
-        public ContentManager(string id, Transform contentRoot)
+        public ContentManager(Transform contentRoot)
         {
-            ID = id;
             ContentRoot = contentRoot;
         }
         
@@ -34,78 +32,76 @@ namespace Anvil.Unity.ContentManagement
             OnPlayOutStart = null;
             OnPlayOutComplete = null;
             
-            if (m_ContentLayers != null)
+            foreach (ContentGroup contentGroup in m_ContentGroups.Values)
             {
-                foreach (ContentLayer contentLayer in m_ContentLayers.Values)
-                {
-                    contentLayer.Dispose();
-                }
-                m_ContentLayers.Clear();
-                m_ContentLayers = null;
+                contentGroup.Dispose();
             }
-            
+            m_ContentGroups.Clear();
+
             base.DisposeSelf();
         }
         
-        public ContentManager CreateContentLayer(ContentLayerConfigVO contentLayerConfigVO)
+        public ContentManager CreateContentGroup(string id, Vector3 localPosition, Transform gameObjectRoot = null)
         {
-            if (m_ContentLayers.ContainsKey(contentLayerConfigVO.ID))
+            if (m_ContentGroups.ContainsKey(id))
             {
-                throw new Exception($"Content Layer ID of {contentLayerConfigVO.ID} is already registered with the Content Manager with ID {ID}!");
+                throw new ArgumentException($"Content Groups ID of {id} is already registered with the Content Manager!");
             }
             
-            ContentLayer contentLayer = new ContentLayer(contentLayerConfigVO, this);
-            m_ContentLayers.Add(contentLayerConfigVO.ID, contentLayer);
+            ContentGroup contentGroup = new ContentGroup(this, id, localPosition, gameObjectRoot);
+            m_ContentGroups.Add(contentGroup.ID, contentGroup);
 
-            AddLifeCycleListeners(contentLayer);
+            AddLifeCycleListeners(contentGroup);
             
             return this;
         }
 
-        public ContentLayer GetContentLayer(string id)
+        public ContentGroup GetContentGroup(string id)
         {
-            if (!m_ContentLayers.ContainsKey(id))
+            if (!m_ContentGroups.ContainsKey(id))
             {
-                throw new Exception($"Tried to get Content Layer with ID {id} but none exists!");
+                throw new ArgumentException($"Tried to get Content Group with ID {id} but none exists!");
             }
 
-            return m_ContentLayers[id];
+            return m_ContentGroups[id];
         }
         
 
 
         public void Show(AbstractContentController contentController)
         {
-            string contentLayerID = contentController.ConfigVO.ContentLayerID;
+            string contentGroupID = contentController.ContentGroupID;
 
-            if (!m_ContentLayers.ContainsKey(contentLayerID))
+            if (!m_ContentGroups.ContainsKey(contentGroupID))
             {
-                throw new Exception($"ContentLayerID of {contentLayerID} does not exist in the Content Manager with ID {ID}. Did you add the Content Layer?");
+                throw new Exception($"ContentGroupID of {contentGroupID} does not exist in the Content Manager. Did you add the Content Group?");
             }
 
-            ContentLayer contentLayer = m_ContentLayers[contentLayerID];
-            contentLayer.Show(contentController);
+            ContentGroup contentGroup = m_ContentGroups[contentGroupID];
+            contentGroup.Show(contentController);
         }
 
-        public void ClearContentLayer(string contentLayerID)
+        public bool ClearContentGroup(string contentGroupID)
         {
-            if (!m_ContentLayers.ContainsKey(contentLayerID))
+            if (!m_ContentGroups.ContainsKey(contentGroupID))
             {
-                throw new Exception($"ContentLayerID of {contentLayerID} does not exist in the Content Manager with ID {ID}. Did you add the Content Layer?");
+                Debug.LogWarning($"[CONTENT MANAGER] - ContentGroupID of {contentGroupID} does not exist in the Content Manager. Did you add the Content Group?");
+                return false;
             }
             
-            ContentLayer contentLayer = m_ContentLayers[contentLayerID];
-            contentLayer.Clear();
+            ContentGroup contentGroup = m_ContentGroups[contentGroupID];
+            contentGroup.Clear();
+            return true;
         }
 
-        private void AddLifeCycleListeners(ContentLayer contentLayer)
+        private void AddLifeCycleListeners(ContentGroup contentGroup)
         {
-            contentLayer.OnLoadStart += HandleOnLoadStart;
-            contentLayer.OnLoadComplete += HandleOnLoadComplete;
-            contentLayer.OnPlayInStart += HandleOnPlayInStart;
-            contentLayer.OnPlayInComplete += HandleOnPlayInComplete;
-            contentLayer.OnPlayOutStart += HandleOnPlayOutStart;
-            contentLayer.OnPlayOutComplete += HandleOnPlayOutComplete;
+            contentGroup.OnLoadStart += HandleOnLoadStart;
+            contentGroup.OnLoadComplete += HandleOnLoadComplete;
+            contentGroup.OnPlayInStart += HandleOnPlayInStart;
+            contentGroup.OnPlayInComplete += HandleOnPlayInComplete;
+            contentGroup.OnPlayOutStart += HandleOnPlayOutStart;
+            contentGroup.OnPlayOutComplete += HandleOnPlayOutComplete;
         }
 
         private void HandleOnLoadStart(AbstractContentController contentController)
