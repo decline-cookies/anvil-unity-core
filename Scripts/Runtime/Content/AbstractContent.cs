@@ -2,9 +2,17 @@
 
 namespace Anvil.Unity.Content
 {
+    public abstract class AbstractContent<T> : AbstractContent where T : AbstractContentController
+    {
+        public new T Controller
+        {
+            get { return (T)base.Controller; }
+        }
+    }
+
     public abstract class AbstractContent : AbstractAnvilMonoBehaviour
     {
-        internal AbstractContentController ContentController { private get; set; }
+        public AbstractContentController Controller { get; internal set; }
         
         internal bool IsContentDisposing { get; private set; }
 
@@ -16,18 +24,13 @@ namespace Anvil.Unity.Content
             }
             IsContentDisposing = true;
 
-            if (ContentController != null && !ContentController.IsContentControllerDisposing)
+            if (Controller != null && !Controller.IsContentControllerDisposing)
             {
-                ContentController.Dispose();
-                ContentController = null;
+                Controller.Dispose();
+                Controller = null;
             }
             
             base.DisposeSelf();
-        }
-
-        public T GetContentController<T>() where T : AbstractContentController
-        {
-            return (T)ContentController;
         }
 
     }

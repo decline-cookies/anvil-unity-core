@@ -118,7 +118,7 @@ namespace Anvil.Unity.Content
             
             ActiveContentController.InternalInitAfterLoadComplete();
 
-            AbstractContent content = ActiveContentController.GetContent<AbstractContent>();
+            AbstractContent content = ActiveContentController.Content;
             Transform transform = content.transform;
             transform.SetParent(ContentGroupRoot);
             transform.localPosition = Vector3.zero;
