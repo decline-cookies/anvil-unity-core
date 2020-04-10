@@ -2,7 +2,7 @@
 {
     public abstract class AbstractAnvilApplication : AbstractAnvilMonoBehaviour
     {
-        private void Awake()
+        protected override void Awake()
         {
             Init();
         }
