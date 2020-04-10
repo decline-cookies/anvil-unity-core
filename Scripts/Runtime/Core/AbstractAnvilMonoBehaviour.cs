@@ -8,6 +8,13 @@ namespace Anvil.Unity.Core
         public bool IsDisposed { get; private set; }
         public bool IsGameObjectDestroyed { get; private set; }
 
+        protected virtual void Awake()
+        {
+#if DEBUG
+            MonoBehaviourUtil.EnforceEditorExposedFieldsSet(this);
+#endif
+        }
+
         public void Dispose()
         {
             if (IsDisposed)
