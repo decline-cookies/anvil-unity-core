@@ -55,6 +55,7 @@ namespace Anvil.Unity.Core
             OnAppGainedFocus = null;
             OnAppLostFocus = null;
             OnAppQuitting = null;
+            
             base.DisposeSelf();
         }
 
