@@ -4,6 +4,17 @@ using UnityEngine;
 
 namespace Anvil.Unity.Content
 {
+    public abstract class AbstractContentController<T> : AbstractContentController where T : AbstractContent
+    {
+        public new T Content
+        {
+            get { return (T)base.Content; }
+        }
+
+        public AbstractContentController(string contentGroupID, string contentLoadingID)
+            : base(contentGroupID, contentLoadingID) { }
+    }
+
     public abstract class AbstractContentController : AbstractAnvilDisposable
     {
         public event Action OnPlayInComplete;
@@ -16,8 +27,7 @@ namespace Anvil.Unity.Content
         public readonly string ContentGroupID;
         public readonly string ContentLoadingID;
 
-        private AbstractContent m_Content;
-
+        public AbstractContent Content { get; private set; }
         //TODO: Remove later on
         private ResourceRequest m_ResourceRequest;
 
@@ -46,18 +56,13 @@ namespace Anvil.Unity.Content
             OnLoadComplete = null;
             OnClear = null;
 
-            if (m_Content != null && !m_Content.IsContentDisposing)
+            if (Content != null && !Content.IsContentDisposing)
             {
-                m_Content.Dispose();
-                m_Content = null;
+                Content.Dispose();
+                Content = null;
             }
             
             base.DisposeSelf();
-        }
-
-        public T GetContent<T>() where T : AbstractContent
-        {
-            return (T)m_Content;
         }
 
         internal void Load()
@@ -78,8 +83,8 @@ namespace Anvil.Unity.Content
             GameObject instance = (GameObject)GameObject.Instantiate(m_ResourceRequest.asset);
             //TODO: Properly sanitize the name with a Regex via util method
             instance.name = instance.name.Replace("(Clone)", string.Empty);
-            m_Content = instance.GetComponent<AbstractContent>();
-            m_Content.ContentController = this;
+            Content = instance.GetComponent<AbstractContent>();
+            Content.Controller = this;
             
             m_ResourceRequest.completed -= HandleOnResourceLoaded;
             OnLoadComplete?.Invoke();
