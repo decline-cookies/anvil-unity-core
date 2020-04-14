@@ -7,7 +7,7 @@ namespace Anvil.Unity.Core
     /// <summary>
     /// An implementation of <see cref="IAnvilApplication"/> for a Unity application.
     /// </summary>
-    public abstract class AbstractAnvilUnityApplication : AbstractAnvilMonoBehaviour, IAnvilApplication
+    public abstract class AbstractAnvilUnityApplication : AbstractAnvilMonoBehaviour
     {
         /// <summary>
         /// Dispatches when the application is paused via <see cref="MonoBehaviour.OnApplicationPause(true)"/>
@@ -68,13 +68,11 @@ namespace Anvil.Unity.Core
                 DontDestroyOnLoad(gameObject);
             }
         }
-        
+
         /// <summary>
         /// The entry point for the application to perform setup and begin.
         /// </summary>
-        public virtual void Init()
-        {
-        }
+        protected abstract void Init();
 
         private void OnApplicationFocus(bool hasFocus)
         {
