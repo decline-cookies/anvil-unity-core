@@ -5,7 +5,6 @@ namespace Anvil.Unity.Content
 {
     public abstract class AbstractUnityContentController : AbstractContentController
     {
-        
         //TODO: Remove later on
         private ResourceRequest m_ResourceRequest;
         protected AbstractUnityContentController(string contentGroupID, string contentLoadingID) : base(contentGroupID, contentLoadingID)
@@ -31,8 +30,7 @@ namespace Anvil.Unity.Content
             //TODO: Properly sanitize the name with a Regex via util method
             instance.name = instance.name.Replace("(Clone)", string.Empty);
             Content = instance.GetComponent<IContent>();
-            Content.Controller = this;
-            
+
             m_ResourceRequest.completed -= HandleOnResourceLoaded;
             LoadComplete();
         }

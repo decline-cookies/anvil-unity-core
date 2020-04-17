@@ -1,36 +1,34 @@
-﻿using Anvil.CSharp.Content;
+﻿using System;
+using Anvil.CSharp.Content;
 using Anvil.Unity.Core;
 
 namespace Anvil.Unity.Content
 {
-    public abstract class AbstractUnityContent<T> : AbstractUnityContent where T : AbstractContentController
-    {
-        public new T Controller => (T)base.Controller;
-    }
+    // public abstract class AbstractUnityContent<T> : AbstractUnityContent 
+    //     where T : AbstractContentController
+    // {
+    //     public new T Controller => (T)base.Controller;
+    // }
 
     public abstract class AbstractUnityContent : AbstractAnvilMonoBehaviour, IContent
     {
-        public AbstractContentController Controller { get; set; }
+        public event Action OnContentDisposing;
         
-        public bool IsContentDisposing { get; private set; }
+        private bool m_IsContentDisposing;
 
         protected override void DisposeSelf()
         {
-            if (IsContentDisposing)
+            if (m_IsContentDisposing)
             {
                 return;
             }
-            IsContentDisposing = true;
-
-            if (Controller != null && !Controller.IsContentControllerDisposing)
-            {
-                Controller.Dispose();
-                Controller = null;
-            }
+            m_IsContentDisposing = true;
             
+            OnContentDisposing?.Invoke();
+            OnContentDisposing = null;
+
             base.DisposeSelf();
         }
-
     }
 }
 
