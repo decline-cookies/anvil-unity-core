@@ -11,8 +11,16 @@ namespace Anvil.Unity.Content
         public UnityContentGroup(AbstractContentManager contentManager, AbstractContentGroupConfigVO configVO) : base(contentManager, configVO)
         {
             InitGameObject();
+            OnLoadComplete += HandleOnLoadComplete;
         }
-        
+
+        protected override void DisposeSelf()
+        {
+            OnLoadComplete -= HandleOnLoadComplete;
+            GameObject.Destroy(ContentGroupRoot.gameObject);
+            base.DisposeSelf();
+        }
+
         private void InitGameObject()
         {
             UnityContentGroupConfigVO vo = (UnityContentGroupConfigVO)ConfigVO;
@@ -30,7 +38,7 @@ namespace Anvil.Unity.Content
             ContentGroupRoot.localScale = Vector3.one;
         }
 
-        protected override void HandleOnLoadCompleteHook()
+        private void HandleOnLoadComplete(AbstractContentController contentController)
         {
             AbstractUnityContent content = (AbstractUnityContent)ActiveContentController.Content;
             Transform transform = content.transform;

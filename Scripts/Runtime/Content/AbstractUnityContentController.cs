@@ -3,15 +3,18 @@ using UnityEngine;
 
 namespace Anvil.Unity.Content
 {
-    public abstract class AbstractUnityContentController : AbstractContentController
+    public abstract class AbstractUnityContentController<TContent> : AbstractContentController<TContent>
+        where TContent : AbstractUnityContent
     {
         //TODO: Remove later on
         private ResourceRequest m_ResourceRequest;
         protected AbstractUnityContentController(string contentGroupID, string contentLoadingID) : base(contentGroupID, contentLoadingID)
         {
         }
+        
+        
 
-        public override void Load()
+        protected override void Load()
         {
             //TODO: Need to load all the required assets.
             //TODO: Need to load the actual prefab or scene.
@@ -20,7 +23,7 @@ namespace Anvil.Unity.Content
             //For now we'll just assume it's a prefab and we're Resources.Loading it.
             //TODO: Support addressables
 
-            m_ResourceRequest = Resources.LoadAsync<GameObject>(ContentLoadingID);
+            m_ResourceRequest = Resources.LoadAsync<GameObject>(m_ContentLoadingID);
             m_ResourceRequest.completed += HandleOnResourceLoaded;
         }
         
@@ -29,7 +32,7 @@ namespace Anvil.Unity.Content
             GameObject instance = (GameObject)GameObject.Instantiate(m_ResourceRequest.asset);
             //TODO: Properly sanitize the name with a Regex via util method
             instance.name = instance.name.Replace("(Clone)", string.Empty);
-            Content = instance.GetComponent<IContent>();
+            Content = instance.GetComponent<TContent>();
 
             m_ResourceRequest.completed -= HandleOnResourceLoaded;
             LoadComplete();
