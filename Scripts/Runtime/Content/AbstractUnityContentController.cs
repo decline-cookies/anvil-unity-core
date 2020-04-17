@@ -34,7 +34,7 @@ namespace Anvil.Unity.Content
             Content.Controller = this;
             
             m_ResourceRequest.completed -= HandleOnResourceLoaded;
-            OnLoadComplete?.Invoke();
+            LoadComplete();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Anvil.Unity.Content
 
     public abstract class AbstractUnityContent : AbstractAnvilMonoBehaviour, IContent
     {
-        public AbstractContentController Controller { get; internal set; }
+        public AbstractContentController Controller { get; set; }
         
         public bool IsContentDisposing { get; private set; }
 

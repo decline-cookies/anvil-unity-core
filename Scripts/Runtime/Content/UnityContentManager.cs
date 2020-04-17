@@ -3,42 +3,26 @@ using UnityEngine;
 
 namespace Anvil.Unity.Content
 {
-    public class UnityContentManager : AbstractContentManager<UnityContentGroup,AbstractUnityContentController,AbstractUnityContent>
+    public class UnityContentManager : AbstractContentManager
     {
         public readonly Transform ContentRoot;
 
         public UnityContentManager(Transform contentRoot) : base()
         {
             ContentRoot = contentRoot;
+            GameObject.DontDestroyOnLoad(ContentRoot);
         }
 
-        protected override UnityContentGroup ConstructContentGroup(string id, Vector3 localPosition, Transform gameObjectRoot = null)
+        protected override AbstractContentGroup ConstructContentGroup(AbstractContentGroupConfigVO configVO)
         {
-            return new UnityContentGroup(this, id, localPosition, gameObjectRoot);
+            UnityContentGroup unityContentGroup = new UnityContentGroup(this, configVO);
+            return unityContentGroup;
         }
 
         protected override void LogWarning(string msg)
         {
             Debug.LogWarning(msg);
         }
-
-
-        public AbstractContentManager CreateContentGroup(string id, Vector3 localPosition, Transform gameObjectRoot = null)
-        {
-            if (m_ContentGroups.ContainsKey(id))
-            {
-                throw new ArgumentException($"Content Groups ID of {id} is already registered with the Content Manager!");
-            }
-            
-            AbstractContentGroup contentGroup = new AbstractContentGroup(this, id, localPosition, gameObjectRoot);
-            m_ContentGroups.Add(contentGroup.ID, contentGroup);
-
-            AddLifeCycleListeners(contentGroup);
-            
-            return this;
-        }
-        
-        
     }
 }
 
