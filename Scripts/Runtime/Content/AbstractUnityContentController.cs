@@ -12,8 +12,6 @@ namespace Anvil.Unity.Content
         {
         }
         
-        
-
         protected override void Load()
         {
             //TODO: Need to load all the required assets.

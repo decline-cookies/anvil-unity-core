@@ -13,6 +13,12 @@ namespace Anvil.Unity.Content
             GameObject.DontDestroyOnLoad(ContentRoot);
         }
 
+        protected override void DisposeSelf()
+        {
+            GameObject.Destroy(ContentRoot.gameObject);
+            base.DisposeSelf();
+        }
+
         protected override AbstractContentGroup ConstructContentGroup(AbstractContentGroupConfigVO configVO)
         {
             UnityContentGroup unityContentGroup = new UnityContentGroup(this, configVO);
