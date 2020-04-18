@@ -1,7 +1,7 @@
 {
     "name": "anvil-unity-core-runtime",
     "references": [
-        "anvil-csharp-core-runtime"
+        "anvil-csharp-core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
