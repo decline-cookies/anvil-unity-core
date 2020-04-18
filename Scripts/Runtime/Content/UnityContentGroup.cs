@@ -3,12 +3,22 @@ using UnityEngine;
 
 namespace Anvil.Unity.Content
 {
+    /// <summary>
+    /// A concrete implementation of <see cref="AbstractContentGroup"/> specific to Unity.
+    /// </summary>
     public class UnityContentGroup : AbstractContentGroup
     {
-        
+        /// <summary>
+        /// The <see cref="Transform"/> that this Group corresponds to in the Unity hierarchy.
+        /// </summary>
         public Transform ContentGroupRoot { get; private set; }
 
-        public UnityContentGroup(AbstractContentManager contentManager, AbstractContentGroupConfigVO configVO) : base(contentManager, configVO)
+        /// <summary>
+        /// Creates a new <see cref="UnityContentGroup"/> to be used with a <see cref="UnityContentManager"/>
+        /// </summary>
+        /// <param name="contentManager">The <see cref="AbstractContentManager"/> that controls this Content Group</param>
+        /// <param name="configVO">The <see cref="UnityContentGroupConfigVO"/> to configure construction of this Content Group</param>
+        internal UnityContentGroup(AbstractContentManager contentManager, ContentGroupConfigVO configVO) : base(contentManager, configVO)
         {
             InitGameObject();
             OnLoadComplete += HandleOnLoadComplete;
@@ -23,6 +33,7 @@ namespace Anvil.Unity.Content
 
         private void InitGameObject()
         {
+            //TODO: Is there a way to have these nicely strong typed?
             UnityContentGroupConfigVO vo = (UnityContentGroupConfigVO)ConfigVO;
             UnityContentManager contentManger = (UnityContentManager)ContentManager;
             

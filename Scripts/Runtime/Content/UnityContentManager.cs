@@ -3,10 +3,20 @@ using UnityEngine;
 
 namespace Anvil.Unity.Content
 {
+    /// <summary>
+    /// A concrete implementation of a <see cref="AbstractContentManager"/> specific to Unity
+    /// </summary>
     public class UnityContentManager : AbstractContentManager
     {
+        /// <summary>
+        /// A <see cref="Transform"/> that this Content Manager corresponds to in the Unity hierarchy
+        /// </summary>
         public readonly Transform ContentRoot;
-
+        
+        /// <summary>
+        /// Constructs a new instance of a <see cref="UnityContentManager"/>
+        /// </summary>
+        /// <param name="contentRoot"><inheritdoc cref="ContentRoot"/></param>
         public UnityContentManager(Transform contentRoot) : base()
         {
             ContentRoot = contentRoot;
@@ -19,15 +29,15 @@ namespace Anvil.Unity.Content
             base.DisposeSelf();
         }
 
-        protected override AbstractContentGroup ConstructContentGroup(AbstractContentGroupConfigVO configVO)
+        protected override AbstractContentGroup ConstructContentGroup(ContentGroupConfigVO configVO)
         {
             UnityContentGroup unityContentGroup = new UnityContentGroup(this, configVO);
             return unityContentGroup;
         }
 
-        protected override void LogWarning(string msg)
+        protected override void LogWarning(string message)
         {
-            Debug.LogWarning(msg);
+            Debug.LogWarning(message);
         }
     }
 }

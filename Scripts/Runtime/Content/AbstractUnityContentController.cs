@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace Anvil.Unity.Content
 {
+    /// <summary>
+    /// A more specific <see cref="AbstractContentController"/> specific to Unity where the corresponding Content is
+    /// a <see cref="AbstractUnityContent"/>
+    /// </summary>
+    /// <typeparam name="TContent">A generic constrained to <see cref="AbstractUnityContent"/>. Allows the
+    /// <see cref="AbstractContentController.Content"/> to be strongly typed to the actual Content class.</typeparam>
     public abstract class AbstractUnityContentController<TContent> : AbstractContentController<TContent>
         where TContent : AbstractUnityContent
     {
