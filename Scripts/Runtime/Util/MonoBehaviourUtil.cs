@@ -3,8 +3,9 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using Anvil.Unity.Attribute;
 
-namespace Anvil.Unity.Core
+namespace Anvil.Unity.Util
 {
     /// <summary>
     /// A collection of Utils to work with <see cref="MonoBehaviour"/>s

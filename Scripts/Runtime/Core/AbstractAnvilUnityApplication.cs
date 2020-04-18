@@ -1,5 +1,4 @@
 ﻿using System;
-using Anvil.CSharp.Core;
 using UnityEngine;
 
 namespace Anvil.Unity.Core
