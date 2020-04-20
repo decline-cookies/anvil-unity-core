@@ -10,7 +10,7 @@ namespace Anvil.Unity.DelayedExecution
     /// <see cref="AbstractUnityUpdateSourceMonoBehaviour"/></typeparam>
     public abstract class AbstractUnityUpdateSource<T> : AbstractUpdateSource where T:AbstractUnityUpdateSourceMonoBehaviour
     {
-        protected override void Init()
+        protected AbstractUnityUpdateSource()
         {
             GameObject gameObject = new GameObject($"[UpdateSource - {typeof(T)}]");
             GameObject.DontDestroyOnLoad(gameObject);
