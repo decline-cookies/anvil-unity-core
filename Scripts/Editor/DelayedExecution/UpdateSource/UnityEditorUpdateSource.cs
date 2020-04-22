@@ -11,17 +11,17 @@ namespace Anvil.UnityEditor.DelayedExecution
     {
         protected override void Init()
         {
-            EditorApplication.update += EditorApplication_update;
+            EditorApplication.update += HandleEditorApplicationUpdate;
         }
 
         protected override void DisposeSelf()
         {
-            EditorApplication.update -= EditorApplication_update;
+            EditorApplication.update -= HandleEditorApplicationUpdate;
 
             base.DisposeSelf();
         }
 
-        private void EditorApplication_update()
+        private void HandleEditorApplicationUpdate()
         {
             DispatchOnUpdateEvent();
         }
