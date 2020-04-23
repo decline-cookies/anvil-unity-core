@@ -37,6 +37,7 @@ namespace Anvil.Unity.Content
             //TODO: Properly sanitize the name with a Regex via util method
             instance.name = instance.name.Replace("(Clone)", string.Empty);
             Content = instance.GetComponent<TContent>();
+            Content.Controller = this;
 
             m_ResourceRequest.completed -= HandleOnResourceLoaded;
             LoadComplete();

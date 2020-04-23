@@ -29,7 +29,7 @@ namespace Anvil.Unity.Content
             base.DisposeSelf();
         }
 
-        protected override AbstractContentGroup ConstructContentGroup(ContentGroupConfigVO configVO)
+        protected override AbstractContentGroup CreateGroup(ContentGroupConfigVO configVO)
         {
             UnityContentGroup unityContentGroup = new UnityContentGroup(this, configVO);
             return unityContentGroup;
