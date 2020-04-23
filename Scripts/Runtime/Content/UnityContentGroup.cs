@@ -43,7 +43,8 @@ namespace Anvil.Unity.Content
             Transform parent = vo.GameObjectRoot == null
                 ? contentManger.ContentRoot
                 : vo.GameObjectRoot;
-            ContentGroupRoot.SetParent(parent);
+            //TODO: https://app.clubhouse.io/scratchgames/story/125/test-is-removing-localscale-and-or-localrotation-makes-a-difference
+            ContentGroupRoot.SetParent(parent, false);
             ContentGroupRoot.localPosition = vo.LocalPosition;
             ContentGroupRoot.localRotation = Quaternion.identity;
             ContentGroupRoot.localScale = Vector3.one;
@@ -53,9 +54,8 @@ namespace Anvil.Unity.Content
         {
             AbstractUnityContent content = (AbstractUnityContent)ActiveContentController.Content;
             Transform transform = content.transform;
-            transform.SetParent(ContentGroupRoot);
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.identity;
+            //TODO: https://app.clubhouse.io/scratchgames/story/125/test-is-removing-localscale-and-or-localrotation-makes-a-difference
+            transform.SetParent(ContentGroupRoot, false);
             transform.localScale = Vector3.one;
         }
     }
