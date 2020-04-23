@@ -9,7 +9,7 @@ namespace Anvil.UnityEditor.DelayedExecution
     /// </summary>
     public class UnityEditorUpdateSource : AbstractUpdateSource
     {
-        protected override void Init()
+        public UnityEditorUpdateSource()
         {
             EditorApplication.update += HandleEditorApplicationUpdate;
         }
