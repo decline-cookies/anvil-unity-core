@@ -28,16 +28,9 @@ namespace Anvil.Unity.Content
         /// </summary>
         public AbstractContentController Controller { get; internal set; }
 
-        private bool m_IsContentDisposing;
 
         protected override void DisposeSelf()
         {
-            if (m_IsContentDisposing)
-            {
-                return;
-            }
-            m_IsContentDisposing = true;
-            
             Controller?.Dispose();
             Controller = null;
 
