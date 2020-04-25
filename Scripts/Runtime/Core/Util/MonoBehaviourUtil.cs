@@ -1,11 +1,10 @@
-﻿using UnityEngine;
-using System;
-using System.Reflection;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Anvil.Unity.Attribute;
+using System.Reflection;
+using UnityEngine;
 
-namespace Anvil.Unity.Util
+namespace Anvil.Unity.Core
 {
     /// <summary>
     /// A collection of Utils to work with <see cref="MonoBehaviour"/>s
