@@ -5,8 +5,18 @@ using UnityEngine;
 
 namespace Anvil.Unity.DelayedExecution
 {
+    /// <summary>
+    /// Allows for calling a function after some amount of frames as calculated by number
+    /// of times a Unity OnUpdate or OnLateUpdate are called.
+    /// </summary>
     public class UnityFramesCallLaterHandle : AbstractCallLaterHandle
     {
+        /// <summary>
+        /// Convenience method for creation of a <see cref="UnityFramesCallLaterHandle"/>
+        /// </summary>
+        /// <param name="framesToWait">The amount of frames to wait before calling the function.</param>
+        /// <param name="callback">The function to call.</param>
+        /// <returns>The instance of the <see cref="UnityFramesCallLaterHandle"/></returns>
         public static UnityFramesCallLaterHandle Create(uint framesToWait, Action callback)
         {
             return new UnityFramesCallLaterHandle(framesToWait, callback);
