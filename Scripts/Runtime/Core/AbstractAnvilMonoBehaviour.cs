@@ -1,5 +1,4 @@
 ﻿using System;
-using Anvil.Unity.Util;
 using UnityEngine;
 
 namespace Anvil.Unity.Core
@@ -8,7 +7,7 @@ namespace Anvil.Unity.Core
     /// The base class for any <see cref="MonoBehaviour"/> in the Anvil Framework
     /// Provides nice linking between the <see cref="GameObject"/> and this class so that if one is Destroyed/Disposed,
     /// the other is as well. This prevents lingering GameObjects in the Unity Hierarchy or classes that have had
-    /// their GameObject's destroyed.
+    /// their GameObjects destroyed.
     /// </summary>
     public abstract class AbstractAnvilMonoBehaviour : MonoBehaviour, IDisposable
     {
