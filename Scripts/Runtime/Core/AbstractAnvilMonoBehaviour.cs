@@ -1,4 +1,5 @@
 ﻿using System;
+using Anvil.CSharp.Core;
 using UnityEngine;
 
 namespace Anvil.Unity.Core
@@ -9,18 +10,15 @@ namespace Anvil.Unity.Core
     /// the other is as well. This prevents lingering GameObjects in the Unity Hierarchy or classes that have had
     /// their GameObjects destroyed.
     /// </summary>
-    public abstract class AbstractAnvilMonoBehaviour : MonoBehaviour, IDisposable
+    public abstract class AbstractAnvilMonoBehaviour : MonoBehaviour, IAnvilDisposable
     {
         /// <summary>
-        /// Allows an instance to be queried to know if <see cref="Dispose"/> has been called yet or not and if
-        /// the instance has been completely disposed. All <see cref="DisposeSelf"/> functions down the inheritance
-        /// chain have been called.
+        /// <inheritdoc cref="IAnvilDisposable.IsDisposed"/>
         /// </summary>
         public bool IsDisposed { get; private set; }
         
         /// <summary>
-        /// Allows an instance to be queried to know if <see cref="Dispose"/> has been called yet or not and if
-        /// the instance is currently disposing.
+        /// <inheritdoc cref="IAnvilDisposable.IsDisposing"/>
         /// </summary>
         public bool IsDisposing { get; private set; }
 

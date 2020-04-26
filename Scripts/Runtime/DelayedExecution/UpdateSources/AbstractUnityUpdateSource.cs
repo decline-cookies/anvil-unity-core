@@ -11,6 +11,7 @@ namespace Anvil.Unity.DelayedExecution
     public abstract class AbstractUnityUpdateSource<T> : AbstractUpdateSource where T:AbstractUnityUpdateSourceMonoBehaviour
     {
         private GameObject m_UpdateSourceGameObject;
+        
         protected AbstractUnityUpdateSource()
         {
             m_UpdateSourceGameObject = new GameObject($"[UpdateSource - {typeof(T)}]");
@@ -27,6 +28,7 @@ namespace Anvil.Unity.DelayedExecution
                 GameObject.Destroy(m_UpdateSourceGameObject);
                 m_UpdateSourceGameObject = null;
             }
+            
             base.DisposeSelf();
         }
     }
