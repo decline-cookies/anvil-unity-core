@@ -10,13 +10,24 @@ namespace Anvil.Unity.DelayedExecution
     /// <see cref="AbstractUnityUpdateSourceMonoBehaviour"/></typeparam>
     public abstract class AbstractUnityUpdateSource<T> : AbstractUpdateSource where T:AbstractUnityUpdateSourceMonoBehaviour
     {
+        private GameObject m_UpdateSourceGameObject;
         protected AbstractUnityUpdateSource()
         {
-            GameObject gameObject = new GameObject($"[UpdateSource - {typeof(T)}]");
-            GameObject.DontDestroyOnLoad(gameObject);
-            gameObject.transform.SetParent(UnityUpdateSourceGameObjectManager.UpdateSourceRoot);
-            T updateSource = gameObject.AddComponent<T>();
+            m_UpdateSourceGameObject = new GameObject($"[UpdateSource - {typeof(T)}]");
+            GameObject.DontDestroyOnLoad(m_UpdateSourceGameObject);
+            m_UpdateSourceGameObject.transform.SetParent(UnityUpdateSourceGameObjectManager.UpdateSourceRoot);
+            T updateSource = m_UpdateSourceGameObject.AddComponent<T>();
             updateSource.SetOnUpdateDispatchFunction(DispatchOnUpdateEvent);
+        }
+
+        protected override void DisposeSelf()
+        {
+            if (m_UpdateSourceGameObject != null)
+            {
+                GameObject.Destroy(m_UpdateSourceGameObject);
+                m_UpdateSourceGameObject = null;
+            }
+            base.DisposeSelf();
         }
     }
     
