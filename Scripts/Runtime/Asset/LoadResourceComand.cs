@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Anvil.Unity.Asset
 {
     /// <summary>
-    /// Asyncronously loads a resource and provides convenience methods for instantiating.
+    /// Asynchronous loads a resource and provides convenience methods for instantiating.
     /// </summary>
     /// <typeparam name="T">The type of resource to load/instantiate</typeparam>
     public class LoadResourceCommand<T> : AbstractCommand where T : UnityEngine.Object
