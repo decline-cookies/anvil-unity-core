@@ -4,11 +4,19 @@ using UnityEngine;
 
 namespace Anvil.Unity.Asset
 {
+    /// <summary>
+    /// Asyncronously loads a resource and provides convenience methods for instantiating.
+    /// </summary>
+    /// <typeparam name="T">The type of resource to load/instantiate</typeparam>
     public class LoadResourceCommand<T> : AbstractCommand where T : UnityEngine.Object
     {
         private readonly string m_Path;
         private ResourceRequest m_ResourceRequest;
 
+        /// <summary>
+        /// Get reference to the source resource.
+        /// NOTE: Manipulating this will change the source file in the project!
+        /// </summary>
         public T Resource
         {
             get
@@ -22,6 +30,11 @@ namespace Anvil.Unity.Asset
             }
         }
 
+        /// <summary>
+        /// Creates an instance of <see cref="LoadResourceCommand{T}"/>
+        /// </summary>
+        /// <param name="path">The path to the resource to load</param>
+        /// <exception cref="ArgumentException">Thrown for null or empty resource paths</exception>
         public LoadResourceCommand(string path) : base()
         {
             if (string.IsNullOrEmpty(path))
@@ -51,6 +64,11 @@ namespace Anvil.Unity.Asset
             CompleteCommand();
         }
 
+        /// <summary>
+        /// Creates a new instance of the loaded resource
+        /// </summary>
+        /// <returns>An instance of the loaded resource of type <see cref="{T}"/></returns>
+        /// <exception cref="Exception">Thrown if called before the command is Complete</exception>
         public T CreateInstance()
         {
             if (State != CommandState.Completed)
