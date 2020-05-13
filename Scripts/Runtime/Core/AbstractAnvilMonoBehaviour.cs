@@ -1,4 +1,5 @@
 ﻿using System;
+using Anvil.CSharp.Core;
 using UnityEngine;
 
 namespace Anvil.Unity.Core
@@ -9,17 +10,17 @@ namespace Anvil.Unity.Core
     /// the other is as well. This prevents lingering GameObjects in the Unity Hierarchy or classes that have had
     /// their GameObjects destroyed.
     /// </summary>
-    public abstract class AbstractAnvilMonoBehaviour : MonoBehaviour, IDisposable
+    public abstract class AbstractAnvilMonoBehaviour : MonoBehaviour, IAnvilDisposable
     {
         /// <summary>
-        /// Allows an instance to be queried to know if <see cref="Dispose"/> has been called yet or not.
+        /// <inheritdoc cref="IAnvilDisposable.IsDisposed"/>
         /// </summary>
         public bool IsDisposed { get; private set; }
         
         /// <summary>
-        /// Allows an instance to be queried to know if its <see cref="GameObject"/> has been destroyed or not.
+        /// <inheritdoc cref="IAnvilDisposable.IsDisposing"/>
         /// </summary>
-        public bool IsGameObjectDestroyed { get; private set; }
+        public bool IsDisposing { get; private set; }
 
         protected virtual void Awake()
         {
@@ -30,34 +31,31 @@ namespace Anvil.Unity.Core
         
         /// <summary>
         /// <inheritdoc cref="IDisposable.Dispose"/>
-        /// Will early return if <see cref="IsDisposed"/> is true.
+        /// Will early return if <see cref="IsDisposed"/> or <see cref="IsDisposing"/> is true.
         /// Calls the virtual method <see cref="DisposeSelf"/> for inherited classes to override.
         /// Will Destroy the attached <see cref="GameObject"/> if it has not been destroyed yet.
         /// </summary>
         public void Dispose()
         {
-            if (IsDisposed)
+            if (IsDisposing || IsDisposed)
             {
                 return;
             }
 
-            IsDisposed = true;
+            IsDisposing = true;
             DisposeSelf();
-
-            if (IsGameObjectDestroyed)
-            {
-                return;
-            }
             Destroy(gameObject);
+            IsDisposing = false;
+            IsDisposed = true;
         }
         
         private void OnDestroy()
         {
-            if (IsGameObjectDestroyed)
+            if (IsDisposing || IsDisposed)
             {
                 return;
             }
-            IsGameObjectDestroyed = true;
+            
             Dispose();
         }
         
