@@ -5,10 +5,10 @@ namespace Anvil.Unity.DelayedExecution
 {
     public static class UnityDeltaProviders
     {
-        public static DeltaFramesProvider Frames = () => 1;
-        public static DeltaTimeProvider DeltaTime = () => Time.deltaTime;
-        public static DeltaTimeProvider UnscaledDeltaTime = () => Time.unscaledDeltaTime;
-        public static DeltaTimeProvider FixedDeltaTime = () => Time.fixedDeltaTime;
-        public static DeltaTimeProvider UnscaledFixedDeltaTime = () => Time.fixedUnscaledDeltaTime;
+        public static readonly DeltaProvider Frames = () => 1;
+        public static readonly DeltaProvider DeltaTime = () => Time.deltaTime;
+        public static readonly DeltaProvider UnscaledDeltaTime = () => Time.unscaledDeltaTime;
+        public static readonly DeltaProvider FixedDeltaTime = () => Time.fixedDeltaTime;
+        public static readonly DeltaProvider UnscaledFixedDeltaTime = () => Time.fixedUnscaledDeltaTime;
     }
 }
