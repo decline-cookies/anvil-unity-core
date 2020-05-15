@@ -45,8 +45,8 @@ namespace Anvil.Unity.Content
             m_LoadResourceCommand.OnComplete += LoadResourceCommand_OnComplete;
             m_LoadResourceCommand.Execute();
         }
-        
-        private void LoadResourceCommand_OnComplete(AbstractCommand sender)
+
+        private void LoadResourceCommand_OnComplete(LoadResourceCommand<GameObject> sender)
         {
             GameObject instance = m_LoadResourceCommand.CreateInstance();
             //TODO: Properly sanitize the name with a Regex via util method
@@ -55,7 +55,7 @@ namespace Anvil.Unity.Content
             Content.Controller = this;
 
             m_LoadResourceCommand = null;
-            
+
             LoadComplete();
         }
     }

@@ -8,7 +8,7 @@ namespace Anvil.Unity.Asset
     /// Asynchronous loads a resource and provides convenience methods for instantiating.
     /// </summary>
     /// <typeparam name="T">The type of resource to load/instantiate</typeparam>
-    public class LoadResourceCommand<T> : AbstractCommand where T : UnityEngine.Object
+    public class LoadResourceCommand<T> : AbstractCommand<LoadResourceCommand<T>> where T : UnityEngine.Object
     {
         private readonly string m_Path;
         private ResourceRequest m_ResourceRequest;
