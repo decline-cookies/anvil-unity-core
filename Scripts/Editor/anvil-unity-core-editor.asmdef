@@ -1,7 +1,8 @@
 {
     "name": "anvil-unity-core-editor",
     "references": [
-        "anvil-csharp-core"
+        "anvil-csharp-core",
+        "anvil-unity-core-runtime"
     ],
     "includePlatforms": [
         "Editor"
