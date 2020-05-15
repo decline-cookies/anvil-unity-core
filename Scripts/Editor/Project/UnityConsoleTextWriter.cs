@@ -6,19 +6,25 @@ using UnityEngine;
 namespace Anvil.UnityEditor.Project
 {
     /// <summary>
-    /// Modification of Jack Dunstan's UnityTextWriter: https://jacksondunstan.com/articles/2986
-    /// This class simply outputs to Unity's <see cref="Debug.Log"/>
+    /// Simply outputs to Unity's <see cref="Debug.Log"/>
     /// </summary>
+    /// <remarks>Modification of Jack Dunstan's UnityTextWriter: https://jacksondunstan.com/articles/2986</remarks>
     public class UnityConsoleTextWriter : TextWriter
     {
         private readonly StringBuilder m_Buffer = new StringBuilder();
 
+        /// <summary>
+        /// <inheritdoc cref="TextWriter.Flush"/>
+        /// </summary>
         public override void Flush()
         {
             Debug.Log(m_Buffer.ToString());
             m_Buffer.Length = 0;
         }
 
+        /// <summary>
+        /// <inheritdoc cref="TextWriter.Write"/>
+        /// </summary>
         public override void Write(string value)
         {
             if (string.IsNullOrEmpty(value))
@@ -34,6 +40,9 @@ namespace Anvil.UnityEditor.Project
             }
         }
 
+        /// <summary>
+        /// <inheritdoc cref="TextWriter.Write"/>
+        /// </summary>
         public override void Write(char value)
         {
             m_Buffer.Append(value);
@@ -45,11 +54,17 @@ namespace Anvil.UnityEditor.Project
             }
         }
 
+        /// <summary>
+        /// <inheritdoc cref="TextWriter.Write"/>
+        /// </summary>
         public override void Write(char[] buffer, int index, int count)
         {
             Write(new string(buffer, index, count));
         }
 
+        /// <summary>
+        /// <inheritdoc cref="TextWriter.Encoding"/>
+        /// </summary>
         public override Encoding Encoding => Encoding.Default;
     }
 }
