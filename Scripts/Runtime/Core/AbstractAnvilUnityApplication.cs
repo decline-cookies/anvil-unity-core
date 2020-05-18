@@ -41,20 +41,20 @@ namespace Anvil.Unity.Core
         //Sealing to ensure inheriting classes can't override this behaviour
         protected sealed override void Awake()
         {
-            Application.quitting += HandleOnApplicationQuitting;
+            Application.quitting += Application_Quitting;
             InitDontDestroyOnLoadGameObjects();
             Init();
         }
 
         protected override void DisposeSelf()
         {
-            Application.quitting -= HandleOnApplicationQuitting;
+            Application.quitting -= Application_Quitting;
             OnAppPaused = null;
             OnAppResumed = null;
             OnAppGainedFocus = null;
             OnAppLostFocus = null;
             OnAppQuitting = null;
-            
+
             base.DisposeSelf();
         }
 
@@ -97,7 +97,7 @@ namespace Anvil.Unity.Core
             }
         }
 
-        private void HandleOnApplicationQuitting()
+        private void Application_Quitting()
         {
             OnAppQuitting?.Invoke();
         }
