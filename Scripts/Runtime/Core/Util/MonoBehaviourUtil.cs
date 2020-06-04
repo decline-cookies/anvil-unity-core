@@ -12,37 +12,50 @@ namespace Anvil.Unity.Core
     public static class MonoBehaviourUtil
     {
         /// <summary>
-        /// Logs errors for all editor exposed fields that are currently set to the type's default value
+        /// Logs errors for all editor exposed field reference types that haven't been set.
         /// </summary>
         /// <param name="target">The <see cref="MonoBehaviour"/> to analyse.</param>
-        public static void EnforceEditorExposedFieldsSet(MonoBehaviour target)
+        public static void EnforceEditorExposedFieldReferencesSet(MonoBehaviour target)
         {
             Type type = target.GetType();
             FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-            IEnumerable<FieldInfo> unsetSerializedFields = fields.Where(
+            
+            IEnumerable<FieldInfo> unsetSerializedFieldReferences = fields.Where(
                 (field) =>
-                    IsEditorExposedField(field)
-                    && !field.IsDefined(typeof(PermitDefaultValue))
-                    && field.GetValue(target) == field.FieldType.CreateDefaultValue()
+                    IsEditorExposedReferenceField(field)
+                    && !field.IsDefined(typeof(PermitUnsetReference))
+                    && IsNullOrUnityNull(field.GetValue(target))
                 );
 
-            foreach (FieldInfo field in unsetSerializedFields)
+            foreach (FieldInfo field in unsetSerializedFieldReferences)
             {
-                Debug.LogError($"[{type.Name}] An editor exposed field is set to its default value. Either set a value or mark the field exempt with [PermitDefault] attribute. Field: {type.Name}.{field.Name}, Value: {field.GetValue(target)}", target);
+                Debug.LogError($"[{type.Name}] An editor exposed field reference has not been set and is currently null. Either set it or mark the field exempt with [{nameof(PermitUnsetReference)}] attribute. GameObject: {target.gameObject.name} Field: {type.Name}.{field.Name}", target);
             }
         }
 
         /// <summary>
-        /// Returns true if a field is exposed by the UnityEditor's default inspector and property drawers
+        /// Returns true if the provided field is an exposed reference in the UnityEditor's default inspector and property drawers
         /// </summary>
         /// <param name="field">The field to evaluate</param>
-        /// <returns>true if field is exposed by the UnityEditor's default inspector and property drawers</returns>
-        public static bool IsEditorExposedField(FieldInfo field)
+        /// <returns>true if the provided field is an exposed reference in the UnityEditor's default inspector and property drawers</returns>
+        private static bool IsEditorExposedReferenceField(FieldInfo field)
         {
-            return field.IsPublic
-                || field.IsDefined(typeof(SerializeField));
+            return (field.IsPublic || field.IsDefined(typeof(SerializeField)))
+                   && field.FieldType.IsSubclassOf(typeof(UnityEngine.Object));
+        }
+
+        /// <summary>
+        /// Returns true if the object provided is null or has been set by Unity to the placeholder null object
+        /// </summary>
+        /// <remarks>
+        /// https://answers.unity.com/questions/939119/using-reflection-sometimes-a-field-is-null-and-som.html
+        /// </remarks>
+
+        /// <param name="obj">The object to evaluate</param>
+        /// <returns>true if the object provided is null or set to the Unity placeholder null object.</returns>
+        private static bool IsNullOrUnityNull(object obj)
+        {
+            return obj == null || obj.Equals(null);
         }
     }
 }
-
