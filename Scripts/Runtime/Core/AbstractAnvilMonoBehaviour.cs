@@ -25,7 +25,7 @@ namespace Anvil.Unity.Core
         protected virtual void Awake()
         {
 #if DEBUG
-            MonoBehaviourUtil.EnforceEditorExposedFieldsSet(this);
+            MonoBehaviourUtil.EnforceEditorExposedFieldReferencesSet(this);
 #endif
         }
         
