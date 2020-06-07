@@ -1,65 +1,22 @@
 # anvil-unity-core
 
-Content Manager Quick Start
+Unity Core Library for Anvil
 
+# Project Setup
 
-Create a new instance of a Content Manager
+This project depends on [anvil-csharp-core](https://github.com/scratch-games/anvil-csharp-core) - a few setup steps are necessary to allow these libraries to communicate in Unity.
 
-ex: m_UIContentManager = new ContentManager("UI", UIRoot);
+When adding both libraries to your project (ex. by submodule), place the C# core library in its own folder, and create an Assembly Definition file called "anvil-csharp-core.asmdef" beside it. **Do not** place the Assembly Definition inside the C# core library or commit it to that repo, it is a Unity-specific asset.
 
-Takes in an ID for referencing later and a GameObject transform that will be the Root GameObject. You get access to this however you want. GameObject.FindWithTag or direct reference on a prefab, whatever.
+_Note: The Unity core library already contains the necessary Assembly Definitions, which will automatically find this new one by name._
 
-Next configure layers as you see fit. 
+Here is the recommended folder structure for this setup:
 
-ex. m_UIContentManager.CreateContentLayer(ContentLayerConfigVO.Create("VIEW", new Vector3(0.0f, 0.0f, 0.0f)))
-                	  .CreateContentLayer(ContentLayerConfigVO.Create("MODAL", new Vector3 (0.0f, 0.0f, -10.0f)));
+- Assets
+  - Anvil
+    - csharp
+      - anvil-csharp-core <- C# core library submodule
+      - anvil-csharp-core.asmdef <- Assembly Definition you create
+    - unity
+      - anvil-unity-core <- Unity core library submodule
 
-Layers have an ID that will show up in the GameObject hierarchy at the specified vector offset as a child of the Root GameObject you made your Content Manager with. 
-
-Then show your content:
-
-ex: m_UIContentManager.Show(new ViewMainController());
-
-Your Controller will extend AbstractContentController which will make you implement a bunch of abstract methods. Should look something like this:
-
-public class ViewMainController : AbstractContentController
-{
-    public ViewMainController()
-    {
-    }
-
-    protected override void DisposeSelf()
-    {
-        base.DisposeSelf();
-    }
-
-    protected override void InitConfigVO(ContentControllerConfigVO configVO)
-    {
-        configVO.ContentLayerID = "VIEW";
-        configVO.ContentLoadingID = "Content/View/ViewMain";
-    }
-
-    protected override void InitAfterLoadComplete()
-    {
-       
-    }
-
-    protected override void PlayIn()
-    {
-        PlayInComplete();
-    }
-
-    protected override void InitAfterPlayInComplete()
-    {
-        
-    }
-
-    protected override void PlayOut()
-    {
-        PlayOutComplete();
-    }
-}
-
-All content is assumed to be a prefab in Resources right now. 
-
-Lots of TODO's to change in Issues and cleanup but it and all the public API's work today.
