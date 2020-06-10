@@ -48,4 +48,3 @@ namespace Anvil.Unity.Data
         }
     }
 }
-

@@ -30,8 +30,8 @@ namespace Anvil.Unity.Data
         protected override bool DTCheckType<T>(Variant data, Type type, out T decodedData)
         {
             return base.DTCheckType(data, type, out decodedData)
-                || DTCheckVector2Int(data, type, out decodedData)
-                || DTCheckVector3Int(data, type, out decodedData);
+                   || DTCheckVector2Int(data, type, out decodedData)
+                   || DTCheckVector3Int(data, type, out decodedData);
         }
 
         private bool DTCheckVector2Int<T>(Variant data, Type type, out T decodedType)
@@ -61,4 +61,3 @@ namespace Anvil.Unity.Data
         }
     }
 }
-
