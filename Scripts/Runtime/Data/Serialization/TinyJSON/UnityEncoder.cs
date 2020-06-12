@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace Anvil.Unity.Data
 {
+    /// <summary>
+    /// Extension of <see cref="Encoder{TProxyArray,TProxyBoolean,TProxyNumber,TProxyObject,TProxyString}"/> for
+    /// Unity specific encoding.
+    /// </summary>
     public class UnityEncoder : Encoder<ProxyArray, ProxyBoolean, ProxyNumber, ProxyObject, UnityProxyString>
     {
         protected override void EncodeValue(object value, bool forceTypeHint)

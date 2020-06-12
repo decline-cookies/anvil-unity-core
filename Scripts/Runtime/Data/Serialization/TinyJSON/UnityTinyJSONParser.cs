@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Anvil.Unity.Data
 {
+    /// <summary>
+    /// Extension of <see cref="TinyJSONParser{TEncoder,TDecoder}"/> to use Unity specific encode/decode logic.
+    /// </summary>
     public class UnityTinyJSONParser : TinyJSONParser<UnityEncoder, UnityDecoder>
     {
         [RuntimeInitializeOnLoadMethod]

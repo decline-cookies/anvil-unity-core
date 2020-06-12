@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Anvil.Unity.Data
 {
+    /// <summary>
+    /// Extension of <see cref="ProxyString"/> for Unity specific conversion.
+    /// </summary>
     public class UnityProxyString : ProxyString
     {
         public UnityProxyString(string value) : base(value)
