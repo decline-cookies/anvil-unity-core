@@ -16,7 +16,7 @@ namespace Anvil.Unity.Data
             JSON.OverrideParser(new UnityTinyJSONParser());
         }
 
-        public override int Priority { get; } = 1;
+        public override int Priority => 1;
 
         protected override bool DTCheckConvert<T>(Variant data, Type type, out T decodedData)
         {
