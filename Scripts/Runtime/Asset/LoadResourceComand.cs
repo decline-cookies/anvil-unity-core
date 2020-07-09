@@ -15,15 +15,16 @@ namespace Anvil.Unity.Asset
 
         /// <summary>
         /// Get reference to the source resource.
-        /// NOTE: Manipulating this will change the source file in the project!
+        /// NOTE: Manipulating this reference will change the source file in the project!
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the command is not <see cref="CommandState.Completed"/>.</exception>
         public T Resource
         {
             get
             {
                 if (State != CommandState.Completed)
                 {
-                    throw new Exception($"Tired to get {nameof(Resource)} on {this} but State was {State} instead of {CommandState.Completed}!");
+                    throw new InvalidOperationException($"Tried to get {nameof(Resource)} on {this} but State was {State} instead of {CommandState.Completed}!");
                 }
 
                 return (T)m_ResourceRequest.asset;
@@ -68,12 +69,12 @@ namespace Anvil.Unity.Asset
         /// Creates a new instance of the loaded resource
         /// </summary>
         /// <returns>An instance of the loaded resource of type <see cref="{T}"/></returns>
-        /// <exception cref="Exception">Thrown if called before the command is Complete</exception>
+        /// <exception cref="InvalidOperationException">Thrown if called before the command is <see cref="CommandState.Completed"/></exception>
         public T CreateInstance()
         {
             if (State != CommandState.Completed)
             {
-                throw new Exception($"Tired to call {nameof(CreateInstance)} on {this} but State was {State} instead of {CommandState.Completed}!");
+                throw new InvalidOperationException($"Tried to call {nameof(CreateInstance)} on {this} but State was {State} instead of {CommandState.Completed}!");
             }
 
             return (T)UnityEngine.Object.Instantiate(Resource);
