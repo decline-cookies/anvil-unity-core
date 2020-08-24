@@ -29,6 +29,7 @@ namespace Anvil.Unity.Content
             {
                 Object.Destroy(ContentRoot.gameObject);
             }
+            
             base.DisposeSelf();
         }
 
