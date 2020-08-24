@@ -12,7 +12,7 @@ namespace Anvil.Unity.Content
         /// A <see cref="Transform"/> that this Content Manager corresponds to in the Unity hierarchy
         /// </summary>
         public readonly Transform ContentRoot;
-        
+
         /// <summary>
         /// Constructs a new instance of a <see cref="UnityContentManager"/>
         /// </summary>
@@ -20,12 +20,16 @@ namespace Anvil.Unity.Content
         public UnityContentManager(Transform contentRoot) : base()
         {
             ContentRoot = contentRoot;
-            GameObject.DontDestroyOnLoad(ContentRoot);
+            Object.DontDestroyOnLoad(ContentRoot);
         }
 
         protected override void DisposeSelf()
         {
-            GameObject.Destroy(ContentRoot.gameObject);
+            if (ContentRoot != null)
+            {
+                Object.Destroy(ContentRoot.gameObject);
+            }
+            
             base.DisposeSelf();
         }
 
