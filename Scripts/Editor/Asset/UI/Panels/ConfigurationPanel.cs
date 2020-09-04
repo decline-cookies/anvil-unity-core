@@ -87,7 +87,7 @@ namespace Anvil.UnityEditor.Asset
 
             EditorGUILayout.Separator();
 
-            if (GUILayout.Button("New", EditorStyles.miniButton, GUILayout.Width(60)))
+            if (SmallButton("New"))
             {
                 m_PendingLibraryCreationPathVO = new LibraryCreationPathVO
                 {
@@ -110,7 +110,16 @@ namespace Anvil.UnityEditor.Asset
             EditorGUILayout.BeginHorizontal();
             if (pathVO.IsBeingEdited)
             {
-                pathVO.Name = EditorGUILayout.TextField("Name:", pathVO.Name, GUILayout.ExpandWidth(false), GUILayout.MinWidth(1));
+
+                bool shouldValidate = false;
+                bool shouldCancel = false;
+
+                pathVO.Name = KeyboardTextField("NameField",
+                                                "Name:",
+                                                pathVO.Name,
+                                                ref shouldValidate,
+                                                ref shouldCancel,
+                                                GUILayout.ExpandWidth(true));
                 //TODO: Move out
                 GUIStyle style = new GUIStyle(EditorStyles.label);
                 style.alignment = TextAnchor.MiddleRight;
@@ -118,10 +127,33 @@ namespace Anvil.UnityEditor.Asset
 
                 EditorGUILayout.LabelField("Path:", GUILayout.ExpandWidth(false), GUILayout.MinWidth(1));
                 EditorGUILayout.LabelField("Assets/", style, GUILayout.ExpandWidth(false), GUILayout.MinWidth(1));
-                pathVO.AssetsRelativePath = EditorGUILayout.TextField(pathVO.AssetsRelativePath, GUILayout.ExpandWidth(true));
 
-                if (GUILayout.Button("Done", EditorStyles.miniButton, GUILayout.Width(60)) || (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Return))
+                pathVO.AssetsRelativePath = KeyboardTextField("PathField",
+                                                string.Empty,
+                                                pathVO.AssetsRelativePath,
+                                                ref shouldValidate,
+                                                ref shouldCancel,
+                                                GUILayout.ExpandWidth(true));
+
+                if (SmallButton("Cancel"))
                 {
+                    shouldCancel = true;
+                }
+                if (SmallButton("Done"))
+                {
+                    shouldValidate = true;
+                }
+
+                if (shouldCancel)
+                {
+                    Debug.Log("CANCEL");
+                    pathVO.IsBeingEdited = false;
+                    m_PendingLibraryCreationPathVO = null;
+
+                }
+                else if (shouldValidate)
+                {
+                    Debug.Log("VALIDATE");
                     pathVO.IsBeingEdited = false;
                     if (pathVO == m_PendingLibraryCreationPathVO)
                     {
@@ -135,7 +167,7 @@ namespace Anvil.UnityEditor.Asset
             {
                 EditorGUILayout.LabelField($"Name: {pathVO.Name}");
                 EditorGUILayout.LabelField($"Path: Assets/{pathVO.AssetsRelativePath}");
-                if (GUILayout.Button("Edit", EditorStyles.miniButton, GUILayout.Width(60)))
+                if (SmallButton("Edit"))
                 {
                     pathVO.IsBeingEdited = true;
                 }
