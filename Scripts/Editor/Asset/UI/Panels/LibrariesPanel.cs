@@ -1,41 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace Anvil.UnityEditor.Asset
 {
-    public class AssetManagementWindow : EditorWindow
+    public class LibrariesPanel : AbstractAssetManagementEditorPanel
     {
-        private static readonly GUIContent s_TitleContent = new GUIContent("Anvil Asset Management");
-
-        [MenuItem("Anvil/AssetManagement/Open Asset Management Window", false, 0)]
-        private static void OpenAssetManagementWindow()
-        {
-            AssetManagementWindow window = GetWindow<AssetManagementWindow>();
-            window.Show();
-        }
-
+        private const string TAB_NAME = "Libraries";
 
         private EditorLibraryVO m_EditorLibraryVO;
 
         private string[] m_Options;
         private int m_Index;
 
-        private void OnEnable()
+        public override string TabName
         {
-            titleContent = s_TitleContent;
+            get => TAB_NAME;
+        }
+
+        public LibrariesPanel()
+        {
             m_Options = new []
-                        {
-                            "Assets",
-                            "SomeOtherLocationInner",
-                            "Test"
-                        };
+            {
+                "Assets",
+                "SomeOtherLocationInner",
+                "Test"
+            };
             m_Index = 0;
         }
 
-        private void OnGUI()
+        public override void Draw()
         {
+            base.Draw();
+
             EditorGUILayout.LabelField("Create New Libraries", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -109,8 +106,6 @@ namespace Anvil.UnityEditor.Asset
 
 
             EditorGUILayout.Separator();
-
-
         }
     }
 }
