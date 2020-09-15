@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Anvil.UnityEditor.IMGUI;
+using Anvil.UnityEditor.Util;
 using UnityEditor;
 using UnityEngine;
 
@@ -66,7 +69,7 @@ namespace Anvil.UnityEditor.Asset
 
             LibraryCreationPathVO defaultCreationPathVO = m_ConfigVO.LibraryCreationPaths[m_ConfigVO.DefaultLibraryCreationPathIndex];
 
-            EditorGUILayout.LabelField($"Path: Assets/{defaultCreationPathVO.AssetsRelativePath}");
+            EditorGUILayout.LabelField($"Path: Assets/{defaultCreationPathVO.Path.AssetsRelativePath}");
 
             EditorGUILayout.EndHorizontal();
 
@@ -110,69 +113,95 @@ namespace Anvil.UnityEditor.Asset
             EditorGUILayout.BeginHorizontal();
             if (pathVO.IsBeingEdited)
             {
-
-                bool shouldValidate = false;
-                bool shouldCancel = false;
-
-                pathVO.Name = KeyboardTextField("NameField",
-                                                "Name:",
-                                                pathVO.Name,
-                                                ref shouldValidate,
-                                                ref shouldCancel,
-                                                GUILayout.ExpandWidth(true));
-                //TODO: Move out
-                GUIStyle style = new GUIStyle(EditorStyles.label);
-                style.alignment = TextAnchor.MiddleRight;
-                //END TODO
-
-                EditorGUILayout.LabelField("Path:", GUILayout.ExpandWidth(false), GUILayout.MinWidth(1));
-                EditorGUILayout.LabelField("Assets/", style, GUILayout.ExpandWidth(false), GUILayout.MinWidth(1));
-
-                pathVO.AssetsRelativePath = KeyboardTextField("PathField",
-                                                string.Empty,
-                                                pathVO.AssetsRelativePath,
-                                                ref shouldValidate,
-                                                ref shouldCancel,
-                                                GUILayout.ExpandWidth(true));
-
-                if (SmallButton("Cancel"))
-                {
-                    shouldCancel = true;
-                }
-                if (SmallButton("Done"))
-                {
-                    shouldValidate = true;
-                }
-
-                if (shouldCancel)
-                {
-                    Debug.Log("CANCEL");
-                    pathVO.IsBeingEdited = false;
-                    m_PendingLibraryCreationPathVO = null;
-
-                }
-                else if (shouldValidate)
-                {
-                    Debug.Log("VALIDATE");
-                    pathVO.IsBeingEdited = false;
-                    if (pathVO == m_PendingLibraryCreationPathVO)
-                    {
-                        m_ConfigVO.LibraryCreationPaths.Add(pathVO);
-                        m_PendingLibraryCreationPathVO = null;
-                    }
-                    UpdateLibraryCreationPaths(m_ConfigVO.LibraryCreationPaths);
-                }
+                DrawLibraryCreationPathVOInEditMode(pathVO);
             }
             else
             {
-                EditorGUILayout.LabelField($"Name: {pathVO.Name}");
-                EditorGUILayout.LabelField($"Path: Assets/{pathVO.AssetsRelativePath}");
-                if (SmallButton("Edit"))
-                {
-                    pathVO.IsBeingEdited = true;
-                }
+                DrawLibraryCreationPathVOInViewMode(pathVO);
             }
             EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawLibraryCreationPathVOInEditMode(LibraryCreationPathVO pathVO)
+        {
+            bool shouldValidate = false;
+            bool shouldCancel = false;
+            bool shouldTab = false;
+
+            TightLabel("Name:", EditorStyles.boldLabel);
+            pathVO.Name = KeyboardTextField("NameField",
+                                            pathVO.Name,
+                                            ref shouldValidate,
+                                            ref shouldCancel,
+                                            ref shouldTab,
+                                            GUILayout.ExpandWidth(true));
+            FieldSpacer();
+
+
+            TightLabel("Path:", EditorStyles.boldLabel);
+            TightLabel("Assets/", AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
+            pathVO.Path.AssetsRelativePath = KeyboardTextField("PathField",
+                                                          pathVO.Path.AssetsRelativePath,
+                                                          ref shouldValidate,
+                                                          ref shouldCancel,
+                                                          ref shouldTab,
+                                                          GUILayout.ExpandWidth(true));
+            FieldSpacer();
+
+
+            if (SmallButton("Cancel"))
+            {
+                shouldCancel = true;
+            }
+
+            if (SmallButton("Done"))
+            {
+                shouldValidate = true;
+            }
+
+            if (shouldCancel)
+            {
+                Debug.Log("CANCEL");
+                pathVO.IsBeingEdited = false;
+                m_PendingLibraryCreationPathVO = null;
+
+            }
+            else if (shouldValidate)
+            {
+                Debug.Log("VALIDATE");
+                pathVO.IsBeingEdited = false;
+                if (pathVO == m_PendingLibraryCreationPathVO)
+                {
+                    m_ConfigVO.LibraryCreationPaths.Add(pathVO);
+                    m_PendingLibraryCreationPathVO = null;
+                }
+                UpdateLibraryCreationPaths(m_ConfigVO.LibraryCreationPaths);
+            }
+            else if (shouldTab)
+            {
+                Debug.Log($"TAB - Currently on {GUI.GetNameOfFocusedControl()}");
+
+                Debug.Log($"Next Name {GUI.GetNameOfFocusedControl()}");
+            }
+        }
+
+        private void DrawLibraryCreationPathVOInViewMode(LibraryCreationPathVO pathVO)
+        {
+            TightLabel("Name:", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(pathVO.Name, GUILayout.ExpandWidth(true));
+            FieldSpacer();
+
+            TightLabel("Path:", EditorStyles.boldLabel);
+            TightLabel($"Assets{Path.DirectorySeparatorChar}", AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
+            EditorGUILayout.LabelField(pathVO.Path.AssetsRelativePath, GUILayout.ExpandWidth(true));
+            FieldSpacer();
+
+            SmallButtonSpacer();
+
+            if (SmallButton("Edit"))
+            {
+                pathVO.IsBeingEdited = true;
+            }
         }
 
         private void UpdateLibraryCreationPaths(IEnumerable<LibraryCreationPathVO> libraryCreationPathVOs)

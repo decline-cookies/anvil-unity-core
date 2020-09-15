@@ -1,4 +1,5 @@
 ﻿using Anvil.CSharp.Data;
+using Anvil.UnityEditor.Data;
 using TinyJSON;
 
 namespace Anvil.UnityEditor.Asset
@@ -8,11 +9,11 @@ namespace Anvil.UnityEditor.Asset
         [Exclude] public bool IsBeingEdited;
 
         public string Name;
-        public string AssetsRelativePath;
+        public readonly EditorPathVO Path;
 
         public LibraryCreationPathVO()
         {
-
+            Path = new EditorPathVO();
         }
     }
 }
