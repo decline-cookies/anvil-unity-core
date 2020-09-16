@@ -8,9 +8,13 @@ namespace Anvil.UnityEditor.Asset
     {
         public abstract string TabName { get; }
 
+        private bool m_ShouldFocus;
+        private bool m_IsShouldFocusText;
+        private string m_ShouldFocusName;
+
         public virtual void Draw()
         {
-
+            FocusControlIfNeeded();
         }
 
         protected void Header(string header)
@@ -50,37 +54,59 @@ namespace Anvil.UnityEditor.Asset
             EditorGUILayout.LabelField(content, style, GUILayout.Width(size.x), GUILayout.ExpandWidth(false));
         }
 
-        protected string KeyboardTextField(string fieldName,
+        protected string KeyboardTextField(string controlName,
                                            string text,
                                            ref bool shouldValidate,
                                            ref bool shouldCancel,
-                                           ref bool shouldTab,
                                            params GUILayoutOption[] options)
         {
-            // GUI.SetNextControlName(fieldName);
+            GUI.SetNextControlName(controlName);
             string outputText = EditorGUILayout.TextField(text, options);
 
-            // Event evt = Event.current;
-            // if (evt.isKey && GUI.GetNameOfFocusedControl() == fieldName)
-            // {
-            //     switch (evt.keyCode)
-            //     {
-            //         case KeyCode.Return:
-            //         case KeyCode.KeypadEnter:
-            //             shouldValidate = true;
-            //             break;
-            //         case KeyCode.Escape:
-            //             shouldCancel = true;
-            //             break;
-            //         case KeyCode.Tab:
-            //             shouldTab = true;
-            //             break;
-            //     }
-            //
-            //     Event.current.Use();
-            // }
+            Event evt = Event.current;
+            if (evt.isKey && GUI.GetNameOfFocusedControl() == controlName)
+            {
+                switch (evt.keyCode)
+                {
+                    case KeyCode.Return:
+                    case KeyCode.KeypadEnter:
+                        shouldValidate = true;
+                        Event.current.Use();
+                        break;
+                    case KeyCode.Escape:
+                        shouldCancel = true;
+                        Event.current.Use();
+                        break;
+                }
+            }
 
             return outputText;
+        }
+
+        protected void FocusControl(string controlName, bool isText)
+        {
+            m_ShouldFocus = true;
+            m_ShouldFocusName = controlName;
+            m_IsShouldFocusText = isText;
+        }
+
+        private void FocusControlIfNeeded()
+        {
+            if (!m_ShouldFocus || Event.current.type != EventType.Repaint)
+            {
+                return;
+            }
+
+            if (m_IsShouldFocusText)
+            {
+                EditorGUI.FocusTextInControl(m_ShouldFocusName);
+            }
+            else
+            {
+                GUI.FocusControl(m_ShouldFocusName);
+            }
+
+            m_ShouldFocus = false;
         }
     }
 }

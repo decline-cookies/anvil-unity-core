@@ -6,23 +6,23 @@ namespace Anvil.UnityEditor.Data
 {
     public class EditorPathVO : AbstractAnvilVO
     {
-        [Include, EncodeName("Path")]
-        private string m_Path;
+        [Include, EncodeName("AssetsRelativePath")]
+        private string m_AssetsRelativePath;
 
         public EditorPathVO()
         {
-            m_Path = string.Empty;
+            m_AssetsRelativePath = string.Empty;
         }
 
         public string AssetsRelativePath
         {
-            get => m_Path;
-            set => m_Path = AnvilEditorUtil.ConvertPathToPlatform(value);
+            get => m_AssetsRelativePath;
+            set => m_AssetsRelativePath = AnvilEditorUtil.ConvertPathToPlatform(value);
         }
 
         public string ProjectRelativePath
         {
-            get => AnvilEditorUtil.ConvertAssetsRelativeToProjectRelativePath(m_Path);
+            get => AnvilEditorUtil.ConvertAssetsRelativeToProjectRelativePath(m_AssetsRelativePath);
             set
             {
                 string assetsRelativePath = AnvilEditorUtil.ConvertProjectRelativeToAssetsRelativePath(value);
@@ -32,7 +32,7 @@ namespace Anvil.UnityEditor.Data
 
         public string AbsolutePath
         {
-            get => AnvilEditorUtil.ConvertAssetsRelativeToAbsolutePath(m_Path);
+            get => AnvilEditorUtil.ConvertAssetsRelativeToAbsolutePath(m_AssetsRelativePath);
             set
             {
                 string assetsRelativePath = AnvilEditorUtil.ConvertAbsolutePathToAssetsRelativePath(value);
@@ -43,13 +43,13 @@ namespace Anvil.UnityEditor.Data
         [AfterDecode]
         private void UpdateAfterDecode()
         {
-            m_Path = AnvilEditorUtil.ConvertPathToPlatform(m_Path);
+            m_AssetsRelativePath = AnvilEditorUtil.ConvertPathToPlatform(m_AssetsRelativePath);
         }
 
         [BeforeEncode]
         private void UpdateBeforeEncode()
         {
-            m_Path = AnvilEditorUtil.ConvertPathToAssetDatabase(m_Path);
+            m_AssetsRelativePath = AnvilEditorUtil.ConvertPathToAssetDatabase(m_AssetsRelativePath);
         }
     }
 }

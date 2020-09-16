@@ -15,6 +15,12 @@ namespace Anvil.UnityEditor.Asset
         {
             Path = new EditorPathVO();
         }
+
+        public void CopyInto(LibraryCreationPathVO other)
+        {
+            other.Name = Name;
+            other.Path.AssetsRelativePath = Path.AssetsRelativePath;
+        }
     }
 }
 

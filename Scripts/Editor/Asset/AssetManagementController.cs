@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using Anvil.UnityEditor.Data;
+using Anvil.UnityEditor.Util;
+using UnityEditor;
 
 namespace Anvil.UnityEditor.Asset
 {
@@ -39,8 +41,7 @@ namespace Anvil.UnityEditor.Asset
             {
                 if (m_AssetManagementConfigVO == null)
                 {
-                    //TODO: Load from disk
-                    m_AssetManagementConfigVO = new AssetManagementConfigVO();
+                    m_AssetManagementConfigVO = AnvilEditorUtil.LoadVOFromDisk<AssetManagementConfigVO>(AnvilEditorAssetManagementConstants.PATH_ABSOLUTE_ASSET_MANAGEMENT_CONFIG_VO);
                 }
 
                 return m_AssetManagementConfigVO;
@@ -49,6 +50,11 @@ namespace Anvil.UnityEditor.Asset
 
         public AssetManagementController()
         {
+        }
+
+        public void SaveConfigVO()
+        {
+            AnvilEditorUtil.SaveVOToDisk(AssetManagementConfigVO, AnvilEditorAssetManagementConstants.PATH_ABSOLUTE_ASSET_MANAGEMENT_CONFIG_VO);
         }
     }
 }

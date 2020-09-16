@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using Anvil.UnityEditor.IMGUI;
-using Anvil.UnityEditor.Util;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,11 +10,19 @@ namespace Anvil.UnityEditor.Asset
     public class ConfigurationPanel : AbstractAssetManagementEditorPanel
     {
         private const string TAB_NAME = "Configuration";
+        private const int DEFAULT_INDEX = -1;
+        private const string CONTROL_NAME_NAME = "CN_NAME";
+        private const string CONTROL_NAME_PATH = "CN_PATH";
 
         private string[] m_LibraryCreationNames;
         private readonly AssetManagementConfigVO m_ConfigVO;
 
-        private LibraryCreationPathVO m_PendingLibraryCreationPathVO;
+        private LibraryCreationPathVO m_NewLibraryCreationPathVO;
+        private LibraryCreationPathVO m_EditLibraryCreationPathVO;
+        private readonly LibraryCreationPathVO m_StoredLibraryCreationPathVO;
+
+        private bool m_ShouldRemove;
+        private int m_ShouldRemoveIndex;
 
         public override string TabName
         {
@@ -24,14 +31,14 @@ namespace Anvil.UnityEditor.Asset
 
         public ConfigurationPanel()
         {
+            m_StoredLibraryCreationPathVO = new LibraryCreationPathVO();
+
             m_ConfigVO = AssetManagementController.Instance.AssetManagementConfigVO;
-            UpdateLibraryCreationPaths(m_ConfigVO.LibraryCreationPaths);
+            UpdateLibraryCreationNames(m_ConfigVO.LibraryCreationPaths);
         }
 
         public override void Draw()
         {
-            base.Draw();
-
             Header("Configure Asset Management System");
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -39,6 +46,8 @@ namespace Anvil.UnityEditor.Asset
             DrawLibraryCreationSection();
 
             EditorGUILayout.EndVertical();
+
+            base.Draw();
         }
 
         private void DrawLibraryCreationSection()
@@ -63,9 +72,14 @@ namespace Anvil.UnityEditor.Asset
 
             EditorGUILayout.BeginHorizontal();
 
+            EditorGUI.BeginChangeCheck();
             m_ConfigVO.DefaultLibraryCreationPathIndex = EditorGUILayout.Popup(m_ConfigVO.DefaultLibraryCreationPathIndex,
                                                                                m_LibraryCreationNames,
                                                                                GUILayout.Width(200));
+            if (EditorGUI.EndChangeCheck())
+            {
+                AssetManagementController.Instance.SaveConfigVO();
+            }
 
             LibraryCreationPathVO defaultCreationPathVO = m_ConfigVO.LibraryCreationPaths[m_ConfigVO.DefaultLibraryCreationPathIndex];
 
@@ -82,20 +96,34 @@ namespace Anvil.UnityEditor.Asset
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-            foreach (LibraryCreationPathVO pathVO in m_ConfigVO.LibraryCreationPaths)
+            for (int i = 0; i < m_ConfigVO.LibraryCreationPaths.Count; ++i)
             {
-                DrawLibraryCreationPathVO(pathVO);
+                DrawLibraryCreationPathVO(m_ConfigVO.LibraryCreationPaths[i], i);
             }
-            DrawLibraryCreationPathVO(m_PendingLibraryCreationPathVO);
+
+            if (m_ShouldRemove)
+            {
+                m_ConfigVO.LibraryCreationPaths.RemoveAt(m_ShouldRemoveIndex);
+                m_ShouldRemove = false;
+                AssetManagementController.Instance.SaveConfigVO();
+            }
+
+            DrawLibraryCreationPathVO(m_NewLibraryCreationPathVO, DEFAULT_INDEX);
 
             EditorGUILayout.Separator();
 
             if (SmallButton("New"))
             {
-                m_PendingLibraryCreationPathVO = new LibraryCreationPathVO
+                Cancel();
+
+                m_NewLibraryCreationPathVO = new LibraryCreationPathVO
                 {
-                    IsBeingEdited = true
+                    IsBeingEdited = true,
                 };
+
+                m_NewLibraryCreationPathVO.CopyInto(m_StoredLibraryCreationPathVO);
+
+                FocusControl($"{CONTROL_NAME_NAME}{DEFAULT_INDEX}", true);
             }
 
             EditorGUILayout.EndVertical();
@@ -103,7 +131,7 @@ namespace Anvil.UnityEditor.Asset
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawLibraryCreationPathVO(LibraryCreationPathVO pathVO)
+        private void DrawLibraryCreationPathVO(LibraryCreationPathVO pathVO, int index)
         {
             if (pathVO == null)
             {
@@ -113,41 +141,50 @@ namespace Anvil.UnityEditor.Asset
             EditorGUILayout.BeginHorizontal();
             if (pathVO.IsBeingEdited)
             {
-                DrawLibraryCreationPathVOInEditMode(pathVO);
+                DrawLibraryCreationPathVOInEditMode(pathVO, index);
             }
             else
             {
-                DrawLibraryCreationPathVOInViewMode(pathVO);
+                DrawLibraryCreationPathVOInViewMode(pathVO, index);
             }
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DrawLibraryCreationPathVOInEditMode(LibraryCreationPathVO pathVO)
+        private void DrawLibraryCreationPathVOInEditMode(LibraryCreationPathVO pathVO, int index)
         {
             bool shouldValidate = false;
             bool shouldCancel = false;
-            bool shouldTab = false;
 
             TightLabel("Name:", EditorStyles.boldLabel);
-            pathVO.Name = KeyboardTextField("NameField",
+            pathVO.Name = KeyboardTextField($"{CONTROL_NAME_NAME}{index}",
                                             pathVO.Name,
                                             ref shouldValidate,
                                             ref shouldCancel,
-                                            ref shouldTab,
                                             GUILayout.ExpandWidth(true));
             FieldSpacer();
 
 
             TightLabel("Path:", EditorStyles.boldLabel);
             TightLabel("Assets/", AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
-            pathVO.Path.AssetsRelativePath = KeyboardTextField("PathField",
+            pathVO.Path.AssetsRelativePath = KeyboardTextField($"{CONTROL_NAME_PATH}{index}",
                                                           pathVO.Path.AssetsRelativePath,
                                                           ref shouldValidate,
                                                           ref shouldCancel,
-                                                          ref shouldTab,
                                                           GUILayout.ExpandWidth(true));
             FieldSpacer();
 
+            if (index >= 0)
+            {
+                if (SmallButton("Remove"))
+                {
+                    m_ShouldRemove = true;
+                    m_ShouldRemoveIndex = index;
+                }
+            }
+            else
+            {
+                SmallButtonSpacer();
+            }
 
             if (SmallButton("Cancel"))
             {
@@ -161,31 +198,15 @@ namespace Anvil.UnityEditor.Asset
 
             if (shouldCancel)
             {
-                Debug.Log("CANCEL");
-                pathVO.IsBeingEdited = false;
-                m_PendingLibraryCreationPathVO = null;
-
+                Cancel();
             }
             else if (shouldValidate)
             {
-                Debug.Log("VALIDATE");
-                pathVO.IsBeingEdited = false;
-                if (pathVO == m_PendingLibraryCreationPathVO)
-                {
-                    m_ConfigVO.LibraryCreationPaths.Add(pathVO);
-                    m_PendingLibraryCreationPathVO = null;
-                }
-                UpdateLibraryCreationPaths(m_ConfigVO.LibraryCreationPaths);
-            }
-            else if (shouldTab)
-            {
-                Debug.Log($"TAB - Currently on {GUI.GetNameOfFocusedControl()}");
-
-                Debug.Log($"Next Name {GUI.GetNameOfFocusedControl()}");
+                Validate();
             }
         }
 
-        private void DrawLibraryCreationPathVOInViewMode(LibraryCreationPathVO pathVO)
+        private void DrawLibraryCreationPathVOInViewMode(LibraryCreationPathVO pathVO, int index)
         {
             TightLabel("Name:", EditorStyles.boldLabel);
             EditorGUILayout.LabelField(pathVO.Name, GUILayout.ExpandWidth(true));
@@ -197,18 +218,65 @@ namespace Anvil.UnityEditor.Asset
             FieldSpacer();
 
             SmallButtonSpacer();
+            SmallButtonSpacer();
 
             if (SmallButton("Edit"))
             {
-                pathVO.IsBeingEdited = true;
+                //Cancel if anything else was being edited
+                Cancel();
+
+                m_EditLibraryCreationPathVO = pathVO;
+                m_EditLibraryCreationPathVO.IsBeingEdited = true;
+
+                //Store old values in case we cancel
+                m_EditLibraryCreationPathVO.CopyInto(m_StoredLibraryCreationPathVO);
+
+                FocusControl($"{CONTROL_NAME_NAME}{index}", true);
             }
         }
 
-        private void UpdateLibraryCreationPaths(IEnumerable<LibraryCreationPathVO> libraryCreationPathVOs)
+        private void UpdateLibraryCreationNames(IEnumerable<LibraryCreationPathVO> libraryCreationPathVOs)
         {
             m_LibraryCreationNames = libraryCreationPathVOs.Select(o => o.Name)
                                                            .ToArray();
         }
+
+        private void Cancel()
+        {
+            m_NewLibraryCreationPathVO = null;
+
+            if (m_EditLibraryCreationPathVO == null)
+            {
+                return;
+            }
+
+            m_EditLibraryCreationPathVO.IsBeingEdited = false;
+            //Restore old values
+            m_StoredLibraryCreationPathVO.CopyInto(m_EditLibraryCreationPathVO);
+
+            m_EditLibraryCreationPathVO = null;
+        }
+
+        private void Validate()
+        {
+            if (m_NewLibraryCreationPathVO != null)
+            {
+                //TODO: Actually validate
+                m_ConfigVO.LibraryCreationPaths.Add(m_NewLibraryCreationPathVO);
+                m_NewLibraryCreationPathVO.IsBeingEdited = false;
+                m_NewLibraryCreationPathVO = null;
+            }
+            else if (m_EditLibraryCreationPathVO != null)
+            {
+                //TODO: Actually validate
+                m_EditLibraryCreationPathVO.IsBeingEdited = false;
+                m_EditLibraryCreationPathVO = null;
+            }
+
+            UpdateLibraryCreationNames(m_ConfigVO.LibraryCreationPaths);
+            AssetManagementController.Instance.SaveConfigVO();
+        }
+
     }
 }
 
