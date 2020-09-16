@@ -4,13 +4,23 @@ using UnityEngine;
 
 namespace Anvil.UnityEditor.Asset
 {
-    public abstract class AbstractAssetManagementEditorPanel
+    public abstract class AbstractAMEditorPanel
     {
         public abstract string TabName { get; }
 
         private bool m_ShouldFocus;
         private bool m_IsShouldFocusText;
         private string m_ShouldFocusName;
+
+        public virtual void Enable()
+        {
+
+        }
+
+        public virtual void Disable()
+        {
+
+        }
 
         public virtual void Draw()
         {

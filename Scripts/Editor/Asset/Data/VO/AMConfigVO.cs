@@ -3,12 +3,12 @@ using Anvil.CSharp.Data;
 
 namespace Anvil.UnityEditor.Asset
 {
-    public class AssetManagementConfigVO : AbstractAnvilVO
+    public class AMConfigVO : AbstractAnvilVO
     {
         public int DefaultLibraryCreationPathIndex;
         public readonly List<LibraryCreationPathVO> LibraryCreationPaths;
 
-        public AssetManagementConfigVO()
+        public AMConfigVO()
         {
             LibraryCreationPaths = new List<LibraryCreationPathVO>();
         }

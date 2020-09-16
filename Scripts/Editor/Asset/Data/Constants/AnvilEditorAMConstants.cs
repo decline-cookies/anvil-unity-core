@@ -2,7 +2,7 @@
 
 namespace Anvil.UnityEditor.Data
 {
-    public static class AnvilEditorAssetManagementConstants
+    public static class AnvilEditorAMConstants
     {
         public static readonly string FOLDER_ASSET_MANAGEMENT = $"AssetManagement{Path.DirectorySeparatorChar}";
 
@@ -13,6 +13,9 @@ namespace Anvil.UnityEditor.Data
 
         public static readonly string PATH_ABSOLUTE_ASSET_MANAGEMENT_CONFIG_VO = $"{AnvilEditorConstants.PATH_ABSOLUTE_TO_PROJECT}{AnvilEditorConstants.FOLDER_ANVIL}{FOLDER_ASSET_MANAGEMENT}{FILE_CONFIG}";
 
+
+        public const string KEYWORD_LIBRARY = "Library";
+        public const string KEYWORD_VARIANT = "Variant";
     }
 }
 

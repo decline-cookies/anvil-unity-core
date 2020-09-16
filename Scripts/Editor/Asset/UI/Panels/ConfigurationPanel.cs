@@ -7,15 +7,17 @@ using UnityEngine;
 
 namespace Anvil.UnityEditor.Asset
 {
-    public class ConfigurationPanel : AbstractAssetManagementEditorPanel
+    public class ConfigurationPanel : AbstractAMEditorPanel
     {
+        //TODO: Abstract a bunch of the common functionality
+
         private const string TAB_NAME = "Configuration";
         private const int DEFAULT_INDEX = -1;
         private const string CONTROL_NAME_NAME = "CN_NAME";
         private const string CONTROL_NAME_PATH = "CN_PATH";
 
         private string[] m_LibraryCreationNames;
-        private readonly AssetManagementConfigVO m_ConfigVO;
+        private readonly AMConfigVO m_ConfigVO;
 
         private LibraryCreationPathVO m_NewLibraryCreationPathVO;
         private LibraryCreationPathVO m_EditLibraryCreationPathVO;
@@ -33,8 +35,13 @@ namespace Anvil.UnityEditor.Asset
         {
             m_StoredLibraryCreationPathVO = new LibraryCreationPathVO();
 
-            m_ConfigVO = AssetManagementController.Instance.AssetManagementConfigVO;
+            m_ConfigVO = AMController.Instance.AMConfigVO;
             UpdateLibraryCreationNames(m_ConfigVO.LibraryCreationPaths);
+        }
+
+        public override void Enable()
+        {
+            base.Enable();
         }
 
         public override void Draw()
@@ -58,6 +65,8 @@ namespace Anvil.UnityEditor.Asset
 
             DrawDefaultLibraryCreationPath();
             DrawLibraryCreationPaths();
+
+            EditorGUILayout.EndVertical();
         }
 
         private void DrawDefaultLibraryCreationPath()
@@ -78,7 +87,7 @@ namespace Anvil.UnityEditor.Asset
                                                                                GUILayout.Width(200));
             if (EditorGUI.EndChangeCheck())
             {
-                AssetManagementController.Instance.SaveConfigVO();
+                AMController.Instance.SaveConfigVO();
             }
 
             LibraryCreationPathVO defaultCreationPathVO = m_ConfigVO.LibraryCreationPaths[m_ConfigVO.DefaultLibraryCreationPathIndex];
@@ -105,7 +114,7 @@ namespace Anvil.UnityEditor.Asset
             {
                 m_ConfigVO.LibraryCreationPaths.RemoveAt(m_ShouldRemoveIndex);
                 m_ShouldRemove = false;
-                AssetManagementController.Instance.SaveConfigVO();
+                AMController.Instance.SaveConfigVO();
             }
 
             DrawLibraryCreationPathVO(m_NewLibraryCreationPathVO, DEFAULT_INDEX);
@@ -125,8 +134,6 @@ namespace Anvil.UnityEditor.Asset
 
                 FocusControl($"{CONTROL_NAME_NAME}{DEFAULT_INDEX}", true);
             }
-
-            EditorGUILayout.EndVertical();
 
             EditorGUILayout.EndVertical();
         }
@@ -274,7 +281,7 @@ namespace Anvil.UnityEditor.Asset
             }
 
             UpdateLibraryCreationNames(m_ConfigVO.LibraryCreationPaths);
-            AssetManagementController.Instance.SaveConfigVO();
+            AMController.Instance.SaveConfigVO();
         }
 
     }

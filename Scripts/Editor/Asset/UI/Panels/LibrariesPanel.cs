@@ -1,17 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Anvil.UnityEditor.Data;
+using Anvil.UnityEditor.IMGUI;
+using Anvil.UnityEditor.Util;
 using UnityEditor;
 using UnityEngine;
 
 namespace Anvil.UnityEditor.Asset
 {
-    public class LibrariesPanel : AbstractAssetManagementEditorPanel
+    public class LibrariesPanel : AbstractAMEditorPanel
     {
         private const string TAB_NAME = "Libraries";
 
+
+        private readonly AMConfigVO m_ConfigVO;
+
         private EditorLibraryVO m_EditorLibraryVO;
 
-        private string[] m_Options;
-        private int m_Index;
+
+        private string[] m_Locations;
+        private int m_LocationIndex;
 
         public override string TabName
         {
@@ -20,42 +28,49 @@ namespace Anvil.UnityEditor.Asset
 
         public LibrariesPanel()
         {
-            m_Options = new []
-            {
-                "Assets",
-                "SomeOtherLocationInner",
-                "Test"
-            };
-            m_Index = 0;
+            m_ConfigVO = AMController.Instance.AMConfigVO;
+        }
+
+        public override void Enable()
+        {
+            m_Locations = m_ConfigVO.LibraryCreationPaths
+                                    .Select(o => $"{o.Name} - ({AnvilEditorUtil.ConvertToEditorSafeSlash(o.Path.AssetsRelativePath)})")
+                                    .ToArray();
+            m_LocationIndex = m_ConfigVO.DefaultLibraryCreationPathIndex;
+
+            base.Enable();
         }
 
         public override void Draw()
         {
-            base.Draw();
-
-            EditorGUILayout.LabelField("Create New Libraries", EditorStyles.boldLabel);
+            Header("Create New Libraries");
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
             if (m_EditorLibraryVO == null)
             {
-                if (GUILayout.Button("Create", GUILayout.Width(100)))
+                EditorGUILayout.HelpBox("No Libraries, please create some.", MessageType.Warning);
+                if (SmallButton("New"))
                 {
                     m_EditorLibraryVO = new EditorLibraryVO();
                 }
             }
             else
             {
-                EditorGUILayout.LabelField("New Library", EditorStyles.boldLabel);
+                Header("New Library");
 
                 //TODO: Location
-                m_Index = EditorGUILayout.Popup("Location:", m_Index, m_Options);
+                m_LocationIndex = EditorGUILayout.Popup("Location:", m_LocationIndex, m_Locations);
 
                 EditorGUILayout.BeginHorizontal();
-                m_EditorLibraryVO.Name = EditorGUILayout.TextField("Library Name:", m_EditorLibraryVO.Name, GUILayout.ExpandWidth(true));
+                EditorGUILayout.LabelField("Library Name:", GUILayout.MaxWidth(150));
+                TightLabel(AnvilEditorAMConstants.KEYWORD_LIBRARY, AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
+                m_EditorLibraryVO.Name = EditorGUILayout.TextField(m_EditorLibraryVO.Name, GUILayout.ExpandWidth(true));
                 EditorGUILayout.EndHorizontal();
 
-                EditorGUILayout.LabelField("Variants", EditorStyles.boldLabel);
+                FieldSpacer();
+
+                Header("Variants");
 
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
@@ -64,8 +79,10 @@ namespace Anvil.UnityEditor.Asset
                 foreach (EditorLibraryVariantVO variantVO in m_EditorLibraryVO.Variants)
                 {
                     EditorGUILayout.BeginHorizontal();
-                    variantVO.Name = EditorGUILayout.TextField("Variant Name:", variantVO.Name, GUILayout.ExpandWidth(true));
-                    if (GUILayout.Button("Remove", EditorStyles.miniButton, GUILayout.Width(60)))
+                    EditorGUILayout.LabelField("Variant Name:", GUILayout.MaxWidth(150));
+                    TightLabel(AnvilEditorAMConstants.KEYWORD_VARIANT, AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
+                    variantVO.Name = EditorGUILayout.TextField(variantVO.Name, GUILayout.ExpandWidth(true));
+                    if (SmallButton("Remove"))
                     {
                         toBeRemoved.Add(variantVO);
                     }
@@ -78,7 +95,7 @@ namespace Anvil.UnityEditor.Asset
                 }
                 toBeRemoved.Clear();
 
-                if (GUILayout.Button("New", EditorStyles.miniButton, GUILayout.Width(60)))
+                if (SmallButton("New"))
                 {
                     m_EditorLibraryVO.Variants.Add(new EditorLibraryVariantVO());
                 }
@@ -90,11 +107,11 @@ namespace Anvil.UnityEditor.Asset
 
 
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Cancel", GUILayout.Width(100)))
+                if (SmallButton("Cancel"))
                 {
                     m_EditorLibraryVO = null;
                 }
-                if (GUILayout.Button("Save", GUILayout.Width(100)))
+                if (SmallButton("Save"))
                 {
                     //TODO: Actually save it
                     m_EditorLibraryVO = null;
@@ -104,8 +121,9 @@ namespace Anvil.UnityEditor.Asset
 
             EditorGUILayout.EndVertical();
 
-
             EditorGUILayout.Separator();
+
+            base.Draw();
         }
     }
 }

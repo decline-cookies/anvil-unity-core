@@ -36,6 +36,11 @@ namespace Anvil.UnityEditor.Util
             return absolutePath.Replace(AnvilEditorConstants.PATH_ABSOLUTE_TO_ASSETS, string.Empty);
         }
 
+        public static string ConvertToEditorSafeSlash(string input)
+        {
+            return input.Replace('/', '\u2215');
+        }
+
         public static void SaveVOToDisk<T>(T vo, string absolutePath)
             where T : AbstractAnvilVO
         {
