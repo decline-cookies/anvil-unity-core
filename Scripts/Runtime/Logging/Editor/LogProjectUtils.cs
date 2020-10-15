@@ -22,10 +22,16 @@ namespace Anvil.Unity.Logging
         private static readonly string UNITY_SOLUTION_PATH;
         private static readonly string UNITY_CORE_ASSEMBLY_PATH;
 
+#if UNITY_EDITOR_WIN
+        private const string EDITOR_ASSEMBLY_PATH = @"Data\Managed\UnityEngine\UnityEngine.CoreModule.dll";
+#elif UNITY_EDITOR_OSX
+        private const string EDITOR_ASSEMBLY_PATH = @"Unity.app/Contents/Managed/UnityEngine/UnityEngine.CoreModule.dll";
+#endif
+
         static LogProjectUtils()
         {
             string unityRootPath = Path.GetDirectoryName(EditorApplication.applicationPath) ?? string.Empty;
-            UNITY_CORE_ASSEMBLY_PATH = Path.Combine(unityRootPath, @"Data\Managed\UnityEngine\UnityEngine.CoreModule.dll");
+            UNITY_CORE_ASSEMBLY_PATH = Path.Combine(unityRootPath, EDITOR_ASSEMBLY_PATH);
 
             FindAssemblyPaths(CSHARP_ASSEMBLY_NAME, out CSHARP_ASSEMBLY_PATH, out CSHARP_SOLUTION_PATH);
             FindAssemblyPaths(UNITY_ASSEMBLY_NAME, out string _, out UNITY_SOLUTION_PATH);
