@@ -5,11 +5,9 @@ using ILogHandler = Anvil.CSharp.Logging.ILogHandler;
 
 namespace Anvil.Unity.Logging
 {
+    [DefaultLogHandler(priority: 10)]
     public class UnityLogHandler : ILogHandler
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
-        private static void RegisterDefaultLogHandler() => Log.OverrideDefaultHandler(new UnityLogHandler());
-
         public void HandleLog(LogLevel level, string message)
         {
             switch (level)
