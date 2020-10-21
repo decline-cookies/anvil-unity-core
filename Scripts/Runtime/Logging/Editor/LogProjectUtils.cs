@@ -54,13 +54,13 @@ namespace Anvil.Unity.Logging
         }
 
         [MenuItem("Anvil/Logging/Open C# Project")]
-        private static void OpenCSharpProject() => Application.OpenURL(CSHARP_SOLUTION_PATH);
+        private static void OpenCSharpProject() => Application.OpenURL(GetFileURL(CSHARP_SOLUTION_PATH));
 
         [MenuItem("Anvil/Logging/Open Unity Project")]
         private static void OpenUnityProject()
         {
             UpdateUnityProjectReferences();
-            Application.OpenURL(UNITY_SOLUTION_PATH);
+            Application.OpenURL(GetFileURL(UNITY_SOLUTION_PATH));
         }
 
         private static void UpdateUnityProjectReferences()
@@ -94,5 +94,7 @@ namespace Anvil.Unity.Logging
                 return null;
             }
         }
+
+        private static string GetFileURL(string path) => $"file://{path}";
     }
 }
