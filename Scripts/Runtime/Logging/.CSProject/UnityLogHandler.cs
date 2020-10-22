@@ -5,9 +5,14 @@ using ILogHandler = Anvil.CSharp.Logging.ILogHandler;
 
 namespace Anvil.Unity.Logging
 {
-    [DefaultLogHandler(priority: 10)]
+    /// <summary>
+    /// Forwards logs to UnityEngine.Debug.
+    /// </summary>
+    [DefaultLogHandler(PRIORITY)]
     public class UnityLogHandler : ILogHandler
     {
+        public const int PRIORITY = ConsoleLogHandler.PRIORITY + 10;
+
         public void HandleLog(LogLevel level, string message)
         {
             switch (level)

@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace Anvil.Unity.Logging
 {
+    /// <summary>
+    /// Editor tools to ease working on the <see cref="Log"/> C# and Unity projects.
+    /// </summary>
     [InitializeOnLoad]
     public static class LogProjectUtils
     {
