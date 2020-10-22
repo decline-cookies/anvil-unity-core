@@ -14,6 +14,16 @@ namespace Anvil.Unity.Logging
     [InitializeOnLoad]
     public static class LogProjectUtils
     {
+        private const string EXT_DLL = ".dll";
+        private const string EXT_SLN = ".sln";
+        private const string EXT_CSPROJ = ".csproj";
+
+        private const string CSPROJ_NODE_NAME_REFERENCE = "Reference";
+        private const string CSPROJ_ATTRIBUTE_NAME_INCLUDE = "Include";
+        private const string CSPROJ_NODE_NAME_HINT_PATH = "HintPath";
+
+        private const string FILE_URL_PREFIX = "file://";
+
         private const string PROJECT_FOLDER_NAME = ".CSProject";
 
         private static readonly string CSHARP_ASSEMBLY_NAME = typeof(Log).Namespace;
@@ -43,7 +53,7 @@ namespace Anvil.Unity.Logging
             {
                 assemblyPath = AssetDatabase.FindAssets(assemblyName)
                     .Select(AssetDatabase.GUIDToAssetPath)
-                    .SingleOrDefault(p => Path.GetExtension(p) == ".dll");
+                    .SingleOrDefault(p => Path.GetExtension(p) == EXT_DLL);
 
                 string rootPath = Path.GetDirectoryName(assemblyPath);
 
@@ -52,7 +62,7 @@ namespace Anvil.Unity.Logging
                     throw new Exception($"Failed to find path for {assemblyName}");
                 }
 
-                projectPath = Path.Combine(Path.GetFullPath(rootPath), PROJECT_FOLDER_NAME, $"{assemblyName}.sln");
+                projectPath = Path.Combine(Path.GetFullPath(rootPath), PROJECT_FOLDER_NAME, $"{assemblyName}{EXT_SLN}");
             }
         }
 
@@ -68,7 +78,7 @@ namespace Anvil.Unity.Logging
 
         private static void UpdateUnityProjectReferences()
         {
-            string projectPath = Path.ChangeExtension(UNITY_SOLUTION_PATH, ".csproj") ?? string.Empty;
+            string projectPath = Path.ChangeExtension(UNITY_SOLUTION_PATH, EXT_CSPROJ) ?? string.Empty;
 
             XmlDocument document = new XmlDocument();
             document.Load(projectPath);
@@ -78,10 +88,10 @@ namespace Anvil.Unity.Logging
 
             XmlNode FindReferenceNode(XmlNode parent, string assemblyName)
             {
-                if (parent.Name == "Reference" && parent.Attributes != null &&
-                    parent.Attributes["Include"].Value.Contains(assemblyName))
+                if (parent.Name == CSPROJ_NODE_NAME_REFERENCE && parent.Attributes != null &&
+                    parent.Attributes[CSPROJ_ATTRIBUTE_NAME_INCLUDE].Value.Contains(assemblyName))
                 {
-                    return parent["HintPath"];
+                    return parent[CSPROJ_NODE_NAME_HINT_PATH];
                 }
 
                 foreach (XmlNode child in parent.ChildNodes)
@@ -98,6 +108,6 @@ namespace Anvil.Unity.Logging
             }
         }
 
-        private static string GetFileURL(string path) => $"file://{path}";
+        private static string GetFileURL(string path) => $"{FILE_URL_PREFIX}{path}";
     }
 }
