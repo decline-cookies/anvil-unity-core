@@ -10,7 +10,7 @@ namespace Anvil.Unity.Data
     /// </summary>
     public class UnityTinyJSONParser : TinyJSONParser<UnityEncoder, UnityDecoder>
     {
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
         public static void Register()
         {
             JSON.OverrideParser(new UnityTinyJSONParser());
