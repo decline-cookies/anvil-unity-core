@@ -11,7 +11,7 @@ namespace Anvil.Unity.Logging
     [DefaultLogHandler(PRIORITY)]
     public class UnityLogHandler : ILogHandler
     {
-        public const int PRIORITY = ConsoleLogHandler.PRIORITY + 10;
+        public const uint PRIORITY = ConsoleLogHandler.PRIORITY + 10;
 
         public void HandleLog(LogLevel level, string message)
         {
