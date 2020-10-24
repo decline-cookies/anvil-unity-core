@@ -27,7 +27,7 @@ namespace Anvil.Unity.Logging
                     Debug.LogError(message);
                     break;
                 default:
-                    throw new ArgumentException($"Unhandled log level: {level}");
+                    throw new NotImplementedException($"Unhandled log level: {level}");
             }
         }
     }
