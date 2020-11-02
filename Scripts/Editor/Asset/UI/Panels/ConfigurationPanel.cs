@@ -12,19 +12,20 @@ namespace Anvil.UnityEditor.Asset
         //TODO: Abstract a bunch of the common functionality
 
         private const string TAB_NAME = "Configuration";
-        private const int DEFAULT_INDEX = -1;
-        private const string CONTROL_NAME_NAME = "CN_NAME";
-        private const string CONTROL_NAME_PATH = "CN_PATH";
 
-        private string[] m_LibraryCreationNames;
+        private const string CONTROL_VARIANT_PRESET_NAME = "CN_VARIANT_PRESET_NAME";
+
+        private string[] m_VariantPresetNames;
         private readonly AMConfigVO m_ConfigVO;
 
-        private LibraryCreationPathVO m_NewLibraryCreationPathVO;
-        private LibraryCreationPathVO m_EditLibraryCreationPathVO;
-        private readonly LibraryCreationPathVO m_StoredLibraryCreationPathVO;
+        private EditorVariantPresetVO m_NewVariantPresetVO;
+        private EditorVariantPresetVO m_EditVariantPresetVO;
+        private readonly EditorVariantPresetVO m_StoredVariantPresetVO;
 
-        private bool m_ShouldRemove;
-        private int m_ShouldRemoveIndex;
+        private readonly LibraryCreationPathSection m_LibraryCreationPathSection;
+
+        private bool m_ShouldRemoveVariantPreset;
+        private int m_ShouldRemoveVariantPresetIndex;
 
         public override string TabName
         {
@@ -33,10 +34,10 @@ namespace Anvil.UnityEditor.Asset
 
         public ConfigurationPanel()
         {
-            m_StoredLibraryCreationPathVO = new LibraryCreationPathVO();
-
             m_ConfigVO = AMController.Instance.AMConfigVO;
-            UpdateLibraryCreationNames(m_ConfigVO.LibraryCreationPaths);
+
+            m_LibraryCreationPathSection = CreateSection<LibraryCreationPathSection>();
+            m_StoredVariantPresetVO = new EditorVariantPresetVO();
         }
 
         public override void Enable()
@@ -46,7 +47,7 @@ namespace Anvil.UnityEditor.Asset
 
         public override void Draw()
         {
-            Header("Configure Asset Management System");
+            AnvilIMGUI.Header("Configure Asset Management System");
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
@@ -59,230 +60,115 @@ namespace Anvil.UnityEditor.Asset
 
         private void DrawLibraryCreationSection()
         {
-            Header("Library Creation");
+            AnvilIMGUI.Header("Library Creation");
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-            DrawDefaultLibraryCreationPath();
-            DrawLibraryCreationPaths();
+            m_LibraryCreationPathSection.Draw();
+
+            AnvilIMGUI.FieldSpacer();
+
+            DrawDefaultVariantPreset();
+            DrawVariantPresets();
 
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawDefaultLibraryCreationPath()
+        private void DrawDefaultVariantPreset()
         {
-            if (m_ConfigVO.LibraryCreationPaths.Count == 0)
+            EditorGUILayout.LabelField("Default Variant Preset:");
+
+            if (m_ConfigVO.VariantPresets.Count == 0)
             {
-                EditorGUILayout.HelpBox("No Library Creation Paths, please create some.", MessageType.Warning);
+                EditorGUILayout.HelpBox("No Variant Presets, please create some.", MessageType.Warning);
                 return;
             }
-
-            EditorGUILayout.LabelField("Default Library Creation Path:");
 
             EditorGUILayout.BeginHorizontal();
 
             EditorGUI.BeginChangeCheck();
-            m_ConfigVO.DefaultLibraryCreationPathIndex = EditorGUILayout.Popup(m_ConfigVO.DefaultLibraryCreationPathIndex,
-                                                                               m_LibraryCreationNames,
-                                                                               GUILayout.Width(200));
+            m_ConfigVO.DefaultVariantPresetIndex = EditorGUILayout.Popup(m_ConfigVO.DefaultVariantPresetIndex,
+                                                                         m_VariantPresetNames,
+                                                                         GUILayout.Width(200));
             if (EditorGUI.EndChangeCheck())
             {
                 AMController.Instance.SaveConfigVO();
             }
 
-            LibraryCreationPathVO defaultCreationPathVO = m_ConfigVO.LibraryCreationPaths[m_ConfigVO.DefaultLibraryCreationPathIndex];
-
-            EditorGUILayout.LabelField($"Path: Assets/{defaultCreationPathVO.Path.AssetsRelativePath}");
-
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Separator();
         }
 
-        private void DrawLibraryCreationPaths()
+        private void DrawVariantPresets()
         {
-            EditorGUILayout.LabelField("Library Creation Paths:");
-
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
-            for (int i = 0; i < m_ConfigVO.LibraryCreationPaths.Count; ++i)
-            {
-                DrawLibraryCreationPathVO(m_ConfigVO.LibraryCreationPaths[i], i);
-            }
-
-            if (m_ShouldRemove)
-            {
-                m_ConfigVO.LibraryCreationPaths.RemoveAt(m_ShouldRemoveIndex);
-                m_ShouldRemove = false;
-                AMController.Instance.SaveConfigVO();
-            }
-
-            DrawLibraryCreationPathVO(m_NewLibraryCreationPathVO, DEFAULT_INDEX);
-
-            EditorGUILayout.Separator();
-
-            if (SmallButton("New"))
-            {
-                Cancel();
-
-                m_NewLibraryCreationPathVO = new LibraryCreationPathVO
-                {
-                    IsBeingEdited = true,
-                };
-
-                m_NewLibraryCreationPathVO.CopyInto(m_StoredLibraryCreationPathVO);
-
-                FocusControl($"{CONTROL_NAME_NAME}{DEFAULT_INDEX}", true);
-            }
-
-            EditorGUILayout.EndVertical();
+            // EditorGUILayout.LabelField("Variant Presets:");
+            //
+            // EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            //
+            // for (int i = 0; i < m_ConfigVO.VariantPresets.Count; ++i)
+            // {
+            //     DrawVariantPreset(m_ConfigVO.VariantPresets[i], i);
+            // }
+            //
+            // if (m_ShouldRemoveVariantPreset)
+            // {
+            //     m_ConfigVO.VariantPresets.RemoveAt(m_ShouldRemoveVariantPresetIndex);
+            //     m_ShouldRemoveLibraryCreation = false;
+            //     AMController.Instance.SaveConfigVO();
+            // }
+            //
+            // DrawVariantPreset(m_NewVariantPresetVO, DEFAULT_INDEX);
+            //
+            // EditorGUILayout.Separator();
+            //
+            // if (SmallButton("New"))
+            // {
+            //     Cancel();
+            //
+            //     m_NewVariantPresetVO = new EditorVariantPresetVO
+            //     {
+            //         IsBeingEdited = true,
+            //     };
+            //
+            //     m_NewVariantPresetVO.CopyInto(m_StoredVariantPresetVO);
+            //
+            //     FocusControl($"{CONTROL_VARIANT_PRESET_NAME}{DEFAULT_INDEX}", true);
+            // }
+            //
+            // EditorGUILayout.EndVertical();
         }
 
-        private void DrawLibraryCreationPathVO(LibraryCreationPathVO pathVO, int index)
+        private void DrawVariantPreset(EditorVariantPresetVO presetVO, int index)
         {
-            if (pathVO == null)
+            if (presetVO == null)
             {
                 return;
             }
 
             EditorGUILayout.BeginHorizontal();
-            if (pathVO.IsBeingEdited)
+            if (presetVO.IsBeingEdited)
             {
-                DrawLibraryCreationPathVOInEditMode(pathVO, index);
+                DrawVariantPresetVOInEditMode(presetVO, index);
             }
             else
             {
-                DrawLibraryCreationPathVOInViewMode(pathVO, index);
+                DrawVariantPresetVOInViewMode(presetVO, index);
             }
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DrawLibraryCreationPathVOInEditMode(LibraryCreationPathVO pathVO, int index)
+        private void DrawVariantPresetVOInEditMode(EditorVariantPresetVO presetVO, int index)
         {
-            bool shouldValidate = false;
-            bool shouldCancel = false;
 
-            TightLabel("Name:", EditorStyles.boldLabel);
-            pathVO.Name = KeyboardTextField($"{CONTROL_NAME_NAME}{index}",
-                                            pathVO.Name,
-                                            ref shouldValidate,
-                                            ref shouldCancel,
-                                            GUILayout.ExpandWidth(true));
-            FieldSpacer();
-
-
-            TightLabel("Path:", EditorStyles.boldLabel);
-            TightLabel("Assets/", AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
-            pathVO.Path.AssetsRelativePath = KeyboardTextField($"{CONTROL_NAME_PATH}{index}",
-                                                          pathVO.Path.AssetsRelativePath,
-                                                          ref shouldValidate,
-                                                          ref shouldCancel,
-                                                          GUILayout.ExpandWidth(true));
-            FieldSpacer();
-
-            if (index >= 0)
-            {
-                if (SmallButton("Remove"))
-                {
-                    m_ShouldRemove = true;
-                    m_ShouldRemoveIndex = index;
-                }
-            }
-            else
-            {
-                SmallButtonSpacer();
-            }
-
-            if (SmallButton("Cancel"))
-            {
-                shouldCancel = true;
-            }
-
-            if (SmallButton("Done"))
-            {
-                shouldValidate = true;
-            }
-
-            if (shouldCancel)
-            {
-                Cancel();
-            }
-            else if (shouldValidate)
-            {
-                Validate();
-            }
         }
 
-        private void DrawLibraryCreationPathVOInViewMode(LibraryCreationPathVO pathVO, int index)
+        private void DrawVariantPresetVOInViewMode(EditorVariantPresetVO presetVO, int index)
         {
-            TightLabel("Name:", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField(pathVO.Name, GUILayout.ExpandWidth(true));
-            FieldSpacer();
 
-            TightLabel("Path:", EditorStyles.boldLabel);
-            TightLabel($"Assets{Path.DirectorySeparatorChar}", AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
-            EditorGUILayout.LabelField(pathVO.Path.AssetsRelativePath, GUILayout.ExpandWidth(true));
-            FieldSpacer();
-
-            SmallButtonSpacer();
-            SmallButtonSpacer();
-
-            if (SmallButton("Edit"))
-            {
-                //Cancel if anything else was being edited
-                Cancel();
-
-                m_EditLibraryCreationPathVO = pathVO;
-                m_EditLibraryCreationPathVO.IsBeingEdited = true;
-
-                //Store old values in case we cancel
-                m_EditLibraryCreationPathVO.CopyInto(m_StoredLibraryCreationPathVO);
-
-                FocusControl($"{CONTROL_NAME_NAME}{index}", true);
-            }
         }
 
-        private void UpdateLibraryCreationNames(IEnumerable<LibraryCreationPathVO> libraryCreationPathVOs)
-        {
-            m_LibraryCreationNames = libraryCreationPathVOs.Select(o => o.Name)
-                                                           .ToArray();
-        }
 
-        private void Cancel()
-        {
-            m_NewLibraryCreationPathVO = null;
-
-            if (m_EditLibraryCreationPathVO == null)
-            {
-                return;
-            }
-
-            m_EditLibraryCreationPathVO.IsBeingEdited = false;
-            //Restore old values
-            m_StoredLibraryCreationPathVO.CopyInto(m_EditLibraryCreationPathVO);
-
-            m_EditLibraryCreationPathVO = null;
-        }
-
-        private void Validate()
-        {
-            if (m_NewLibraryCreationPathVO != null)
-            {
-                //TODO: Actually validate
-                m_ConfigVO.LibraryCreationPaths.Add(m_NewLibraryCreationPathVO);
-                m_NewLibraryCreationPathVO.IsBeingEdited = false;
-                m_NewLibraryCreationPathVO = null;
-            }
-            else if (m_EditLibraryCreationPathVO != null)
-            {
-                //TODO: Actually validate
-                m_EditLibraryCreationPathVO.IsBeingEdited = false;
-                m_EditLibraryCreationPathVO = null;
-            }
-
-            UpdateLibraryCreationNames(m_ConfigVO.LibraryCreationPaths);
-            AMController.Instance.SaveConfigVO();
-        }
 
     }
 }

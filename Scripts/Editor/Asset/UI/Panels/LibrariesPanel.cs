@@ -43,61 +43,61 @@ namespace Anvil.UnityEditor.Asset
 
         public override void Draw()
         {
-            Header("Create New Libraries");
+            AnvilIMGUI.Header("Create New Libraries");
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
             if (m_EditorLibraryVO == null)
             {
                 EditorGUILayout.HelpBox("No Libraries, please create some.", MessageType.Warning);
-                if (SmallButton("New"))
+                if (AnvilIMGUI.SmallButton("New"))
                 {
                     m_EditorLibraryVO = new EditorLibraryVO();
                 }
             }
             else
             {
-                Header("New Library");
+                AnvilIMGUI.Header("New Library");
 
                 //TODO: Location
                 m_LocationIndex = EditorGUILayout.Popup("Location:", m_LocationIndex, m_Locations);
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Library Name:", GUILayout.MaxWidth(150));
-                TightLabel(AnvilEditorAMConstants.KEYWORD_LIBRARY, AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
+                AnvilIMGUI.TightLabel(AnvilEditorAMConstants.KEYWORD_LIBRARY, AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
                 m_EditorLibraryVO.Name = EditorGUILayout.TextField(m_EditorLibraryVO.Name, GUILayout.ExpandWidth(true));
                 EditorGUILayout.EndHorizontal();
 
-                FieldSpacer();
+                AnvilIMGUI.FieldSpacer();
 
-                Header("Variants");
+                AnvilIMGUI.Header("Variants");
 
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-                List<EditorLibraryVariantVO> toBeRemoved = new List<EditorLibraryVariantVO>();
+                List<EditorLibrarySourceVariantVO> toBeRemoved = new List<EditorLibrarySourceVariantVO>();
 
-                foreach (EditorLibraryVariantVO variantVO in m_EditorLibraryVO.Variants)
+                foreach (EditorLibrarySourceVariantVO variantVO in m_EditorLibraryVO.Variants)
                 {
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField("Variant Name:", GUILayout.MaxWidth(150));
-                    TightLabel(AnvilEditorAMConstants.KEYWORD_VARIANT, AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
+                    AnvilIMGUI.TightLabel(AnvilEditorAMConstants.KEYWORD_VARIANT, AnvilIMGUIConstants.STYLE_LABEL_RIGHT_JUSTIFIED);
                     variantVO.Name = EditorGUILayout.TextField(variantVO.Name, GUILayout.ExpandWidth(true));
-                    if (SmallButton("Remove"))
+                    if (AnvilIMGUI.SmallButton("Remove"))
                     {
                         toBeRemoved.Add(variantVO);
                     }
                     EditorGUILayout.EndHorizontal();
                 }
 
-                foreach (EditorLibraryVariantVO variantVO in toBeRemoved)
+                foreach (EditorLibrarySourceVariantVO variantVO in toBeRemoved)
                 {
                     m_EditorLibraryVO.Variants.Remove(variantVO);
                 }
                 toBeRemoved.Clear();
 
-                if (SmallButton("New"))
+                if (AnvilIMGUI.SmallButton("New"))
                 {
-                    m_EditorLibraryVO.Variants.Add(new EditorLibraryVariantVO());
+                    m_EditorLibraryVO.Variants.Add(new EditorLibrarySourceVariantVO());
                 }
 
 
@@ -107,11 +107,11 @@ namespace Anvil.UnityEditor.Asset
 
 
                 EditorGUILayout.BeginHorizontal();
-                if (SmallButton("Cancel"))
+                if (AnvilIMGUI.SmallButton("Cancel"))
                 {
                     m_EditorLibraryVO = null;
                 }
-                if (SmallButton("Save"))
+                if (AnvilIMGUI.SmallButton("Save"))
                 {
                     //TODO: Actually save it
                     m_EditorLibraryVO = null;

@@ -6,11 +6,11 @@ namespace Anvil.UnityEditor.Asset
     public class EditorLibraryVO : AbstractAnvilVO
     {
         public string Name;
-        public List<EditorLibraryVariantVO> Variants;
+        public readonly List<EditorLibrarySourceVariantVO> Variants;
 
         public EditorLibraryVO()
         {
-            Variants = new List<EditorLibraryVariantVO>();
+            Variants = new List<EditorLibrarySourceVariantVO>();
         }
     }
 }

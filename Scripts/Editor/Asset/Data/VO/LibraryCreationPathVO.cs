@@ -1,15 +1,18 @@
 ﻿using Anvil.CSharp.Data;
 using Anvil.UnityEditor.Data;
-using TinyJSON;
 
 namespace Anvil.UnityEditor.Asset
 {
-    public class LibraryCreationPathVO : AbstractAnvilVO
+    public class LibraryCreationPathVO : AbstractAnvilVO, IEditorSectionVO<LibraryCreationPathVO>
     {
-        [Exclude] public bool IsBeingEdited;
-
         public string Name;
         public readonly EditorPathVO Path;
+
+        public bool IsBeingEdited
+        {
+            get;
+            set;
+        }
 
         public LibraryCreationPathVO()
         {

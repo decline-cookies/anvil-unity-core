@@ -1,4 +1,5 @@
-﻿using Anvil.UnityEditor.IMGUI;
+﻿using System;
+using Anvil.UnityEditor.IMGUI;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,70 +28,18 @@ namespace Anvil.UnityEditor.Asset
             FocusControlIfNeeded();
         }
 
-        protected void Header(string header)
+        protected T CreateSection<T>()
+            where T : IAnvilIMGUISection
         {
-            EditorGUILayout.LabelField(header, EditorStyles.boldLabel);
-            EditorGUILayout.Separator();
+            IAnvilIMGUISection section = Activator.CreateInstance<T>();
+            section.OnFocusControl += Section_OnFocusControl;
+
+            return (T)section;
         }
 
-        protected bool SmallButton(string label)
+        private void Section_OnFocusControl(string controlName, bool isText)
         {
-            return GUILayout.Button(label, EditorStyles.miniButton, GUILayout.Width(60));
-        }
-
-        protected void FieldSpacer()
-        {
-            EditorGUILayout.Space(10, false);
-        }
-
-        protected void SmallButtonSpacer()
-        {
-            bool isEnabled = GUI.enabled;
-            Color color = GUI.color;
-
-            GUI.enabled = false;
-            GUI.color = AnvilIMGUIConstants.TRANSPARENT;
-
-            GUILayout.Button(string.Empty, EditorStyles.miniButton, GUILayout.Width(60));
-
-            GUI.color = color;
-            GUI.enabled = isEnabled;
-        }
-
-        protected void TightLabel(string label, GUIStyle style)
-        {
-            GUIContent content = new GUIContent(label);
-            Vector2 size = EditorStyles.label.CalcSize(content);
-            EditorGUILayout.LabelField(content, style, GUILayout.Width(size.x), GUILayout.ExpandWidth(false));
-        }
-
-        protected string KeyboardTextField(string controlName,
-                                           string text,
-                                           ref bool shouldValidate,
-                                           ref bool shouldCancel,
-                                           params GUILayoutOption[] options)
-        {
-            GUI.SetNextControlName(controlName);
-            string outputText = EditorGUILayout.TextField(text, options);
-
-            Event evt = Event.current;
-            if (evt.isKey && GUI.GetNameOfFocusedControl() == controlName)
-            {
-                switch (evt.keyCode)
-                {
-                    case KeyCode.Return:
-                    case KeyCode.KeypadEnter:
-                        shouldValidate = true;
-                        Event.current.Use();
-                        break;
-                    case KeyCode.Escape:
-                        shouldCancel = true;
-                        Event.current.Use();
-                        break;
-                }
-            }
-
-            return outputText;
+            FocusControl(controlName, isText);
         }
 
         protected void FocusControl(string controlName, bool isText)

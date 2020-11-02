@@ -8,9 +8,13 @@ namespace Anvil.UnityEditor.Asset
         public int DefaultLibraryCreationPathIndex;
         public readonly List<LibraryCreationPathVO> LibraryCreationPaths;
 
+        public int DefaultVariantPresetIndex;
+        public readonly List<EditorVariantPresetVO> VariantPresets;
+
         public AMConfigVO()
         {
             LibraryCreationPaths = new List<LibraryCreationPathVO>();
+            VariantPresets = new List<EditorVariantPresetVO>();
         }
     }
 }
