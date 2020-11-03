@@ -3,7 +3,7 @@ using Anvil.UnityEditor.Data;
 
 namespace Anvil.UnityEditor.Asset
 {
-    public class LibraryCreationPathVO : AbstractAnvilVO, IEditorSectionVO<LibraryCreationPathVO>
+    public class EditorLibraryCreationPathVO : AbstractAnvilVO, IEditorSectionVO<EditorLibraryCreationPathVO>
     {
         public string Name;
         public readonly EditorPathVO Path;
@@ -14,12 +14,12 @@ namespace Anvil.UnityEditor.Asset
             set;
         }
 
-        public LibraryCreationPathVO()
+        public EditorLibraryCreationPathVO()
         {
             Path = new EditorPathVO();
         }
 
-        public void CopyInto(LibraryCreationPathVO other)
+        public void CopyInto(EditorLibraryCreationPathVO other)
         {
             other.Name = Name;
             other.Path.AssetsRelativePath = Path.AssetsRelativePath;

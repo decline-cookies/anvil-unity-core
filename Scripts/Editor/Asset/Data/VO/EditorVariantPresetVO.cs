@@ -1,15 +1,19 @@
 ﻿using System.Collections.Generic;
 using Anvil.CSharp.Data;
-using TinyJSON;
+using Anvil.UnityEditor.Data;
 
 namespace Anvil.UnityEditor.Asset
 {
-    public class EditorVariantPresetVO : AbstractAnvilVO
+    public class EditorVariantPresetVO : AbstractAnvilVO, IEditorSectionVO<EditorVariantPresetVO>
     {
-        [Exclude] public bool IsBeingEdited;
-
         public string Name;
         public readonly List<EditorLibrarySourceVariantVO> SourceVariants;
+
+        public bool IsBeingEdited
+        {
+            get;
+            set;
+        }
 
         public EditorVariantPresetVO()
         {

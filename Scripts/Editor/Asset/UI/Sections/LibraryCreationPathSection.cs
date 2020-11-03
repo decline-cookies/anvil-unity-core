@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Anvil.UnityEditor.Asset
 {
-    public class LibraryCreationPathSection : AbstractAnvilIMGUISection<LibraryCreationPathVO>, IAnvilIMGUISection
+    public class LibraryCreationPathSection : AbstractAnvilIMGUISection<EditorLibraryCreationPathVO>, IAnvilIMGUISection
     {
         private const int DEFAULT_INDEX = -1;
         private const string CONTROL_LIBRARY_CREATION_NAME = "CN_LIBRARY_CREATION_NAME";
@@ -26,7 +26,7 @@ namespace Anvil.UnityEditor.Asset
             UpdateLibraryCreationNames(m_ConfigVO.LibraryCreationPaths);
         }
 
-        private void UpdateLibraryCreationNames(IEnumerable<LibraryCreationPathVO> libraryCreationPathVOs)
+        private void UpdateLibraryCreationNames(IEnumerable<EditorLibraryCreationPathVO> libraryCreationPathVOs)
         {
             m_LibraryCreationNames = libraryCreationPathVOs.Select(o => o.Name)
                                                            .ToArray();
@@ -58,7 +58,7 @@ namespace Anvil.UnityEditor.Asset
                 AMController.Instance.SaveConfigVO();
             }
 
-            LibraryCreationPathVO defaultCreationPathVO = m_ConfigVO.LibraryCreationPaths[m_ConfigVO.DefaultLibraryCreationPathIndex];
+            EditorLibraryCreationPathVO defaultCreationPathVO = m_ConfigVO.LibraryCreationPaths[m_ConfigVO.DefaultLibraryCreationPathIndex];
 
             EditorGUILayout.LabelField($"Path: Assets/{defaultCreationPathVO.Path.AssetsRelativePath}");
 
@@ -67,7 +67,7 @@ namespace Anvil.UnityEditor.Asset
             EditorGUILayout.Separator();
         }
 
-        protected override void DrawVOInEditMode(LibraryCreationPathVO vo, int index, out bool shouldCancel, out bool shouldValidate)
+        protected override void DrawVOInEditMode(EditorLibraryCreationPathVO vo, int index, out bool shouldCancel, out bool shouldValidate)
         {
             shouldValidate = false;
             shouldCancel = false;
@@ -113,7 +113,7 @@ namespace Anvil.UnityEditor.Asset
             }
         }
 
-        protected override void DrawVOInViewMode(LibraryCreationPathVO vo, int index)
+        protected override void DrawVOInViewMode(EditorLibraryCreationPathVO vo, int index)
         {
             AnvilIMGUI.TightLabel("Name:", EditorStyles.boldLabel);
             EditorGUILayout.LabelField(vo.Name, GUILayout.ExpandWidth(true));
