@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Anvil.UnityEditor.Data;
 using UnityEditor;
+using UnityEngine;
 
 namespace Anvil.UnityEditor.IMGUI
 {
@@ -56,15 +57,18 @@ namespace Anvil.UnityEditor.IMGUI
 
             if (m_ShouldRemove)
             {
+                T removedVO = m_ListVOs[m_ShouldRemoveIndex];
                 m_ListVOs.RemoveAt(m_ShouldRemoveIndex);
                 m_ShouldRemove = false;
-                HandleOnRemoveComplete();
+                HandleOnVORemoved(removedVO);
             }
 
             DrawVO(m_NewVO, m_DefaultIndex);
 
             EditorGUILayout.Separator();
 
+
+            GUI.enabled = m_NewVO == null && m_EditVO == null;
             if (AnvilIMGUI.SmallButton("New"))
             {
                 Cancel();
@@ -76,10 +80,15 @@ namespace Anvil.UnityEditor.IMGUI
 
                 m_NewVO.CopyInto(m_StoredVO);
 
+                HandleOnVOCreateStart(m_NewVO);
+
                 OnFocusControl?.Invoke($"{m_FocusControlName}{m_DefaultIndex}", true);
             }
+            GUI.enabled = true;
 
             EditorGUILayout.EndVertical();
+
+            PostDraw();
         }
 
         private void DrawVO(T vo, int index)
@@ -111,7 +120,7 @@ namespace Anvil.UnityEditor.IMGUI
             }
             else if (shouldValidate)
             {
-                BaseValidate();
+                Validate();
             }
         }
 
@@ -119,6 +128,7 @@ namespace Anvil.UnityEditor.IMGUI
         {
             DrawVOInViewMode(vo, index);
 
+            GUI.enabled = m_NewVO == null && m_EditVO == null;
             if (AnvilIMGUI.SmallButton("Edit"))
             {
                 //Cancel if anything else was being edited
@@ -130,32 +140,37 @@ namespace Anvil.UnityEditor.IMGUI
                 //Store old values in case we cancel
                 m_EditVO.CopyInto(m_StoredVO);
 
+                HandleOnVOEditStart(m_EditVO);
+
                 OnFocusControl?.Invoke($"{m_FocusControlName}{index}", true);
             }
+            GUI.enabled = true;
         }
 
-        private void BaseValidate()
+        private void Validate()
         {
-            if (m_NewVO != null)
+            if (m_NewVO != null && ValidateVO(m_NewVO))
             {
-                //TODO: Actually validate
                 m_ListVOs.Add(m_NewVO);
                 m_NewVO.IsBeingEdited = false;
+                HandleOnVOCreateComplete(m_NewVO);
                 m_NewVO = null;
             }
-            else if (m_EditVO != null)
+            else if (m_EditVO != null && ValidateVO(m_EditVO))
             {
-                //TODO: Actually validate
                 m_EditVO.IsBeingEdited = false;
+                HandleOnVOEditComplete(m_EditVO);
                 m_EditVO = null;
             }
-
-            Validate();
         }
 
         private void Cancel()
         {
-            m_NewVO = null;
+            if (m_NewVO != null)
+            {
+                HandleOnVOCreateCancel(m_NewVO);
+                m_NewVO = null;
+            }
 
             if (m_EditVO == null)
             {
@@ -166,14 +181,22 @@ namespace Anvil.UnityEditor.IMGUI
             //Restore old values
             m_StoredVO.CopyInto(m_EditVO);
 
+            HandleOnVOEditCancel(m_EditVO);
             m_EditVO = null;
         }
 
         protected abstract void PreDraw();
-        protected abstract void Validate();
-        protected abstract void HandleOnRemoveComplete();
+        protected abstract void PostDraw();
         protected abstract void DrawVOInEditMode(T vo, int index, out bool shouldCancel, out bool shouldValidate);
         protected abstract void DrawVOInViewMode(T vo, int index);
+        protected abstract bool ValidateVO(T vo);
+        protected abstract void HandleOnVOCreateComplete(T vo);
+        protected abstract void HandleOnVOCreateStart(T vo);
+        protected abstract void HandleOnVOCreateCancel(T vo);
+        protected abstract void HandleOnVOEditStart(T vo);
+        protected abstract void HandleOnVOEditCancel(T vo);
+        protected abstract void HandleOnVOEditComplete(T vo);
+        protected abstract void HandleOnVORemoved(T vo);
     }
 }
 

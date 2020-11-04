@@ -26,21 +26,8 @@ namespace Anvil.UnityEditor.Asset
             other.SourceVariants.Clear();
             foreach (EditorLibrarySourceVariantVO sourceVariantVO in SourceVariants)
             {
-                EditorLibrarySourceVariantVO otherSourceVariantVO = new EditorLibrarySourceVariantVO
-                {
-                    Name = sourceVariantVO.Name
-                };
-
-                foreach (EditorLibraryPublishedVariantVO publishedVariantVO in sourceVariantVO.PublishedVariants)
-                {
-                    EditorLibraryPublishedVariantVO otherPublishedVariantVO = new EditorLibraryPublishedVariantVO
-                    {
-                        Name = publishedVariantVO.Name,
-                        Type = publishedVariantVO.Type
-                    };
-
-                    otherSourceVariantVO.PublishedVariants.Add(otherPublishedVariantVO);
-                }
+                EditorLibrarySourceVariantVO otherSourceVariantVO = new EditorLibrarySourceVariantVO();
+                sourceVariantVO.CopyInto(otherSourceVariantVO);
 
                 other.SourceVariants.Add(otherSourceVariantVO);
             }

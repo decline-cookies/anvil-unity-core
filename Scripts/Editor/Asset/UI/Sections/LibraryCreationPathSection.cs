@@ -34,7 +34,19 @@ namespace Anvil.UnityEditor.Asset
 
         protected override void PreDraw()
         {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+            AnvilIMGUI.Header("Library Creation");
+
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
             DrawDefaultLibraryCreationPath();
+        }
+
+        protected override void PostDraw()
+        {
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndVertical();
         }
 
         private void DrawDefaultLibraryCreationPath()
@@ -128,13 +140,44 @@ namespace Anvil.UnityEditor.Asset
             AnvilIMGUI.SmallButtonSpacer();
         }
 
-        protected override void Validate()
+        protected override bool ValidateVO(EditorLibraryCreationPathVO vo)
         {
+            //TODO: Actually validate
             UpdateLibraryCreationNames(m_ConfigVO.LibraryCreationPaths);
+            return true;
+        }
+
+        protected override void HandleOnVOCreateStart(EditorLibraryCreationPathVO vo)
+        {
+
+        }
+
+        protected override void HandleOnVOCreateCancel(EditorLibraryCreationPathVO vo)
+        {
+
+        }
+
+        protected override void HandleOnVOCreateComplete(EditorLibraryCreationPathVO vo)
+        {
             AMController.Instance.SaveConfigVO();
         }
 
-        protected override void HandleOnRemoveComplete()
+        protected override void HandleOnVOEditStart(EditorLibraryCreationPathVO vo)
+        {
+
+        }
+
+        protected override void HandleOnVOEditCancel(EditorLibraryCreationPathVO vo)
+        {
+
+        }
+
+        protected override void HandleOnVOEditComplete(EditorLibraryCreationPathVO vo)
+        {
+            AMController.Instance.SaveConfigVO();
+        }
+
+        protected override void HandleOnVORemoved(EditorLibraryCreationPathVO vo)
         {
             AMController.Instance.SaveConfigVO();
         }

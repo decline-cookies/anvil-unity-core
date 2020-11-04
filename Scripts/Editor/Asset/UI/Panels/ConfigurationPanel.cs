@@ -7,8 +7,6 @@ namespace Anvil.UnityEditor.Asset
     {
         private const string TAB_NAME = "Configuration";
 
-        private readonly AMConfigVO m_ConfigVO;
-
         private readonly LibraryCreationPathSection m_LibraryCreationPathSection;
         private readonly VariantPresetSection m_VariantPresetSection;
 
@@ -19,8 +17,6 @@ namespace Anvil.UnityEditor.Asset
 
         public ConfigurationPanel()
         {
-            m_ConfigVO = AMController.Instance.AMConfigVO;
-
             m_LibraryCreationPathSection = CreateSection<LibraryCreationPathSection>();
             m_VariantPresetSection = CreateSection<VariantPresetSection>();
         }
@@ -34,34 +30,13 @@ namespace Anvil.UnityEditor.Asset
         {
             AnvilIMGUI.Header("Configure Asset Management System");
 
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
-            DrawLibraryCreationSection();
-
-            EditorGUILayout.EndVertical();
-
-            base.Draw();
-        }
-
-        private void DrawLibraryCreationSection()
-        {
-            AnvilIMGUI.Header("Library Creation");
-
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
             m_LibraryCreationPathSection.Draw();
-
-            EditorGUILayout.EndVertical();
 
             AnvilIMGUI.FieldSpacer();
 
-            AnvilIMGUI.Header("Variant Presets");
-
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
             m_VariantPresetSection.Draw();
 
-            EditorGUILayout.EndVertical();
+            base.Draw();
         }
     }
 }

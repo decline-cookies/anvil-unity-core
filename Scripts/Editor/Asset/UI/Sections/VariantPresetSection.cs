@@ -13,6 +13,8 @@ namespace Anvil.UnityEditor.Asset
 
         private string[] m_VariantPresetNames;
         private readonly AMConfigVO m_ConfigVO;
+        private readonly Dictionary<EditorVariantPresetVO, List<VariantPresetSourceSection>> m_VariantPresetSourceSections;
+        private VariantPresetSourceSection m_NewPresetSourceSection;
 
         public VariantPresetSection()
         : base ("Variant Presets:",
@@ -21,6 +23,8 @@ namespace Anvil.UnityEditor.Asset
                 AMController.Instance.AMConfigVO.VariantPresets)
         {
             m_ConfigVO = AMController.Instance.AMConfigVO;
+            m_VariantPresetSourceSections = new Dictionary<EditorVariantPresetVO, List<VariantPresetSourceSection>>();
+
             UpdateVariantPresets(m_ConfigVO.VariantPresets);
         }
 
@@ -32,7 +36,19 @@ namespace Anvil.UnityEditor.Asset
 
         protected override void PreDraw()
         {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+            AnvilIMGUI.Header("Variant Presets");
+
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
             DrawDefaultVariantPreset();
+        }
+
+        protected override void PostDraw()
+        {
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndVertical();
         }
 
         private void DrawDefaultVariantPreset()
@@ -49,8 +65,8 @@ namespace Anvil.UnityEditor.Asset
 
             EditorGUI.BeginChangeCheck();
             m_ConfigVO.DefaultVariantPresetIndex = EditorGUILayout.Popup(m_ConfigVO.DefaultVariantPresetIndex,
-                                                                               m_VariantPresetNames,
-                                                                               GUILayout.Width(200));
+                                                                         m_VariantPresetNames,
+                                                                         GUILayout.Width(200));
             if (EditorGUI.EndChangeCheck())
             {
                 AMController.Instance.SaveConfigVO();
@@ -112,12 +128,14 @@ namespace Anvil.UnityEditor.Asset
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField("Source:", EditorStyles.boldLabel);
 
-            EditorGUILayout.EndVertical();
+            List<VariantPresetSourceSection> sourceSections = GetOrCreateSourceSectionsForVO(vo);
 
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField("Published:", EditorStyles.boldLabel);
+            foreach (VariantPresetSourceSection sourceSection in sourceSections)
+            {
+                sourceSection.Draw();
+            }
+
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.EndHorizontal();
@@ -130,15 +148,64 @@ namespace Anvil.UnityEditor.Asset
             //TODO: Actually Draw
         }
 
-        protected override void Validate()
+        protected override bool ValidateVO(EditorVariantPresetVO vo)
         {
+            //TODO: Actually validate
             UpdateVariantPresets(m_ConfigVO.VariantPresets);
+            return true;
+        }
+
+        protected override void HandleOnVOCreateStart(EditorVariantPresetVO vo)
+        {
+            List<VariantPresetSourceSection> sourceSections = GetOrCreateSourceSectionsForVO(vo);
+
+            m_NewPresetSourceSection = new VariantPresetSourceSection(vo.SourceVariants);
+            sourceSections.Add(m_NewPresetSourceSection);
+        }
+
+        protected override void HandleOnVOCreateCancel(EditorVariantPresetVO vo)
+        {
+            List<VariantPresetSourceSection> sourceSections = GetOrCreateSourceSectionsForVO(vo);
+            sourceSections.Remove(m_NewPresetSourceSection);
+            m_NewPresetSourceSection = null;
+        }
+
+        protected override void HandleOnVOCreateComplete(EditorVariantPresetVO vo)
+        {
+            m_NewPresetSourceSection = null;
             AMController.Instance.SaveConfigVO();
         }
 
-        protected override void HandleOnRemoveComplete()
+        protected override void HandleOnVOEditStart(EditorVariantPresetVO vo)
+        {
+
+        }
+
+        protected override void HandleOnVOEditCancel(EditorVariantPresetVO vo)
+        {
+
+        }
+
+        protected override void HandleOnVOEditComplete(EditorVariantPresetVO vo)
         {
             AMController.Instance.SaveConfigVO();
+        }
+
+        protected override void HandleOnVORemoved(EditorVariantPresetVO vo)
+        {
+            m_VariantPresetSourceSections.Remove(vo);
+            AMController.Instance.SaveConfigVO();
+        }
+
+        private List<VariantPresetSourceSection> GetOrCreateSourceSectionsForVO(EditorVariantPresetVO vo)
+        {
+            if (!m_VariantPresetSourceSections.TryGetValue(vo, out List<VariantPresetSourceSection> sourceSections))
+            {
+                sourceSections = new List<VariantPresetSourceSection>();
+                m_VariantPresetSourceSections.Add(vo, sourceSections);
+            }
+
+            return sourceSections;
         }
     }
 }
