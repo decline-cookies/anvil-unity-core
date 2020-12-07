@@ -6,7 +6,7 @@ namespace Anvil.UnityEditor.Asset
     public class EditorLibraryPublishedVariantVO : AbstractAnvilVO
     {
         public string Name;
-        public AssetVariantType Type;
+        public VariantType Type;
     }
 }
 

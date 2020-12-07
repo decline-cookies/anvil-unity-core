@@ -1,6 +1,6 @@
 ﻿namespace Anvil.Unity.Asset
 {
-    public enum AssetVariantType
+    public enum VariantType
     {
         Resources,
         AssetBundle
