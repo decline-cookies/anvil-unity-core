@@ -20,7 +20,8 @@ namespace Anvil.Unity.Content
         public UnityContentManager(Transform contentRoot) : base()
         {
             ContentRoot = contentRoot;
-            Object.DontDestroyOnLoad(ContentRoot);
+
+            PreventDestroyOnLoad();
         }
 
         protected override void DisposeSelf()
@@ -42,6 +43,21 @@ namespace Anvil.Unity.Content
         protected override void LogWarning(string message)
         {
             Debug.LogWarning(message);
+        }
+
+        private void PreventDestroyOnLoad()
+        {
+            if (ContentRoot.parent == null)
+            {
+                Object.DontDestroyOnLoad(ContentRoot);
+            }
+            else
+            {
+                LogWarning(
+                    $"This {nameof(UnityContentManager)} may be destroyed on a scene change. ContentRoot: {ContentRoot.name}\n" +
+                    $"The {nameof(ContentRoot)} provided is not at the root of the hierarchy."
+                    );
+            }
         }
     }
 }
