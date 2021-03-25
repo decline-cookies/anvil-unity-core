@@ -1,0 +1,7 @@
+<linker>
+  <!--
+  Force include the Unity logger, as it is used through reflection and normally not referenced anywhere.
+  See: https://docs.unity3d.com/2021.1/Documentation/Manual/ManagedCodeStripping.html#LinkXML
+  -->
+  <assembly fullname="Anvil.Unity.Logging" />
+</linker>
