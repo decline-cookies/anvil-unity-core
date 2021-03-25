@@ -1,0 +1,4 @@
+<linker>
+  <!-- Force include the Unity logger, as it is used through reflection and normally not referenced anywhere. -->
+  <assembly fullname="Anvil.Unity.Logging" />
+</linker>
