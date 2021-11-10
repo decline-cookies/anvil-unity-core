@@ -5,7 +5,7 @@ A collection of classes that add [Unity](https://unity.com) specific implementat
 Refer to the [anvil-csharp-core](https://github.com/decline-cookies/anvil-csharp-core) for a description of Anvil's purpose and the team's motivations.
 
 ## Expectations
-This library is currently being used and built along side a few actively developed projects. The code is reasonably clean but documentation and examples are spares. Feel free to [reach out on Twitter](https://twitter.com/declinecookies) or open issues with questions.
+This library is currently being used and built along side a few actively developed projects. The code is reasonably clean but documentation and examples are sparse. Feel free to [reach out on Twitter](https://twitter.com/declinecookies) or open issues with questions.
 
 ⚠️ We welcome PRs and bug reports but making this repo a public success is not our priority. No promises on when it will be addressed!
 
