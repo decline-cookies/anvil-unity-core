@@ -11,7 +11,7 @@ namespace Anvil.Unity.Data
     /// </summary>
     public class UnityEncoder : Encoder<ProxyArray, ProxyBoolean, ProxyNumber, ProxyObject, UnityProxyString>
     {
-        protected override void EncodeValue(object value, bool forceTypeHint)
+        protected override void EncodeValue(object value, bool forceTypeHint, bool isRetainAsJSONMember = false)
         {
             if (value is Vector2Int vec2)
             {
@@ -48,7 +48,7 @@ namespace Anvil.Unity.Data
                 return;
             }
 
-            base.EncodeValue(value, forceTypeHint);
+            base.EncodeValue(value, forceTypeHint, isRetainAsJSONMember);
         }
     }
 }
