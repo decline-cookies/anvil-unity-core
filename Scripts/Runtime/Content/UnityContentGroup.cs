@@ -27,7 +27,10 @@ namespace Anvil.Unity.Content
         protected override void DisposeSelf()
         {
             OnLoadComplete -= Self_OnLoadComplete;
-            GameObject.Destroy(ContentGroupRoot.gameObject);
+            if (ContentGroupRoot != null)
+            {
+                Object.Destroy(ContentGroupRoot.gameObject);
+            }
             base.DisposeSelf();
         }
 
@@ -38,7 +41,7 @@ namespace Anvil.Unity.Content
             UnityContentManager contentManger = (UnityContentManager)ContentManager;
 
             GameObject groupRootGO = new GameObject($"[CL - {vo.ID}]");
-            GameObject.DontDestroyOnLoad(groupRootGO);
+            Object.DontDestroyOnLoad(groupRootGO);
             ContentGroupRoot = groupRootGO.transform;
             Transform parent = vo.GameObjectRoot == null
                 ? contentManger.ContentRoot
