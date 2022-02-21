@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Anvil.CSharp.Logging;
 using UnityEngine;
 using ILogHandler = Anvil.CSharp.Logging.ILogHandler;
@@ -13,8 +14,16 @@ namespace Anvil.Unity.Logging
     {
         public const uint PRIORITY = ConsoleLogHandler.PRIORITY + 10;
 
-        public void HandleLog(LogLevel level, string message)
+        public void HandleLog(
+            LogLevel level,
+            string message,
+            string callerDerivedTypeName,
+            string callerPath,
+            string callerName,
+            int callerLine)
         {
+            message = $"({Path.GetFileNameWithoutExtension(callerPath)}|{callerName}:{callerLine}) {message}";
+
             switch (level)
             {
                 case LogLevel.Debug:
