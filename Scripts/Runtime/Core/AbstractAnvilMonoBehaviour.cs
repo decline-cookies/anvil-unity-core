@@ -1,4 +1,5 @@
 ﻿using System;
+using Anvil.CSharp.Logging;
 using Anvil.CSharp.Core;
 using UnityEngine;
 
@@ -16,11 +17,22 @@ namespace Anvil.Unity.Core
         /// <inheritdoc cref="IAnvilDisposable.IsDisposed"/>
         /// </summary>
         public bool IsDisposed { get; private set; }
-        
+
         /// <summary>
         /// <inheritdoc cref="IAnvilDisposable.IsDisposing"/>
         /// </summary>
         public bool IsDisposing { get; private set; }
+
+        private Log.Logger? m_Logger;
+        /// <summary>
+        /// Returns a <see cref="Log.Logger"/> for this instance to emit log messages with.
+        /// Lazy instantiated.
+        /// </summary>
+        protected Log.Logger Logger
+        {
+            get => m_Logger ?? (m_Logger = Log.GetLogger(this)).Value;
+            set => m_Logger = value;
+        }
 
         protected virtual void Awake()
         {
@@ -28,7 +40,7 @@ namespace Anvil.Unity.Core
             MonoBehaviourUtil.EnforceEditorExposedFieldReferencesSet(this);
 #endif
         }
-        
+
         /// <summary>
         /// <inheritdoc cref="IDisposable.Dispose"/>
         /// Will early return if <see cref="IsDisposed"/> or <see cref="IsDisposing"/> is true.
@@ -48,23 +60,23 @@ namespace Anvil.Unity.Core
             IsDisposing = false;
             IsDisposed = true;
         }
-        
+
         private void OnDestroy()
         {
             if (IsDisposing || IsDisposed)
             {
                 return;
             }
-            
+
             Dispose();
         }
-        
+
         /// <summary>
         /// Override to implement specific Dispose logic.
         /// </summary>
         protected virtual void DisposeSelf()
         {
-            
+
         }
     }
 }
