@@ -51,7 +51,7 @@ namespace Anvil.Unity.DelayedExecution
 #endif
 
             // This usually happens when m_UpdateSourceGameObject or one of its parents
-            // - Is accidentally destroyed by another process desroying GameObjects in the hierary.
+            // - Is accidentally destroyed by another process destroying GameObjects in the hierarchy.
             // - GameObject.DontDestroyOnLoad was not applied to the game object for some reason.
             Logger.Error($"{typeof(T)} was destroyed before its owner {this.GetType()}. Dispose must be called on the owner.");
         }
