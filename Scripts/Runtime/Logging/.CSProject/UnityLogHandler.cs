@@ -7,7 +7,7 @@ using ILogHandler = Anvil.CSharp.Logging.ILogHandler;
 namespace Anvil.Unity.Logging
 {
     /// <summary>
-    /// Forwards logs to UnityEngine.Debug.
+    /// Forwards logs from <see cref="Log"/> to <see cref="Debug"/>.
     /// </summary>
     [DefaultLogHandler(PRIORITY)]
     public class UnityLogHandler : ILogHandler

@@ -5,6 +5,10 @@ using StackFrame = System.Diagnostics.StackFrame;
 
 namespace Anvil.Unity.Logging
 {
+    /// <summary>
+    /// An implementation of <see cref="ILogListener"/> for the Unity <see cref="Debug"/> logger.
+    /// Captures all logging made through <see cref="Debug"/> and redirects them through a <see cref="Log.Logger"/>.
+    /// </summary>
     [DefaultLogListener]
     public sealed class UnityLogListener : ILogListener, UnityEngine.ILogHandler
     {
