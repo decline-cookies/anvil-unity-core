@@ -6,7 +6,7 @@ using StackFrame = System.Diagnostics.StackFrame;
 namespace Anvil.Unity.Logging
 {
     [DefaultLogListener]
-    public class UnityLogListener : ILogListener, UnityEngine.ILogHandler
+    public sealed class UnityLogListener : ILogListener, UnityEngine.ILogHandler
     {
         private static UnityLogListener s_Instance;
 
@@ -45,9 +45,7 @@ namespace Anvil.Unity.Logging
                 return;
             }
 
-            StackFrame stackFrame = GetLogCallerStackFrame();
-            object loggerContext = ResolveLogContext(context, stackFrame);
-            Log.GetLogger(loggerContext).AtLevel(LogTypeToLogLevel(logType), string.Format(format, args), stackFrame.GetFileName(), stackFrame.GetMethod().Name, stackFrame.GetFileLineNumber());
+            SendToLogger(context, LogTypeToLogLevel(logType), string.Format(format, args));
         }
 
         /// <inheritdoc />
@@ -61,14 +59,19 @@ namespace Anvil.Unity.Logging
                 return;
             }
 
-            StackFrame stackFrame = GetLogCallerStackFrame();
-            object loggerContext = ResolveLogContext(context, stackFrame);
-            Log.GetLogger(loggerContext).Error(exception.ToString(), stackFrame.GetFileName(), stackFrame.GetMethod().Name, stackFrame.GetFileLineNumber());
+            SendToLogger(context, LogLevel.Error, exception.ToString());   
         }
 
-        private StackFrame GetLogCallerStackFrame()
+        private void SendToLogger(UnityEngine.Object context, LogLevel logLevel, string message)
         {
-            return new StackFrame(4, true);
+            // Skip 4 frames to get to the original caller
+            // 1 - LogException or LogFormat
+            // 2 - UnityEngine.Logger.Log(+Warning, +Error, ...), Assert
+            // 3 - UnityEngine.Debug.Log(+Warning, +Error, ...), Assert
+            // 4 - Caller of Debug.Log(+Warning, +Error, ...), Assert
+            StackFrame stackFrame = new StackFrame(4, true);
+            object loggerContext = ResolveLogContext(context, stackFrame);
+            Log.GetLogger(loggerContext).AtLevel(logLevel, message, stackFrame.GetFileName(), stackFrame.GetMethod().Name, stackFrame.GetFileLineNumber());
         }
 
         private object ResolveLogContext(UnityEngine.Object unityContext, StackFrame stackFrame)
