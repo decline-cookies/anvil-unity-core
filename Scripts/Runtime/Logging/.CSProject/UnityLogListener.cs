@@ -23,6 +23,8 @@ namespace Anvil.Unity.Logging
         private static void Init()
         {
             s_Instance = null;
+            //Touch Log system to make sure this listener gets re-created ASAP.
+            Log.GetStaticLogger(typeof(UnityLogListener));
         }
 
         // The log handler in place before this listener initialized.
@@ -74,6 +76,15 @@ namespace Anvil.Unity.Logging
             // 3 - UnityEngine.Debug.Log(+Warning, +Error, ...), Assert
             // 4 - Caller of Debug.Log(+Warning, +Error, ...), Assert
             StackFrame stackFrame = new StackFrame(4, true);
+
+            // Check to see if this call went through Unity's new stubbed out logging class that
+            // currently just proxies the existing logging system.
+            // This was found in the v0.17 of the Unity.Entities package
+            if(stackFrame.GetMethod().ReflectedType.FullName == "Unity.Debug")
+            {
+                // Go one deeper to overcome the proxy.
+                stackFrame = new StackFrame(5, true);
+            }
             object loggerContext = ResolveLogContext(context, stackFrame);
             Log.GetLogger(loggerContext).AtLevel(logLevel, message, stackFrame.GetFileName(), stackFrame.GetMethod().Name, stackFrame.GetFileLineNumber());
         }
