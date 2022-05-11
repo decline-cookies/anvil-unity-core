@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Anvil.CSharp.Logging;
 using UnityEngine;
 using StackFrame = System.Diagnostics.StackFrame;
@@ -12,6 +13,11 @@ namespace Anvil.Unity.Logging
     [DefaultLogListener]
     public sealed class UnityLogListener : ILogListener, UnityEngine.ILogHandler
     {
+        /// <summary>
+        /// The context delivered when a context can't be resolved
+        /// </summary>
+        private sealed class UnknownContext { }
+
         private static UnityLogListener s_Instance;
 
         // With the Burst compiler, it's common to disable the Domain Reload step when entering play mode to increase iteration time.
@@ -65,7 +71,7 @@ namespace Anvil.Unity.Logging
                 return;
             }
 
-            SendToLogger(context, LogLevel.Error, exception.ToString());   
+            SendToLogger(context, LogLevel.Error, exception.ToString());
         }
 
         private void SendToLogger(UnityEngine.Object context, LogLevel logLevel, string message)
@@ -80,18 +86,21 @@ namespace Anvil.Unity.Logging
             // Check to see if this call went through Unity's new stubbed out logging class that
             // currently just proxies the existing logging system.
             // This was found in the v0.17 of the Unity.Entities package
-            if(stackFrame.GetMethod().ReflectedType.FullName == "Unity.Debug")
+            if (stackFrame.GetMethod()?.ReflectedType.FullName == "Unity.Debug")
             {
                 // Go one deeper to overcome the proxy.
                 stackFrame = new StackFrame(5, true);
             }
-            object loggerContext = ResolveLogContext(context, stackFrame);
-            Log.GetLogger(loggerContext).AtLevel(logLevel, message, stackFrame.GetFileName(), stackFrame.GetMethod().Name, stackFrame.GetFileLineNumber());
+
+            Log.Logger logger = context != null ? Log.GetLogger(context) : Log.GetStaticLogger(ResolveContextFromStack(stackFrame));
+            logger.AtLevel(logLevel, message, stackFrame.GetFileName(), stackFrame.GetMethod()?.Name, stackFrame.GetFileLineNumber());
         }
 
-        private object ResolveLogContext(UnityEngine.Object unityContext, StackFrame stackFrame)
+        private Type ResolveContextFromStack(StackFrame stackFrame)
         {
-            return unityContext == null ? stackFrame.GetMethod().ReflectedType : (object)unityContext;
+            MethodBase method = stackFrame.GetMethod();
+
+            return method != null ? method.ReflectedType : typeof(UnknownContext);
         }
 
         private LogLevel LogTypeToLogLevel(LogType logType)
