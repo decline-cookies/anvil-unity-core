@@ -4,6 +4,7 @@ using Anvil.CSharp.Logging;
 using UnityEngine;
 using StackFrame = System.Diagnostics.StackFrame;
 using System.Collections.Concurrent;
+using System.Collections;
 
 namespace Anvil.Unity.Logging
 {
@@ -33,13 +34,67 @@ namespace Anvil.Unity.Logging
             }
         }
 
-        private class LateUpdatePump : MonoBehaviour
+        // Pumps events off the main thread to indicate that pending logs
+        // should be processed.
+        // We want to process the queue as often as possible (within reason) so we can handle
+        // the logs as close to the time they were emitted as possible.
+        [DefaultExecutionOrder(int.MaxValue)]   // Execute last in each phase
+        private sealed class PendingLogPump : MonoBehaviour
         {
-            public event Action OnLateUpdate;
+            public event Action OnProcessPendingLogs;
+            private Coroutine m_EndOfFrameRoutine;
+
+            private void Start()
+            {
+                m_EndOfFrameRoutine = StartCoroutine(RunEndOfFrameRoutine());
+            }
+
+            private void FixedUpdate()
+            {
+                OnProcessPendingLogs?.Invoke();
+            }
+
+            private void Update()
+            {
+                OnProcessPendingLogs?.Invoke();
+            }
 
             private void LateUpdate()
             {
-                OnLateUpdate?.Invoke();
+                OnProcessPendingLogs?.Invoke();
+            }
+
+            private void OnPreRender()
+            {
+                OnProcessPendingLogs?.Invoke();
+            }
+
+            private void OnPostRender()
+            {
+                OnProcessPendingLogs?.Invoke();
+            }
+
+            private void OnGUI()
+            {
+                OnProcessPendingLogs?.Invoke();
+            }
+
+            private IEnumerator RunEndOfFrameRoutine()
+            {
+                while (true)
+                {
+                    yield return new WaitForEndOfFrame();
+                    OnProcessPendingLogs?.Invoke();
+                }
+            }
+
+            private void OnDestroy()
+            {
+                StopCoroutine(m_EndOfFrameRoutine);
+
+                // This is our last chance to process
+                OnProcessPendingLogs?.Invoke();
+                OnProcessPendingLogs = null;
             }
         }
 
@@ -95,9 +150,9 @@ namespace Anvil.Unity.Logging
 
             Application.logMessageReceivedThreaded += Application_logMessageReceivedThreaded;
 
-            GameObject lateUpdatePumpGO = new GameObject($"{nameof(UnityLogListener)}_{nameof(lateUpdatePumpGO)}");
-            lateUpdatePumpGO.AddComponent<LateUpdatePump>().OnLateUpdate += LateUpdatePump_OnLateUpdate;
-            lateUpdatePumpGO.hideFlags = HideFlags.DontSave|HideFlags.HideInHierarchy;
+            GameObject pendingLogPumpGO = new GameObject($"{nameof(UnityLogListener)}_{nameof(pendingLogPumpGO)}");
+            pendingLogPumpGO.AddComponent<PendingLogPump>().OnProcessPendingLogs += PendingLogPump_OnProcessPendingLogs;
+            pendingLogPumpGO.hideFlags = HideFlags.DontSave|HideFlags.HideInHierarchy;
         }
 
         /// <inheritdoc />
@@ -195,7 +250,7 @@ namespace Anvil.Unity.Logging
             //m_IsHandlingBurstedLog = false;
         }
 
-        private void LateUpdatePump_OnLateUpdate()
+        private void PendingLogPump_OnProcessPendingLogs()
         {
             ProcessPendingLogs();
         }
