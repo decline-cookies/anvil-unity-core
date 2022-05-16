@@ -16,6 +16,13 @@ namespace Anvil.Unity.Logging
     public sealed class UnityLogListener : ILogListener, UnityEngine.ILogHandler
     {
         /// <summary>
+        /// Place on a method to make the <see cref="UnityLogListener"> use the next 
+        /// call up the stack for the log caller context.
+        /// </summary>
+        [AttributeUsage(AttributeTargets.Method)]
+        public class ExcludeAttribute : Attribute { }
+
+        /// <summary>
         /// The context delivered when a context can't be resolved
         /// </summary>
         private sealed class UnknownContext { }
@@ -152,7 +159,7 @@ namespace Anvil.Unity.Logging
 
             GameObject pendingLogPumpGO = new GameObject($"{nameof(UnityLogListener)}_{nameof(pendingLogPumpGO)}");
             pendingLogPumpGO.AddComponent<PendingLogPump>().OnProcessPendingLogs += PendingLogPump_OnProcessPendingLogs;
-            pendingLogPumpGO.hideFlags = HideFlags.DontSave|HideFlags.HideInHierarchy;
+            pendingLogPumpGO.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
         }
 
         /// <inheritdoc />
@@ -169,7 +176,7 @@ namespace Anvil.Unity.Logging
                 {
                     return;
                 }
-                
+
                 m_ExistingLogHandler.LogFormat(logType, context, format, args);
                 return;
             }
@@ -257,7 +264,7 @@ namespace Anvil.Unity.Logging
 
         private void ProcessPendingLogs()
         {
-            while(m_PendingLogs.TryDequeue(out LogMessage message))
+            while (m_PendingLogs.TryDequeue(out LogMessage message))
             {
                 m_IsHandlingBurstedLog = message.IsFromBurstedContext;
                 SendToLogger(null, message.LogLevel, message.Message);
@@ -265,33 +272,53 @@ namespace Anvil.Unity.Logging
             m_IsHandlingBurstedLog = false;
         }
 
+
+
         private void SendToLogger(UnityEngine.Object context, LogLevel logLevel, string message)
         {
             // Skip 4 frames to get to the original caller
+            // 0 - Here
             // 1 - LogException or LogFormat
             // 2 - UnityEngine.Logger.Log(+Warning, +Error, ...), Assert
             // 3 - UnityEngine.Debug.Log(+Warning, +Error, ...), Assert
             // 4 - Caller of Debug.Log(+Warning, +Error, ...), Assert
-            StackFrame stackFrame = new StackFrame(4, true);
+            (StackFrame callerFrame, MethodBase callerMethod) = ResolveCaller(4);
 
-            // Check to see if this call went through Unity's new stubbed out logging class that
-            // currently just proxies the existing logging system.
-            // This was found in the v0.17 of the Unity.Entities package
-            if (stackFrame.GetMethod()?.ReflectedType.FullName == "Unity.Debug")
-            {
-                // Go one deeper to overcome the proxy.
-                stackFrame = new StackFrame(5, true);
-            }
-
-            Log.Logger logger = context != null ? Log.GetLogger(context) : Log.GetStaticLogger(ResolveContextFromStack(stackFrame));
-            logger.AtLevel(logLevel, message, stackFrame.GetFileName(), stackFrame.GetMethod()?.Name, stackFrame.GetFileLineNumber());
+            Log.Logger logger = context != null ? Log.GetLogger(context) : Log.GetStaticLogger(ResolveContextFromMethod(callerMethod));
+            logger.AtLevel(logLevel, message, callerFrame.GetFileName(), callerMethod?.Name, callerFrame.GetFileLineNumber());
         }
 
-        private Type ResolveContextFromStack(StackFrame stackFrame)
+        private (StackFrame callerFrame, MethodBase callerMethod) ResolveCaller(int skipFrames)
         {
-            MethodBase method = stackFrame.GetMethod();
+            StackFrame callerFrame;
+            MethodBase callerMethod;
+            // Walk up the stack until we're at a caller that isn't Unity's proxy or a method that we 
+            // want to skip (Ex: Logger objects).
+            do
+            {
+                skipFrames++;
+                callerFrame = new StackFrame(skipFrames, true);
+                callerMethod = callerFrame.GetMethod();
+            } while (
+                callerMethod != null
+                // Skip methods with the skip attribute
+                && (
+                    callerMethod.GetCustomAttribute<ExcludeAttribute>(true) != null
 
-            return method != null ? method.ReflectedType : typeof(UnknownContext);
+                    // Check to see if this call went through Unity's new stubbed out logging class that
+                    // currently just proxies the existing logging system.
+                    // This was found in the v0.17 of the Unity.Entities package
+                    || callerMethod.ReflectedType.FullName == "Unity.Debug"
+                    )
+                );
+
+            return (callerFrame, callerMethod);
+        }
+
+
+        private Type ResolveContextFromMethod(MethodBase callerMethod)
+        {
+            return callerMethod != null ? callerMethod.ReflectedType : typeof(UnknownContext);
         }
 
         private LogLevel LogTypeToLogLevel(LogType logType)
