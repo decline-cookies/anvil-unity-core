@@ -81,11 +81,6 @@ namespace Anvil.Unity.Logging
                 OnProcessPendingLogs?.Invoke();
             }
 
-            private void OnGUI()
-            {
-                OnProcessPendingLogs?.Invoke();
-            }
-
             private IEnumerator RunEndOfFrameRoutine()
             {
                 while (true)
