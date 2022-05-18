@@ -234,7 +234,7 @@ namespace Anvil.Unity.Logging
             //       - UnityLogHandler.HandleLog
             //        - Debug.Log
             //         - UnityLogListener.LogFormat - Do nothing because m_IsHandlingBurstedLog = true
-            //  - Someting external (BurstCompilerService.Log?) emits the log to the Unity console
+            //  - Something external (BurstCompilerService.Log?) emits the log to the Unity console
             //      
             // From a Log.Logger instance
             //  - Log.Logger.Debug
@@ -247,9 +247,6 @@ namespace Anvil.Unity.Logging
             //         - UnityLogListener.Application_logMessageReceivedThreaded - Do nothing because Log.IsHandling == true
             //        - m_ExistingLogHandler emits log to the Unity console
             m_PendingLogs.Enqueue(new LogMessage(condition, LogTypeToLogLevel(type), true));
-            //m_IsHandlingBurstedLog = true;
-            //SendToLogger(null, LogTypeToLogLevel(type), condition);
-            //m_IsHandlingBurstedLog = false;
         }
 
         private void PendingLogPump_OnProcessPendingLogs()
