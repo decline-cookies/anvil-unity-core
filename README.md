@@ -28,3 +28,9 @@ This is the recommended Unity project folder structure:
   - Anvil
     - anvil-csharp-core
     - anvil-unity-core
+
+# Common Errors
+## Can't Compile - Errors related to Logging or Logging DLLs are recognized as "Native"
+> Example: `The type or namespace name 'ILogHandler' could not be found`
+This usually means that Git LFS hasn't been initialized. Check the size of the DLL. if it's less than a kilobyte then the Git LFS files have not yet been resolved.
+Running `git lfs pull` in each submodules will generally fix the issue.
