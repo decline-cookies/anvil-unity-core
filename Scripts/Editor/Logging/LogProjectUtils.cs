@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -32,6 +33,7 @@ namespace Anvil.Unity.Logging
         private static readonly string UNITY_SOLUTION_PATH;
         private static readonly string UNITY_CORE_ASSEMBLY_PATH;
 
+        [SuppressMessage("Performance", "HLQ005:Avoid Single() and SingleOrDefault()")]
         static LogProjectUtils()
         {
             string unityRootPath = Path.GetDirectoryName(EditorApplication.applicationPath) ?? string.Empty;
@@ -67,6 +69,7 @@ namespace Anvil.Unity.Logging
             Application.OpenURL(GetFileURL(UNITY_SOLUTION_PATH));
         }
 
+        [SuppressMessage("Performance", "HLQ005:Avoid Single() and SingleOrDefault()")]
         private static void UpdateUnityProjectReferences()
         {
             string projectPath = Path.ChangeExtension(UNITY_SOLUTION_PATH, ".csproj") ?? string.Empty;
