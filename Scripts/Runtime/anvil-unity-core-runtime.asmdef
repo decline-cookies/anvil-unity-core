@@ -1,7 +1,8 @@
 {
     "name": "anvil-unity-core-runtime",
     "references": [
-        "anvil-csharp-core"
+        "anvil-csharp-core",
+        "Unity.Mathematics"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
