@@ -5,6 +5,7 @@ using UnityEngine;
 using StackFrame = System.Diagnostics.StackFrame;
 using System.Collections.Concurrent;
 using System.Collections;
+using Logger = Anvil.CSharp.Logging.Logger;
 
 namespace Anvil.Unity.Logging
 {
@@ -16,7 +17,7 @@ namespace Anvil.Unity.Logging
     public sealed class UnityLogListener : ILogListener, UnityEngine.ILogHandler
     {
         /// <summary>
-        /// Place on a method to make the <see cref="UnityLogListener"> use the next 
+        /// Place on a method to make the <see cref="UnityLogListener"> use the next
         /// call up the stack for the log caller context.
         /// </summary>
         [AttributeUsage(AttributeTargets.Method)]
@@ -235,7 +236,7 @@ namespace Anvil.Unity.Logging
             //        - Debug.Log
             //         - UnityLogListener.LogFormat - Do nothing because m_IsHandlingBurstedLog = true
             //  - Something external (BurstCompilerService.Log?) emits the log to the Unity console
-            //      
+            //
             // From a Log.Logger instance
             //  - Log.Logger.Debug
             //   - Log.DispatchLog - set Log.IsHandlingLog = true
@@ -276,7 +277,7 @@ namespace Anvil.Unity.Logging
             // 4 - Caller of Debug.Log(+Warning, +Error, ...), Assert
             (StackFrame callerFrame, MethodBase callerMethod) = ResolveCaller(4);
 
-            Log.Logger logger = context != null ? Log.GetLogger(context) : Log.GetStaticLogger(ResolveContextFromMethod(callerMethod));
+            Logger logger = context != null ? Log.GetLogger(context) : Log.GetStaticLogger(ResolveContextFromMethod(callerMethod));
             logger.AtLevel(logLevel, message, callerFrame.GetFileName(), callerMethod?.Name, callerFrame.GetFileLineNumber());
         }
 
@@ -284,7 +285,7 @@ namespace Anvil.Unity.Logging
         {
             StackFrame callerFrame;
             MethodBase callerMethod;
-            // Walk up the stack until we're at a caller that isn't Unity's proxy or a method that we 
+            // Walk up the stack until we're at a caller that isn't Unity's proxy or a method that we
             // want to skip (Ex: Logger objects).
             do
             {
