@@ -1,4 +1,5 @@
 ﻿using Anvil.CSharp.Content;
+using Anvil.CSharp.Logging;
 using UnityEngine;
 
 namespace Anvil.Unity.Content
@@ -30,7 +31,7 @@ namespace Anvil.Unity.Content
             {
                 Object.Destroy(ContentRoot.gameObject);
             }
-            
+
             base.DisposeSelf();
         }
 
@@ -38,11 +39,6 @@ namespace Anvil.Unity.Content
         {
             UnityContentGroup unityContentGroup = new UnityContentGroup(this, configVO);
             return unityContentGroup;
-        }
-
-        protected override void LogWarning(string message)
-        {
-            Debug.LogWarning(message);
         }
 
         private void PreventDestroyOnLoad()
@@ -53,12 +49,11 @@ namespace Anvil.Unity.Content
             }
             else
             {
-                LogWarning(
-                    $"This {nameof(UnityContentManager)} may be destroyed on a scene change. ContentRoot: {ContentRoot.name}\n" +
-                    $"The {nameof(ContentRoot)} provided is not at the root of the hierarchy."
+                Logger.Warning(
+            $"This {nameof(UnityContentManager)} may be destroyed on a scene change. ContentRoot: {ContentRoot.name}"
+                    + $"\nThe {nameof(ContentRoot)} provided is not at the root of the hierarchy."
                     );
             }
         }
     }
 }
-
