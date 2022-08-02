@@ -1,5 +1,6 @@
 {
     "name": "anvil-unity-core-runtime",
+    "rootNamespace": "Anvil.Unity",
     "references": [
         "anvil-csharp-core"
     ],

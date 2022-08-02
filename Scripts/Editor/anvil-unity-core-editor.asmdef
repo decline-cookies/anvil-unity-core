@@ -1,5 +1,6 @@
 {
     "name": "anvil-unity-core-editor",
+    "rootNamespace": "Anvil.Unity.Editor",
     "references": [
         "anvil-csharp-core",
         "anvil-unity-core-runtime"
