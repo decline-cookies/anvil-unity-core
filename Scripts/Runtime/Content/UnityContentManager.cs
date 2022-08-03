@@ -50,7 +50,7 @@ namespace Anvil.Unity.Content
             else
             {
                 Logger.Warning(
-            $"This {nameof(UnityContentManager)} may be destroyed on a scene change. ContentRoot: {ContentRoot.name}"
+                    $"This {nameof(UnityContentManager)} may be destroyed on a scene change. ContentRoot: {ContentRoot.name}"
                     + $"\nThe {nameof(ContentRoot)} provided is not at the root of the hierarchy."
                     );
             }
