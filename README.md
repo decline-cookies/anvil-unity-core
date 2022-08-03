@@ -5,6 +5,7 @@ An opinionated collection of systems and utilities that add [Unity](https://unit
 Refer to the [anvil-csharp-core](https://github.com/decline-cookies/anvil-csharp-core) for a description of Anvil's purpose and the team's motivations.
 
 ## Expectations
+
 See: [anvil-csharp-core](https://github.com/decline-cookies/anvil-csharp-core)
 
 The code is reasonably clean but documentation and examples are sparse. Feel free to [reach out on Twitter](https://twitter.com/declinecookies) or open issues with questions.
@@ -12,18 +13,23 @@ The code is reasonably clean but documentation and examples are sparse. Feel fre
 ⚠️ We welcome PRs and bug reports but making this repo a public success is not our priority. No promises on when it will be addressed!
 
 # Dependencies
+
 - [Unity](https://unity.com/)
+  - [Unity.Mathematics](https://docs.unity3d.com/Packages/com.unity.mathematics@1.2/manual/index.html)
 - [anvil-csharp-core](https://github.com/decline-cookies/anvil-csharp-core)
 
 # Features
- - [ ] TODO: [#49](https://github.com/decline-cookies/anvil-unity-core/issues/49)
+
+- [ ] TODO: [#49](https://github.com/decline-cookies/anvil-unity-core/issues/49)
 
 # Project Setup
+
 1. Add [Dependencies](#dependencies) as submodules to your project
 2. Make use of [Features](#features) as desired.
 3. Done!
 
 This is the recommended Unity project folder structure:
+
 - Assets
   - Anvil
     - anvil-csharp-core
