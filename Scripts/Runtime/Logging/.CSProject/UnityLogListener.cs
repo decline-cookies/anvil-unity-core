@@ -11,7 +11,7 @@ namespace Anvil.Unity.Logging
 {
     /// <summary>
     /// An implementation of <see cref="ILogListener"/> for the Unity <see cref="Debug"/> logger.
-    /// Captures all logging made through <see cref="Debug"/> and redirects them through a <see cref="Log.Logger"/>.
+    /// Captures all logging made through <see cref="Debug"/> and redirects them through a <see cref="Logger"/>.
     /// </summary>
     [DefaultLogListener]
     public sealed class UnityLogListener : ILogListener, UnityEngine.ILogHandler
@@ -237,8 +237,8 @@ namespace Anvil.Unity.Logging
             //         - UnityLogListener.LogFormat - Do nothing because m_IsHandlingBurstedLog = true
             //  - Something external (BurstCompilerService.Log?) emits the log to the Unity console
             //
-            // From a Log.Logger instance
-            //  - Log.Logger.Debug
+            // From a Logger instance
+            //  - Logger.Debug
             //   - Log.DispatchLog - set Log.IsHandlingLog = true
             //    - UnityLogHandler.HandleLog
             //     - Debug.Log
