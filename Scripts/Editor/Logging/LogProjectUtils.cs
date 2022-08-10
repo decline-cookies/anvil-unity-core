@@ -25,8 +25,8 @@ namespace Anvil.Unity.Logging
 
         private const string UNITY_CORE_ASSEMBLY_NAME = "UnityEngine.CoreModule";
 
-        private static readonly string CSHARP_ASSEMBLY_NAME = typeof(Log).Namespace;
-        private static readonly string UNITY_ASSEMBLY_NAME = typeof(LogProjectUtils).Namespace;
+        private static readonly string CSHARP_ASSEMBLY_NAME = typeof(Log).Assembly.GetName().Name;
+        private static readonly string UNITY_ASSEMBLY_NAME = typeof(UnityLogHandler).Assembly.GetName().Name;
 
         private static readonly string CSHARP_ASSEMBLY_PATH;
         private static readonly string CSHARP_SOLUTION_PATH;
