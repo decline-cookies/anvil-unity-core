@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly:AssemblyTitle("Anvil.Unity.Logging")]
+[assembly:AssemblyTitle("anvil-unity-logging")]
 [assembly:AssemblyDescription("")]
 [assembly:AssemblyConfiguration("")]
 [assembly:AssemblyCompany("")]
-[assembly:AssemblyProduct("Anvil.Unity.Logging")]
+[assembly:AssemblyProduct("anvil-unity-logging")]
 [assembly:AssemblyCopyright("Copyright ©  2020")]
 [assembly:AssemblyTrademark("")]
 [assembly:AssemblyCulture("")]
