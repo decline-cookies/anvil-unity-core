@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anvil.Unity.Logging", "Anvil.Unity.Logging.csproj", "{C23276FB-C22C-4C6E-8CEA-292E34277D59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "anvil-unity-logging", "anvil-unity-logging.csproj", "{C23276FB-C22C-4C6E-8CEA-292E34277D59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
