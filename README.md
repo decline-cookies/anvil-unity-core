@@ -1,3 +1,5 @@
+![GitHub](https://img.shields.io/github/license/decline-cookies/anvil-csharp-core)
+
 # anvil-unity-core
 
 An opinionated collection of systems and utilities that add [Unity](https://unity.com) specific implementations of [Anvil](https://github.com/decline-cookies/anvil-csharp-core) systems and add new common tools and systems that are uniquely useful to Unity development.
