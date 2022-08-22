@@ -5,6 +5,7 @@ using UnityEngine;
 using StackFrame = System.Diagnostics.StackFrame;
 using System.Collections.Concurrent;
 using System.Collections;
+using UnityEngine.Scripting;
 using Logger = Anvil.CSharp.Logging.Logger;
 
 namespace Anvil.Unity.Logging
@@ -14,6 +15,7 @@ namespace Anvil.Unity.Logging
     /// Captures all logging made through <see cref="Debug"/> and redirects them through a <see cref="Logger"/>.
     /// </summary>
     [DefaultLogListener]
+    [Preserve]
     public sealed class UnityLogListener : ILogListener, UnityEngine.ILogHandler
     {
         /// <summary>
