@@ -2,6 +2,7 @@
 using System.IO;
 using Anvil.CSharp.Logging;
 using UnityEngine;
+using UnityEngine.Scripting;
 using ILogHandler = Anvil.CSharp.Logging.ILogHandler;
 
 namespace Anvil.Unity.Logging
@@ -10,6 +11,7 @@ namespace Anvil.Unity.Logging
     /// Forwards logs from <see cref="Log"/> to <see cref="Debug"/>.
     /// </summary>
     [DefaultLogHandler(PRIORITY)]
+    [Preserve]
     public class UnityLogHandler : ILogHandler
     {
         public const uint PRIORITY = ConsoleLogHandler.PRIORITY + 10;

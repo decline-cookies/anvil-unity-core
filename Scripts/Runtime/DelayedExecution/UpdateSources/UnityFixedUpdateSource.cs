@@ -1,4 +1,6 @@
-﻿namespace Anvil.Unity.DelayedExecution
+﻿using UnityEngine.Scripting;
+
+namespace Anvil.Unity.DelayedExecution
 {
     /// <summary>
     /// A specific <see cref="AbstractUnityUpdateSource"/> that dispatches
@@ -8,5 +10,8 @@
     /// </summary>
     public class UnityFixedUpdateSource : AbstractUnityUpdateSource<UnityFixedUpdateSourceMonoBehaviour>
     {
+        // Required to prevent constructor from being stripped when this type is referenced.
+        [RequiredMember]
+        public UnityFixedUpdateSource() : base() { }
     }
 }
