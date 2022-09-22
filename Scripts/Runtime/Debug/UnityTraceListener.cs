@@ -14,13 +14,24 @@ namespace Anvil.Unity.Debugging
     /// Note: Both <see cref="System.Diagnostics.Debug"> and <see cref="System.Diagnostics.Trace"> functions use the same
     /// listener, the difference is that Debug functions become no-ops in release builds, while Trace always works.
     /// </summary>
-    public class UnityTraceListener : System.Diagnostics.TraceListener
+    internal class UnityTraceListener : System.Diagnostics.TraceListener
     {
+        private static UnityTraceListener s_Instance;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init()
         {
-            System.Diagnostics.Trace.Listeners.Add(new UnityTraceListener());
+            if (s_Instance != null)
+            {
+                System.Diagnostics.Trace.Listeners.Remove(s_Instance);
+                s_Instance = null;
+            }
+
+            s_Instance = new UnityTraceListener();
+            System.Diagnostics.Trace.Listeners.Add(s_Instance);
         }
+
+        private UnityTraceListener() { }
 
         public override void Write(string message) { UnityEngine.Debug.Log(message); }
         public override void WriteLine(string message) { UnityEngine.Debug.Log(message); }
