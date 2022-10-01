@@ -1,5 +1,4 @@
-using System;
-using UnityEngine;
+using Anvil.Unity.Logging;
 
 namespace Anvil.Unity.Debugging
 {
@@ -18,7 +17,7 @@ namespace Anvil.Unity.Debugging
     {
         private static UnityTraceListener s_Instance;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init()
         {
             if (s_Instance != null)
@@ -33,10 +32,14 @@ namespace Anvil.Unity.Debugging
 
         private UnityTraceListener() { }
 
-        public override void Write(string message) { UnityEngine.Debug.Log(message); }
+        [UnityLogListener.Exclude]
         public override void WriteLine(string message) { UnityEngine.Debug.Log(message); }
+        [UnityLogListener.Exclude]
+        public override void Write(string message) { WriteLine(message); }
 
-        public override void Fail(string message) { throw new Exception(message); }
-        public override void Fail(string message, string details) { throw new Exception($"{message} {details}"); }
+        [UnityLogListener.Exclude]
+        public override void Fail(string message) { throw new System.Exception(message); }
+        [UnityLogListener.Exclude]
+        public override void Fail(string message, string details) { Fail($"{message}\n{details}"); }
     }
 }
