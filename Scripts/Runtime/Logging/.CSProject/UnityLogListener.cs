@@ -3,10 +3,13 @@ using System.Reflection;
 using Anvil.CSharp.Logging;
 using UnityEngine;
 using StackFrame = System.Diagnostics.StackFrame;
+using StackTrace = System.Diagnostics.StackTrace;
 using System.Collections.Concurrent;
 using System.Collections;
 using UnityEngine.Scripting;
 using Logger = Anvil.CSharp.Logging.Logger;
+using System.Linq;
+using System.IO;
 
 namespace Anvil.Unity.Logging
 {
@@ -103,6 +106,20 @@ namespace Anvil.Unity.Logging
             }
         }
 
+        // When determining the context of a log, any frames in the stack trace matching these types are skipped
+        private static readonly string[] SKIPPED_STACK_FRAME_TYPES =
+        {
+            "System.Diagnostics.Debug",
+            "System.Diagnostics.Trace",
+            "System.Diagnostics.TraceInternal",
+            "UnityEngine.Debug",
+            "UnityEngine.Logger",
+            "UnityEngine.Assertions",
+            // Check for Unity's new stubbed out logging class that currently just proxies the existing logging system.
+            // This was found in the v0.17 of the Unity.Entities package
+            "Unity.Debug",
+        };
+
         private static UnityLogListener s_Instance;
 
         // With the Burst compiler, it's common to disable the Domain Reload step when entering play mode to increase iteration time.
@@ -145,7 +162,10 @@ namespace Anvil.Unity.Logging
 
         public UnityLogListener()
         {
-            Debug.Assert(s_Instance == null, $"There can only be one instance of the {nameof(UnityLogListener)} and it has already been initialized.");
+            if (s_Instance != null)
+            {
+                throw new Exception($"There can only be one instance of the {nameof(UnityLogListener)} and it has already been initialized.");
+            }
             s_Instance = this;
 
             m_PendingLogs = new ConcurrentQueue<LogMessage>();
@@ -161,6 +181,7 @@ namespace Anvil.Unity.Logging
         }
 
         /// <inheritdoc />
+        [UnityLogListener.Exclude]
         public void LogFormat(LogType logType, UnityEngine.Object context, string format, params object[] args)
         {
             // Bypass redirecting unity log messages to logger if logger is already handling the log.
@@ -179,10 +200,19 @@ namespace Anvil.Unity.Logging
                 return;
             }
 
-            SendToLogger(context, LogTypeToLogLevel(logType), string.Format(format, args));
+            // Make UnityEngine.Debug.Assert failures throw an exception instead of just logging an error
+            StackTrace stackTrace = new StackTrace(fNeedFileInfo: true);
+            MethodBase assertMethod = stackTrace.GetFrame(2)?.GetMethod(); // Skip this function and UnityEngine.Logger
+            if (assertMethod != null && assertMethod.Name == "Assert" && assertMethod.DeclaringType.FullName == "UnityEngine.Debug")
+            {
+                throw new Exception(string.Format(format, args));
+            }
+
+            SendToLogger(context, LogTypeToLogLevel(logType), string.Format(format, args), stackTrace);
         }
 
         /// <inheritdoc />
+        [UnityLogListener.Exclude]
         public void LogException(Exception exception, UnityEngine.Object context)
         {
             // Bypass redirecting unity log messages to logger if logger is already handling the log.
@@ -201,7 +231,7 @@ namespace Anvil.Unity.Logging
                 return;
             }
 
-            SendToLogger(context, LogLevel.Error, exception.ToString());
+            SendToLogger(context, LogLevel.Error, exception.ToString(), new StackTrace(exception, fNeedFileInfo: true));
         }
 
         private void Application_logMessageReceivedThreaded(string condition, string stackTrace, LogType type)
@@ -267,47 +297,48 @@ namespace Anvil.Unity.Logging
             m_IsHandlingBurstedLog = false;
         }
 
-
-
-        private void SendToLogger(UnityEngine.Object context, LogLevel logLevel, string message)
+        private void SendToLogger(UnityEngine.Object context, LogLevel logLevel, string message, StackTrace stackTrace = null)
         {
-            // Skip 4 frames to get to the original caller
-            // 0 - Here
-            // 1 - LogException or LogFormat
-            // 2 - UnityEngine.Logger.Log(+Warning, +Error, ...), Assert
-            // 3 - UnityEngine.Debug.Log(+Warning, +Error, ...), Assert
-            // 4 - Caller of Debug.Log(+Warning, +Error, ...), Assert
-            (StackFrame callerFrame, MethodBase callerMethod) = ResolveCaller(4);
+            (StackFrame callerFrame, MethodBase callerMethod) = ResolveCaller(stackTrace);
+
+            string callerPath = callerFrame?.GetFileName() ?? callerMethod?.ReflectedType.Name;
 
             Logger logger = context != null ? Log.GetLogger(context) : Log.GetStaticLogger(ResolveContextFromMethod(callerMethod));
-            logger.AtLevel(logLevel, message, callerFrame.GetFileName(), callerMethod?.Name, callerFrame.GetFileLineNumber());
+            logger.AtLevel(logLevel, message, callerPath, callerMethod?.Name, callerFrame?.GetFileLineNumber() ?? 0);
         }
 
-        private (StackFrame callerFrame, MethodBase callerMethod) ResolveCaller(int skipFrames)
+        private (StackFrame callerFrame, MethodBase callerMethod) ResolveCaller(StackTrace stackTrace = null)
         {
-            StackFrame callerFrame;
-            MethodBase callerMethod;
-            // Walk up the stack until we're at a caller that isn't Unity's proxy or a method that we
-            // want to skip (Ex: Logger objects).
-            do
+            // If no explicit stack trace is given, skip 3 frames (ResolveCaller, SendToLogger, and LogFormat/LogException)
+            int frameIndex = (stackTrace == null ? 3 : 0);
+            StackFrame frame;
+
+            while ((frame = GetNextFrame()) != null)
             {
-                skipFrames++;
-                callerFrame = new StackFrame(skipFrames, true);
-                callerMethod = callerFrame.GetMethod();
-            } while (
-                callerMethod != null
-                // Skip methods with the skip attribute
-                && (
-                    callerMethod.GetCustomAttribute<ExcludeAttribute>(true) != null
+                MethodBase method = frame.GetMethod();
 
-                    // Check to see if this call went through Unity's new stubbed out logging class that
-                    // currently just proxies the existing logging system.
-                    // This was found in the v0.17 of the Unity.Entities package
-                    || callerMethod.ReflectedType.FullName == "Unity.Debug"
-                    )
-                );
+                ExcludeAttribute excludeAttribute = method.GetCustomAttribute<ExcludeAttribute>(inherit: true);
+                if (excludeAttribute != null) continue;
+                
+                string typeName = method.DeclaringType.FullName;
+                if (SKIPPED_STACK_FRAME_TYPES.Any(name => typeName.StartsWith(name))) continue;
 
-            return (callerFrame, callerMethod);
+                return (frame, method);
+            }
+
+            return (null, null);
+
+            StackFrame GetNextFrame()
+            {
+                // Get each frame with `new StackFrame()` for performance reasons; using `new StackTrace()` to get all
+                // frames at once can be significantly more expensive, especially for long call stacks.
+                StackFrame nextFrame = (stackTrace != null
+                    ? stackTrace.GetFrame(frameIndex)
+                    : new StackFrame(frameIndex, fNeedFileInfo: true));
+
+                ++frameIndex;
+                return nextFrame;
+            }
         }
 
 
