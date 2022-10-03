@@ -5,6 +5,7 @@ using UnityEngine;
 using StackFrame = System.Diagnostics.StackFrame;
 using StackTrace = System.Diagnostics.StackTrace;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.Scripting;
 using Logger = Anvil.CSharp.Logging.Logger;
@@ -107,14 +108,15 @@ namespace Anvil.Unity.Logging
         }
 
         // When determining the context of a log, any frames in the stack trace matching these types are skipped
-        private static readonly string[] SKIPPED_STACK_FRAME_TYPES =
+        private static readonly HashSet<string> SKIPPED_STACK_FRAME_TYPES = new HashSet<string>
         {
             "System.Diagnostics.Debug",
             "System.Diagnostics.Trace",
             "System.Diagnostics.TraceInternal",
+            "System.Diagnostics.TraceListener",
             "UnityEngine.Debug",
             "UnityEngine.Logger",
-            "UnityEngine.Assertions",
+            "UnityEngine.Assertions.Assert",
             // Check for Unity's new stubbed out logging class that currently just proxies the existing logging system.
             // This was found in the v0.17 of the Unity.Entities package
             "Unity.Debug",
@@ -301,7 +303,7 @@ namespace Anvil.Unity.Logging
         {
             (StackFrame callerFrame, MethodBase callerMethod) = ResolveCaller(stackTrace);
 
-            string callerPath = callerFrame?.GetFileName() ?? callerMethod?.ReflectedType.Name;
+            string callerPath = callerFrame?.GetFileName() ?? callerMethod?.ReflectedType.FullName;
 
             Logger logger = context != null ? Log.GetLogger(context) : Log.GetStaticLogger(ResolveContextFromMethod(callerMethod));
             logger.AtLevel(logLevel, message, callerPath, callerMethod?.Name, callerFrame?.GetFileLineNumber() ?? 0);
@@ -317,11 +319,15 @@ namespace Anvil.Unity.Logging
             {
                 MethodBase method = frame.GetMethod();
 
-                ExcludeAttribute excludeAttribute = method.GetCustomAttribute<ExcludeAttribute>(inherit: true);
-                if (excludeAttribute != null) continue;
+                if (method.GetCustomAttribute<ExcludeAttribute>(inherit: true) != null)
+                {
+                    continue;
+                }
                 
-                string typeName = method.DeclaringType.FullName;
-                if (SKIPPED_STACK_FRAME_TYPES.Any(name => typeName.StartsWith(name))) continue;
+                if (SKIPPED_STACK_FRAME_TYPES.Contains(method.DeclaringType.FullName))
+                {
+                    continue;
+                }
 
                 return (frame, method);
             }
