@@ -122,6 +122,8 @@ namespace Anvil.Unity.Logging
             "Unity.Debug",
         };
 
+        private static readonly string UNITY_DEBUG_ASSEMBLY_STRING = typeof(Debug).Assembly.ToString();
+
         private static UnityLogListener s_Instance;
 
         // With the Burst compiler, it's common to disable the Domain Reload step when entering play mode to increase iteration time.
@@ -203,14 +205,16 @@ namespace Anvil.Unity.Logging
             }
 
             // Make UnityEngine.Debug.Assert failures throw an exception instead of just logging an error
-            StackTrace stackTrace = new StackTrace(fNeedFileInfo: true);
-            MethodBase assertMethod = stackTrace.GetFrame(2)?.GetMethod(); // Skip this function and UnityEngine.Logger
-            if (assertMethod != null && assertMethod.Name == "Assert" && assertMethod.DeclaringType.FullName == "UnityEngine.Debug")
+            // NOTE: Skip this function and UnityEngine.Logger (check frame index 2)
+            MethodBase assertMethod = new StackFrame(2, fNeedFileInfo: true)?.GetMethod();
+            if (assertMethod != null &&
+                assertMethod.Name == nameof(Debug.Assert) &&
+                assertMethod.DeclaringType.Assembly.ToString() == UNITY_DEBUG_ASSEMBLY_STRING)
             {
                 throw new Exception(string.Format(format, args));
             }
 
-            SendToLogger(context, LogTypeToLogLevel(logType), string.Format(format, args), stackTrace);
+            SendToLogger(context, LogTypeToLogLevel(logType), string.Format(format, args));
         }
 
         /// <inheritdoc />
@@ -233,7 +237,7 @@ namespace Anvil.Unity.Logging
                 return;
             }
 
-            SendToLogger(context, LogLevel.Error, exception.ToString(), new StackTrace(exception, fNeedFileInfo: true));
+            SendToLogger(context, LogLevel.Error, exception.ToString(), exception);
         }
 
         private void Application_logMessageReceivedThreaded(string condition, string stackTrace, LogType type)
@@ -299,20 +303,21 @@ namespace Anvil.Unity.Logging
             m_IsHandlingBurstedLog = false;
         }
 
-        private void SendToLogger(UnityEngine.Object context, LogLevel logLevel, string message, StackTrace stackTrace = null)
+        private void SendToLogger(UnityEngine.Object context, LogLevel logLevel, string message, Exception exception = null)
         {
-            (StackFrame callerFrame, MethodBase callerMethod) = ResolveCaller(stackTrace);
+            (StackFrame callerFrame, MethodBase callerMethod) = ResolveCaller(exception);
 
-            string callerPath = callerFrame?.GetFileName() ?? callerMethod?.ReflectedType.FullName;
+            string callerPath = callerFrame?.GetFileName() ?? callerMethod?.ReflectedType.Name;
 
             Logger logger = context != null ? Log.GetLogger(context) : Log.GetStaticLogger(ResolveContextFromMethod(callerMethod));
             logger.AtLevel(logLevel, message, callerPath, callerMethod?.Name, callerFrame?.GetFileLineNumber() ?? 0);
         }
 
-        private (StackFrame callerFrame, MethodBase callerMethod) ResolveCaller(StackTrace stackTrace = null)
+        private (StackFrame callerFrame, MethodBase callerMethod) ResolveCaller(Exception exception = null)
         {
+            StackTrace stackTrace = (exception == null ? null : new StackTrace(exception, fNeedFileInfo: true));
             // If no explicit stack trace is given, skip 3 frames (ResolveCaller, SendToLogger, and LogFormat/LogException)
-            int frameIndex = (stackTrace == null ? 3 : 0);
+            int frameIndex = (exception == null ? 3 : 0);
             StackFrame frame;
 
             while ((frame = GetNextFrame()) != null)
