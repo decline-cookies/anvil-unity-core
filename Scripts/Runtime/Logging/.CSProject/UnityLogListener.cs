@@ -316,14 +316,13 @@ namespace Anvil.Unity.Logging
         private (StackFrame callerFrame, MethodBase callerMethod) ResolveCaller(Exception exception = null)
         {
             StackTrace stackTrace = (exception == null ? null : new StackTrace(exception, fNeedFileInfo: true));
-            // If no explicit stack trace is given, skip 3 frames (ResolveCaller, SendToLogger, and LogFormat/LogException)
-            int frameIndex = (exception == null ? 3 : 0);
+            // If no explicit stack trace is given, skip 4 frames (GetNextFrame, ResolveCaller, SendToLogger, and LogFormat/LogException)
+            int frameIndex = (exception == null ? 4 : 0);
+
             StackFrame frame;
-
-            while ((frame = GetNextFrame()) != null)
+            MethodBase method;
+            while ((frame = GetNextFrame()) != null && (method = frame.GetMethod()) != null)
             {
-                MethodBase method = frame.GetMethod();
-
                 if (method.GetCustomAttribute<ExcludeAttribute>(inherit: true) != null)
                 {
                     continue;
