@@ -24,7 +24,16 @@ namespace Anvil.Unity.Logging
             string callerName,
             int callerLine)
         {
-            message = $"({Path.GetFileNameWithoutExtension(callerPath)}:{callerLine}|{callerName}) {message}";
+            string callerFile = Path.GetFileNameWithoutExtension(callerPath);
+
+            if(callerLine > 0)
+            {
+               message = $"({callerFile}:{callerLine}|{callerName}) {message}"
+            }
+            else
+            {
+               message = $"({callerFile}|{callerName}) {message}"
+            }
 
             switch (level)
             {
