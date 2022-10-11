@@ -53,3 +53,6 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+
+# Logging project (not imported by Unity)
+/Scripts/Runtime/Logging/.CSProject/**/*.meta
