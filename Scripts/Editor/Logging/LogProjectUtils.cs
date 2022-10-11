@@ -75,7 +75,6 @@ namespace Anvil.Unity.Logging
             string projectPath = Path.ChangeExtension(UNITY_SOLUTION_PATH, ".csproj") ?? string.Empty;
 
             XElement root = XElement.Load(projectPath);
-            XNamespace ns = (string)root.Attribute("xmlns");
 
             FindReferenceElement(CSHARP_ASSEMBLY_NAME).Value = Path.GetFullPath(CSHARP_ASSEMBLY_PATH);
             FindReferenceElement(UNITY_CORE_ASSEMBLY_NAME).Value = UNITY_CORE_ASSEMBLY_PATH;
@@ -83,11 +82,11 @@ namespace Anvil.Unity.Logging
             root.Save(projectPath);
 
             XElement FindReferenceElement(string assemblyName) =>
-                (from itemGroup in root.Elements(ns + "ItemGroup")
-                from reference in itemGroup.Elements(ns + "Reference")
+                (from itemGroup in root.Elements("ItemGroup")
+                from reference in itemGroup.Elements("Reference")
                 where ((string)reference.Attribute("Include")).Contains(assemblyName)
                 select reference)
-                .Single().Element(ns + "HintPath");
+                .Single().Element("HintPath");
         }
 
         private static string GetFileURL(string path) => $"file://{path}";
