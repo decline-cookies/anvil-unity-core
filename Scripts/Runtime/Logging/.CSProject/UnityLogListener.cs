@@ -23,7 +23,7 @@ namespace Anvil.Unity.Logging
     public sealed class UnityLogListener : ILogListener, UnityEngine.ILogHandler
     {
         /// <summary>
-        /// Place on a method to make the <see cref="UnityLogListener"> use the next
+        /// Place on a method to make the <see cref="UnityLogListener" /> use the next
         /// call up the stack for the log caller context.
         /// </summary>
         [AttributeUsage(AttributeTargets.Method)]
