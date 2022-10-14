@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.Scripting;
 using Logger = Anvil.CSharp.Logging.Logger;
-using System.Linq;
-using System.IO;
 
 namespace Anvil.Unity.Logging
 {
@@ -20,7 +18,7 @@ namespace Anvil.Unity.Logging
     /// </summary>
     [DefaultLogListener]
     [Preserve]
-    public sealed class UnityLogListener : ILogListener, UnityEngine.ILogHandler
+    public sealed class UnityLogListener : ILogListener, ILogHandler
     {
         /// <summary>
         /// Place on a method to make the <see cref="UnityLogListener" /> use the next
@@ -142,7 +140,7 @@ namespace Anvil.Unity.Logging
 
         // The log handler in place before this listener initialized.
         // Called when a log comes through that this listener has already handled.
-        private readonly UnityEngine.ILogHandler m_ExistingLogHandler;
+        private readonly ILogHandler m_ExistingLogHandler;
 
         // true when this listener is handling a log from Burst compiled code.
         // Must be specially handled because log calls from Burst compiled code don't pass
@@ -236,7 +234,8 @@ namespace Anvil.Unity.Logging
                 return;
             }
 
-            SendToLogger(context, LogLevel.Error, exception.ToString(), exception);
+            // Don't use default context for exceptions, fall back on the exception stack trace's source
+            SendToLogger(null, LogLevel.Error, exception.ToString(), exception);
         }
 
         private void Application_logMessageReceivedThreaded(string condition, string stackTrace, LogType type)
@@ -306,10 +305,15 @@ namespace Anvil.Unity.Logging
         {
             (StackFrame callerFrame, MethodBase callerMethod) = ResolveCaller(exception);
 
-            string callerPath = callerFrame?.GetFileName() ?? callerMethod?.ReflectedType.Name;
+            string callerMethodName = callerMethod?.Name;
+            string callerFilePath = callerFrame?.GetFileName();
+            int callerLineNumber = callerFrame?.GetFileLineNumber() ?? 0;
 
-            Logger logger = context != null ? Log.GetLogger(context) : Log.GetStaticLogger(ResolveContextFromMethod(callerMethod));
-            logger.AtLevel(logLevel, message, callerPath, callerMethod?.Name, callerFrame?.GetFileLineNumber() ?? 0);
+            Logger logger = context != null
+                ? Log.GetLogger(context)
+                : Log.GetStaticLogger(callerMethod?.ReflectedType ?? typeof(UnknownContext));
+
+            logger.AtLevel(logLevel, message, callerMethodName, callerFilePath, callerLineNumber);
         }
 
         private (StackFrame callerFrame, MethodBase callerMethod) ResolveCaller(Exception exception = null)
@@ -348,12 +352,6 @@ namespace Anvil.Unity.Logging
                 ++frameIndex;
                 return nextFrame;
             }
-        }
-
-
-        private Type ResolveContextFromMethod(MethodBase callerMethod)
-        {
-            return callerMethod != null ? callerMethod.ReflectedType : typeof(UnknownContext);
         }
 
         private LogLevel LogTypeToLogLevel(LogType logType)
