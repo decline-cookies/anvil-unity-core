@@ -134,7 +134,6 @@ namespace Anvil.Unity.Logging
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init()
         {
-            s_Instance = null;
             //Touch Log system to make sure this listener gets re-created ASAP.
             Log.GetStaticLogger(typeof(UnityLogListener));
         }
@@ -327,7 +326,7 @@ namespace Anvil.Unity.Logging
                 {
                     continue;
                 }
-                
+
                 if (SKIPPED_STACK_FRAME_TYPES.Contains(method.DeclaringType.FullName))
                 {
                     continue;
