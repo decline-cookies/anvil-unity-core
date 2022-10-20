@@ -46,7 +46,7 @@ This is the recommended Unity project folder structure:
 
 > Example:
 > ```
-> The type or namespace name 'ILogHandler' could not be found
+> The type or namespace name 'AbstractLogHandler' could not be found
 > ```
 
 This usually means that Git LFS hasn't been initialized. Check the size of the DLL. If it's less than a kilobyte then the Git LFS files have not yet been resolved.

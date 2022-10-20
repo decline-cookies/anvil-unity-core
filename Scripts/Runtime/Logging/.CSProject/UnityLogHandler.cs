@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using Anvil.CSharp.Logging;
 using UnityEngine;
 using UnityEngine.Scripting;
-using ILogHandler = Anvil.CSharp.Logging.ILogHandler;
 
 namespace Anvil.Unity.Logging
 {
@@ -12,39 +10,26 @@ namespace Anvil.Unity.Logging
     /// </summary>
     [DefaultLogHandler(PRIORITY)]
     [Preserve]
-    public class UnityLogHandler : ILogHandler
+    public class UnityLogHandler : AbstractLogHandler
     {
         public const uint PRIORITY = ConsoleLogHandler.PRIORITY + 10;
 
-        public void HandleLog(
-            LogLevel level,
-            string message,
-            string callerDerivedTypeName,
-            string callerPath,
-            string callerName,
-            int callerLine)
+        protected override string DefaultLogFormat =>
+            $"({LOG_PART_CALLER_TYPE}.{LOG_PART_CALLER_METHOD}) {LOG_PART_MESSAGE}\n" +
+            $"(at {LOG_PART_CALLER_FILE}:{LOG_PART_CALLER_LINE})";
+
+        protected override void HandleFormattedLog(LogLevel level, string formattedLog)
         {
-            string callerFile = Path.GetFileNameWithoutExtension(callerPath);
-
-            if (callerLine > 0)
-            {
-                message = $"({callerFile}:{callerLine}|{callerName}) {message}";
-            }
-            else
-            {
-                message = $"({callerFile}|{callerName}) {message}";
-            }
-
             switch (level)
             {
                 case LogLevel.Debug:
-                    Debug.Log(message);
+                    Debug.Log(formattedLog);
                     break;
                 case LogLevel.Warning:
-                    Debug.LogWarning(message);
+                    Debug.LogWarning(formattedLog);
                     break;
                 case LogLevel.Error:
-                    Debug.LogError(message);
+                    Debug.LogError(formattedLog);
                     break;
                 default:
                     throw new NotImplementedException($"Unhandled log level: {level}");

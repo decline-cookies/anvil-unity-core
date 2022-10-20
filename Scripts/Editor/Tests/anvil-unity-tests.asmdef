@@ -1,7 +1,11 @@
 {
     "name": "anvil-unity-tests",
     "rootNamespace": "Anvil.Unity.Tests",
-    "references": [],
+    "references": [
+        "anvil-unity-core-runtime",
+        "anvil-unity-core-editor",
+        "anvil-csharp-core"
+    ],
     "includePlatforms": [
         "Editor"
     ],
