@@ -7,11 +7,13 @@ using StackTrace = System.Diagnostics.StackTrace;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections;
+using System.Threading;
 using UnityEngine.Scripting;
 using Logger = Anvil.CSharp.Logging.Logger;
 
 namespace Anvil.Unity.Logging
 {
+    // TODO: #90 - Remove unity main thread marshalling once Log/Logger are made thread safe
     /// <summary>
     /// An implementation of <see cref="ILogListener"/> for the Unity <see cref="Debug"/> logger.
     /// Captures all logging made through <see cref="Debug"/> and redirects them through a <see cref="Logger"/>.
@@ -34,15 +36,26 @@ namespace Anvil.Unity.Logging
 
         private readonly struct LogMessage
         {
-            public readonly string Message;
+            public readonly Logger Logger;
             public readonly LogLevel LogLevel;
-            public readonly bool IsFromBurstedContext;
+            public readonly string Message;
+            public readonly string CallerMethodName;
+            public readonly string CallerFilePath;
+            public readonly int CallerLineNumber;
 
-            public LogMessage(string message, LogLevel logLevel, bool isFromBurstedContext)
+            public LogMessage(in Logger logger, LogLevel logLevel, string message, string callerMethodName, string callerFilePath, int callerLineNumber)
             {
-                Message = message;
+                Logger = logger;
                 LogLevel = logLevel;
-                IsFromBurstedContext = isFromBurstedContext;
+                Message = message;
+                CallerMethodName = callerMethodName;
+                CallerFilePath = callerFilePath;
+                CallerLineNumber = callerLineNumber;
+            }
+
+            public void Send()
+            {
+                Logger.AtLevel(LogLevel, Message, CallerMethodName, CallerFilePath, CallerLineNumber);
             }
         }
 
@@ -56,6 +69,11 @@ namespace Anvil.Unity.Logging
             public event Action OnProcessPendingLogs;
             private Coroutine m_EndOfFrameRoutine;
 
+            private void Awake()
+            {
+                // Ensure that the threadID selected by UnityLogListener is the actual main thread ID
+                Debug.Assert(s_Instance.m_UnityMainThreadID == Thread.CurrentThread.ManagedThreadId);
+            }
             private void Start()
             {
                 m_EndOfFrameRoutine = StartCoroutine(RunEndOfFrameRoutine());
@@ -106,6 +124,9 @@ namespace Anvil.Unity.Logging
         }
 
         // When determining the context of a log, any frames in the stack trace matching these types are skipped
+        // Also supports methods. Both full type name (Ex: UnityEngine.Debug) and fully qualified method name
+        // (Ex: UnityEngine.Debug.Log) are tested against this set.
+        // This allows all calls from a type or just specific calls to be skipped.
         private static readonly HashSet<string> SKIPPED_STACK_FRAME_TYPES = new HashSet<string>
         {
             "System.Diagnostics.Debug",
@@ -115,6 +136,7 @@ namespace Anvil.Unity.Logging
             "UnityEngine.Debug",
             "UnityEngine.Logger",
             "UnityEngine.Assertions.Assert",
+            "UnityEngine.Application.CallLogCallback",
             // Check for Unity's new stubbed out logging class that currently just proxies the existing logging system.
             // This was found in the v0.17 of the Unity.Entities package
             "Unity.Debug",
@@ -132,11 +154,21 @@ namespace Anvil.Unity.Logging
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init()
         {
-            //Touch Log system to make sure this listener gets re-created ASAP.
-            Log.GetStaticLogger(typeof(UnityLogListener));
+            if (s_Instance == null)
+            {
+                //Touch Log system to make sure this listener gets re-created ASAP.
+                Log.GetStaticLogger(typeof(UnityLogListener));
+            }
+            else
+            {
+                // If a new instance wasn't created ensure that the listener prepares for a new run session
+                // without being re-created.
+                s_Instance.ResetForNewRunSession();
+            }
         }
 
-        private readonly ConcurrentQueue<LogMessage> m_PendingLogs;
+        private readonly ConcurrentQueue<(LogMessage Message, bool IsHandlingBurstedLog)> m_PendingLogs;
+        public readonly int m_UnityMainThreadID;
 
         // The log handler in place before this listener initialized.
         // Called when a log comes through that this listener has already handled.
@@ -159,6 +191,7 @@ namespace Anvil.Unity.Logging
         //  Except the poor developers that have to maintain this disaster and adapt it when
         //  Unity inevitably improves logging within a Burst context.
         private bool m_IsHandlingBurstedLog = false;
+        private GameObject m_PendingLogPumpGO;
 
 
         public UnityLogListener()
@@ -169,16 +202,40 @@ namespace Anvil.Unity.Logging
             }
             s_Instance = this;
 
-            m_PendingLogs = new ConcurrentQueue<LogMessage>();
+            m_PendingLogs = new ConcurrentQueue<(LogMessage, bool)>();
+            m_UnityMainThreadID = Thread.CurrentThread.ManagedThreadId;
 
             m_ExistingLogHandler = Debug.unityLogger.logHandler;
             Debug.unityLogger.logHandler = this;
 
             Application.logMessageReceivedThreaded += Application_logMessageReceivedThreaded;
 
-            GameObject pendingLogPumpGO = new GameObject($"{nameof(UnityLogListener)}_{nameof(pendingLogPumpGO)}");
-            pendingLogPumpGO.AddComponent<PendingLogPump>().OnProcessPendingLogs += PendingLogPump_OnProcessPendingLogs;
-            pendingLogPumpGO.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
+            ResetForNewRunSession();
+        }
+
+        // Resets the instance for a fresh run session when the instance isn't re-created
+        // Primarily happens when transitioning into play mode without a domain reload.
+        public void ResetForNewRunSession()
+        {
+            CreateNewPendingLogPump();
+        }
+
+        private void CreateNewPendingLogPump()
+        {
+            // As the UnityEditor moves through states we sometimes need to re-create the pending log pump
+            // since the old one gets removed from the hierarchy but not set to null.
+            if (m_PendingLogPumpGO != null)
+            {
+                GameObject.Destroy(m_PendingLogPumpGO);
+            }
+
+            m_PendingLogPumpGO = new GameObject($"{nameof(UnityLogListener)}_{nameof(PendingLogPump)}");
+            m_PendingLogPumpGO.AddComponent<PendingLogPump>().OnProcessPendingLogs += PendingLogPump_OnProcessPendingLogs;
+            m_PendingLogPumpGO.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
+            if (Application.isPlaying)
+            {
+                GameObject.DontDestroyOnLoad(m_PendingLogPumpGO);
+            }
         }
 
         /// <inheritdoc />
@@ -187,7 +244,7 @@ namespace Anvil.Unity.Logging
         {
             // Bypass redirecting unity log messages to logger if logger is already handling the log.
             // This happens when UnityLogHandler is being used.
-            if (Log.IsHandlingLog)
+            if (Log.IsHandlingLog && IsOnUnityMainThread())
             {
                 // If this is a log call from Burst compiled code then skip emitting
                 // to Unity's console. Log calls from Burst compiled code don't pass
@@ -211,7 +268,8 @@ namespace Anvil.Unity.Logging
                 throw new Exception(string.Format(format, args));
             }
 
-            SendToLogger(context, LogTypeToLogLevel(logType), string.Format(format, args));
+            LogMessage message = BuildLogMessage(context, LogTypeToLogLevel(logType), string.Format(format, args));
+            SubmitLogMessage(message);
         }
 
         /// <inheritdoc />
@@ -220,7 +278,7 @@ namespace Anvil.Unity.Logging
         {
             // Bypass redirecting unity log messages to logger if logger is already handling the log.
             // This happens when UnityLogHandler is being used.
-            if (Log.IsHandlingLog)
+            if (Log.IsHandlingLog && IsOnUnityMainThread())
             {
                 // If this is a log call from Burst compiled code then skip emitting
                 // to Unity's console. Log calls from Burst compiled code don't pass
@@ -235,12 +293,14 @@ namespace Anvil.Unity.Logging
             }
 
             // Don't use default context for exceptions, fall back on the exception stack trace's source
-            SendToLogger(null, LogLevel.Error, exception.ToString(), exception);
+            LogMessage message = BuildLogMessage(null, LogLevel.Error, exception.ToString(), exception);
+            SubmitLogMessage(message);
         }
 
+        [UnityLogListener.Exclude]
         private void Application_logMessageReceivedThreaded(string condition, string stackTrace, LogType type)
         {
-            if (Log.IsHandlingLog)
+            if (Log.IsHandlingLog && IsOnUnityMainThread())
             {
                 return;
             }
@@ -283,7 +343,8 @@ namespace Anvil.Unity.Logging
             //        - Application.logMessageReceived(+Threaded)
             //         - UnityLogListener.Application_logMessageReceivedThreaded - Do nothing because Log.IsHandling == true
             //        - m_ExistingLogHandler emits log to the Unity console
-            m_PendingLogs.Enqueue(new LogMessage(condition, LogTypeToLogLevel(type), true));
+            LogMessage message = BuildLogMessage(null, LogTypeToLogLevel(type), condition);
+            SubmitLogMessage(message, true);
         }
 
         private void PendingLogPump_OnProcessPendingLogs()
@@ -293,15 +354,17 @@ namespace Anvil.Unity.Logging
 
         private void ProcessPendingLogs()
         {
-            while (m_PendingLogs.TryDequeue(out LogMessage message))
+            Debug.Assert(IsOnUnityMainThread());
+
+            while (m_PendingLogs.TryDequeue(out var result))
             {
-                m_IsHandlingBurstedLog = message.IsFromBurstedContext;
-                SendToLogger(null, message.LogLevel, message.Message);
+                m_IsHandlingBurstedLog = result.IsHandlingBurstedLog;
+                result.Message.Send();
             }
             m_IsHandlingBurstedLog = false;
         }
 
-        private void SendToLogger(UnityEngine.Object context, LogLevel logLevel, string message, Exception exception = null)
+        private LogMessage BuildLogMessage(UnityEngine.Object context, LogLevel logLevel, string message, Exception exception = null)
         {
             (StackFrame callerFrame, MethodBase callerMethod) = ResolveCaller(exception);
 
@@ -313,7 +376,20 @@ namespace Anvil.Unity.Logging
                 ? Log.GetLogger(context)
                 : Log.GetStaticLogger(callerMethod?.ReflectedType ?? typeof(UnknownContext));
 
-            logger.AtLevel(logLevel, message, callerMethodName, callerFilePath, callerLineNumber);
+            return new LogMessage(in logger, logLevel, message, callerMethodName, callerFilePath, callerLineNumber);
+        }
+
+        private void SubmitLogMessage(in LogMessage message, bool isFromBurstedContext = false)
+        {
+            if (!IsOnUnityMainThread())
+            {
+                m_PendingLogs.Enqueue((message, isFromBurstedContext));
+                return;
+            }
+
+            m_IsHandlingBurstedLog = isFromBurstedContext;
+            message.Send();
+            m_IsHandlingBurstedLog = false;
         }
 
         private (StackFrame callerFrame, MethodBase callerMethod) ResolveCaller(Exception exception = null)
@@ -331,7 +407,8 @@ namespace Anvil.Unity.Logging
                     continue;
                 }
 
-                if (SKIPPED_STACK_FRAME_TYPES.Contains(method.DeclaringType.FullName))
+                if (SKIPPED_STACK_FRAME_TYPES.Contains(method.DeclaringType.FullName)
+                    || SKIPPED_STACK_FRAME_TYPES.Contains($"{method.DeclaringType.FullName}.{method.Name}"))
                 {
                     continue;
                 }
@@ -372,6 +449,11 @@ namespace Anvil.Unity.Logging
                 default:
                     throw new ArgumentException("Unknown log type: " + logType);
             }
+        }
+
+        private bool IsOnUnityMainThread()
+        {
+            return m_UnityMainThreadID == Thread.CurrentThread.ManagedThreadId;
         }
     }
 }
