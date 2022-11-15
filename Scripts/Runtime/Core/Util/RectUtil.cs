@@ -1,5 +1,6 @@
 
 
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Anvil.Unity.Core
@@ -10,7 +11,7 @@ namespace Anvil.Unity.Core
     public static class RectUtil
     {
         /// <summary>
-        /// Creates a <see cref="Rect"/> from two arbetrary points
+        /// Creates a <see cref="Rect"/> from two arbitrary points
         /// </summary>
         /// <param name="point1"></param>
         /// <param name="point2"></param>
@@ -46,5 +47,28 @@ namespace Anvil.Unity.Core
 
             return Rect.MinMaxRect(minX, minY, maxX, maxY);
         }
+
+        /// <summary>
+        /// Creates a <see cref="Rect"/> from four arbitrary points
+        /// </summary>
+        /// <param name="point1"></param>
+        /// <param name="point2"></param>
+        /// <param name="point3"></param>
+        /// <param name="point4"></param>
+        /// <returns>A <see cref="Rect"/> containing the four points provided.</returns>
+        public static Rect CreateFromPoints(Vector2 point1, Vector2 point2, Vector2 point3, Vector2 point4)
+        {
+            float4 x = new float4(point1.x, point2.x, point3.x, point4.x);
+            float4 y = new float4(point1.y, point2.y, point3.y, point4.y);
+
+            float minX = math.cmin(x);
+            float minY = math.cmin(y);
+
+            float maxX = math.cmax(x);
+            float maxY = math.cmax(y);
+
+            return Rect.MinMaxRect(minX, minY, maxX, maxY);
+        }
+
     }
 }
