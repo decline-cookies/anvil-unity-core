@@ -4,15 +4,21 @@
     "references": [
         "anvil-unity-core-runtime",
         "anvil-unity-core-editor",
-        "anvil-csharp-core"
+        "anvil-csharp-core",
+        "UnityEditor.TestRunner",
+        "UnityEngine.TestRunner"
     ],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "anvil-csharp-logging.dll",
+        "anvil-unity-logging.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
