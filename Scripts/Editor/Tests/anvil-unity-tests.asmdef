@@ -5,6 +5,7 @@
         "anvil-unity-core-runtime",
         "anvil-unity-core-editor",
         "anvil-csharp-core",
+        "Unity.Mathematics",
         "UnityEditor.TestRunner",
         "UnityEngine.TestRunner"
     ],
