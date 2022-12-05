@@ -9,6 +9,8 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void CreateFromPointsTest()
         {
+            Assert.That(nameof(CreateFromPointsTest), Does.StartWith(nameof(RectUtil.CreateFromPoints)));
+
             Rect rect = RectUtil.CreateFromPoints(new Vector2(1, 2), new Vector2(3, 4));
 
             Assert.That(rect.min.x, Is.EqualTo(1));
