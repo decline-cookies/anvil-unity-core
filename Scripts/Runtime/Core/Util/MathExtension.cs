@@ -26,7 +26,7 @@ namespace Anvil.Unity.Core
         }
 
         /// <summary>
-        /// Get the inverse of a <see cref="float3"/> with any <see cref="float.NaN"/> components set to 0
+        /// Get the inverse of a <see cref="float3"/> with any <see cref="float.NaN"/> or infinite components set to 0
         /// </summary>
         /// <param name="value">The value to get the inverse of.</param>
         /// <returns>The inverted value</returns>
@@ -34,7 +34,7 @@ namespace Anvil.Unity.Core
         public static float3 GetInverseSafe(this float3 value)
         {
             float3 inverse = value.GetInverse();
-            return math.select(inverse, float3.zero, math.isnan(inverse));
+            return math.select(inverse, float3.zero, math.isinf(inverse) | math.isnan(inverse));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
