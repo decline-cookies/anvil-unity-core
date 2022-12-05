@@ -94,5 +94,61 @@ namespace Anvil.Unity.Core
         {
             return math.select(math.sign(value) * new float3(float.PositiveInfinity), value, value == 0);
         }
+
+        /// <summary>
+        /// Compares two <see cref="float"/>s and returns true if the components are equal.
+        /// Unlike <see cref="float.Equals"/> this method considers <see cref="float.NaN"/> == <see cref="float.NaN"/>
+        /// to be true.
+        /// </summary>
+        /// <param name="a">The <see cref="float"/> to compare.</param>
+        /// <param name="b">The <see cref="float"/> to compare.</param>
+        /// <returns>True if the values are equal or both <see cref="float.NaN"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsEqualOrNaN(this float a, float b)
+        {
+            return a == b | (math.isnan(a) & math.isnan(b));
+        }
+
+        /// <summary>
+        /// Compares two <see cref="float2"/>s and returns true if the components are equal.
+        /// Unlike <see cref="float2.Equals"/> this method considers <see cref="float.NaN"/> == <see cref="float.NaN"/>
+        /// to be true.
+        /// </summary>
+        /// <param name="a">The <see cref="float2"/> to compare.</param>
+        /// <param name="b">The <see cref="float2"/> to compare.</param>
+        /// <returns>True (component-wise) if the values are equal or both <see cref="float.NaN"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool2 IsEqualOrNaN(this float2 a, float2 b)
+        {
+            return a == b | (math.isnan(a) & math.isnan(b));
+        }
+
+        /// <summary>
+        /// Compares two <see cref="float3"/>s and returns true if the components are equal.
+        /// Unlike <see cref="float3.Equals"/> this method considers <see cref="float.NaN"/> == <see cref="float.NaN"/>
+        /// to be true.
+        /// </summary>
+        /// <param name="a">The <see cref="float3"/> to compare.</param>
+        /// <param name="b">The <see cref="float3"/> to compare.</param>
+        /// <returns>True (component-wise) if the values are equal or both <see cref="float.NaN"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool3 IsEqualOrNaN(this float3 a, float3 b)
+        {
+            return a == b | (math.isnan(a) & math.isnan(b));
+        }
+
+        /// <summary>
+        /// Compares two <see cref="float4"/>s and returns true if the components are equal.
+        /// Unlike <see cref="float4.Equals"/> this method considers <see cref="float.NaN"/> == <see cref="float.NaN"/>
+        /// to be true.
+        /// </summary>
+        /// <param name="a">The <see cref="float4"/> to compare.</param>
+        /// <param name="b">The <see cref="float4"/> to compare.</param>
+        /// <returns>True (component-wise) if the values are equal or both <see cref="float.NaN"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool4 IsEqualOrNaN(this float4 a, float4 b)
+        {
+            return a == b | (math.isnan(a) & math.isnan(b));
+        }
     }
 }
