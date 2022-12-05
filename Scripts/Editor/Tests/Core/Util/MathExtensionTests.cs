@@ -12,9 +12,12 @@ namespace Anvil.Unity.Tests
             return math.all(a.IsEqualOrNaN(b)) ? 0 : 1;
         }
 
+        // ----- GetInverse ----- //
         [Test]
         public static void GetInverseTest()
         {
+            Assert.That(nameof(GetInverseTest), Does.StartWith(nameof(MathExtension.GetInverse)));
+
             Assert.That(new float3(1f).GetInverse(), Is.EqualTo(new float3(1f)));
             Assert.That(new float3(2f).GetInverse(), Is.EqualTo(new float3(0.5f)));
 
@@ -27,9 +30,12 @@ namespace Anvil.Unity.Tests
             Assert.That(new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN), Is.EqualTo(new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN)).Using<float3>(EqualityWithNaN));
         }
 
+        // ----- GetInverseSafe ----- //
         [Test]
         public static void GetInverseSafeTest()
         {
+            Assert.That(nameof(GetInverseSafeTest), Does.StartWith(nameof(MathExtension.GetInverseSafe)));
+
             Assert.That(new float3(1f).GetInverseSafe(), Is.EqualTo(new float3(1f)));
             Assert.That(new float3(2f).GetInverseSafe(), Is.EqualTo(new float3(0.5f)));
 
@@ -48,6 +54,7 @@ namespace Anvil.Unity.Tests
 
         }
 
+        // ----- ToSignedInfinite ----- //
         [Test]
         public static void ToSignedInfiniteTest()
         {
