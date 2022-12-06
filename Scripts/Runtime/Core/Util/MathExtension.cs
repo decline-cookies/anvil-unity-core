@@ -179,7 +179,7 @@ namespace Anvil.Unity.Core
         {
             return (math.abs(a - b) < MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)
                    | (math.isnan(a) & math.isnan(b))
-                   | (math.isinf(a) & math.isinf(b));
+                   | (math.isinf(a) & math.isinf(b) & a == b);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace Anvil.Unity.Core
         {
             return (math.abs(a - b) < MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)
                    | (math.isnan(a) & math.isnan(b))
-                   | (math.isinf(a) & math.isinf(b));
+                   | (math.isinf(a) & math.isinf(b) & a == b);
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace Anvil.Unity.Core
         {
             return (math.abs(a - b) < MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)
                    | (math.isnan(a) & math.isnan(b))
-                   | (math.isinf(a) & math.isinf(b));
+                   | (math.isinf(a) & math.isinf(b)  & a == b);
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace Anvil.Unity.Core
         {
             return math.abs(a - b) < MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE
                    | (math.isnan(a) & math.isnan(b))
-                   | (math.isinf(a) & math.isinf(b));
+                   | (math.isinf(a) & math.isinf(b) & a == b);
         }
 
         /// <summary>
