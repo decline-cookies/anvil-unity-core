@@ -7,9 +7,9 @@ namespace Anvil.Unity.Tests
     public static class RectUtilTests
     {
         [Test]
-        public static void CreateFromPointsTest()
+        public static void CreateFromPointsTest_TwoPoint()
         {
-            Assert.That(nameof(CreateFromPointsTest), Does.StartWith(nameof(RectUtil.CreateFromPoints)));
+            Assert.That(nameof(CreateFromPointsTest_TwoPoint), Does.StartWith(nameof(RectUtil.CreateFromPoints)));
 
             Rect rect = RectUtil.CreateFromPoints(new Vector2(1, 2), new Vector2(3, 4));
 
@@ -19,6 +19,26 @@ namespace Anvil.Unity.Tests
             Assert.That(rect.max.y, Is.EqualTo(4));
 
             rect = RectUtil.CreateFromPoints(new Vector2(3, 4), new Vector2(1, 2));
+
+            Assert.That(rect.min.x, Is.EqualTo(1));
+            Assert.That(rect.min.y, Is.EqualTo(2));
+            Assert.That(rect.max.x, Is.EqualTo(3));
+            Assert.That(rect.max.y, Is.EqualTo(4));
+        }
+
+        [Test]
+        public static void CreateFromPointsTest_FourPoint()
+        {
+            Assert.That(nameof(CreateFromPointsTest_FourPoint), Does.StartWith(nameof(RectUtil.CreateFromPoints)));
+
+            Rect rect = RectUtil.CreateFromPoints(new Vector2(1, 2), new Vector2(3, 4), new Vector2(1, 4), new Vector2(3, 2));
+
+            Assert.That(rect.min.x, Is.EqualTo(1));
+            Assert.That(rect.min.y, Is.EqualTo(2));
+            Assert.That(rect.max.x, Is.EqualTo(3));
+            Assert.That(rect.max.y, Is.EqualTo(4));
+
+            rect = RectUtil.CreateFromPoints(new Vector2(3, 4), new Vector2(1, 2), new Vector2(3, 2), new Vector2(1, 4));
 
             Assert.That(rect.min.x, Is.EqualTo(1));
             Assert.That(rect.min.y, Is.EqualTo(2));
