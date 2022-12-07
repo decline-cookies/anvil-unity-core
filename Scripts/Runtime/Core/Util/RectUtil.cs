@@ -13,9 +13,9 @@ namespace Anvil.Unity.Core
         /// <summary>
         /// Creates a <see cref="Rect"/> from two arbitrary points
         /// </summary>
-        /// <param name="point1"></param>
-        /// <param name="point2"></param>
-        /// <returns>A <see cref="Rect"/> containing the two points provided.</returns>
+        /// <param name="point1">A point to consider.</param>
+        /// <param name="point2">A point to consider.</param>
+        /// <returns>A <see cref="Rect"/> with corners at the two points provided.</returns>
         public static Rect CreateFromPoints(Vector2 point1, Vector2 point2)
         {
             float minX;
@@ -51,12 +51,12 @@ namespace Anvil.Unity.Core
         /// <summary>
         /// Creates a <see cref="Rect"/> from four arbitrary points
         /// </summary>
-        /// <param name="point1"></param>
-        /// <param name="point2"></param>
-        /// <param name="point3"></param>
-        /// <param name="point4"></param>
+        /// <param name="point1">A point to consider.</param>
+        /// <param name="point2">A point to consider.</param>
+        /// <param name="point3">A point to consider.</param>
+        /// <param name="point4">A point to consider.</param>
         /// <returns>A <see cref="Rect"/> containing the four points provided.</returns>
-        public static Rect CreateFromPoints(Vector2 point1, Vector2 point2, Vector2 point3, Vector2 point4)
+        public static Rect CreateBoundingRect(Vector2 point1, Vector2 point2, Vector2 point3, Vector2 point4)
         {
             float4 x = new float4(point1.x, point2.x, point3.x, point4.x);
             float4 y = new float4(point1.y, point2.y, point3.y, point4.y);
