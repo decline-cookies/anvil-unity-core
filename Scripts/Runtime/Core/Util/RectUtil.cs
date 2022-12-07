@@ -69,5 +69,54 @@ namespace Anvil.Unity.Core
 
             return Rect.MinMaxRect(minX, minY, maxX, maxY);
         }
+
+        /// <summary>
+        /// Creates a <see cref="Rect"/> from a collection of arbitrary points
+        /// </summary>
+        /// <param name="points">The points to consider.</param>
+        /// <returns>A <see cref="Rect"/> containing the points provided.</returns>
+        public static Rect CreateBoundingRect(params Vector2[] points)
+        {
+            float minX = float.MaxValue;
+            float minY = float.MaxValue;
+
+            float maxX = float.MinValue;
+            float maxY = float.MinValue;
+
+            float4 x = new float4();
+            float4 y = new float4();
+
+            //TODO: #99 - Profile and evaluate whether this can be improved.
+            // - Do math.min(i + 2, points.Length) instead of (i + 1) % points.Length to avoid potential cache invalidation
+            // - Strides of 4 but do a separate math.min(batchMinX, minX) call
+            // - Is it even worth batching?
+            for (int i = 0; i < points.Length; i+=3)
+            {
+                Vector2 point1 = points[i];
+                // wrap around if the batch size is not a multiple of points.Length
+                Vector2 point2 = points[(i + 1) % points.Length];
+                Vector2 point3 = points[(i + 2) % points.Length];
+
+                x.x = point1.x;
+                x.y = point2.x;
+                x.z = point3.x;
+
+                y.x = point1.y;
+                y.y = point2.y;
+                y.z = point3.y;
+
+                x.w = minX;
+                y.w = minY;
+                minX = math.cmin(x);
+                minY = math.cmin(y);
+
+                x.w = maxX;
+                y.w = maxY;
+                maxX = math.cmax(x);
+                maxY = math.cmax(y);
+            }
+
+            return Rect.MinMaxRect(minX, minY, maxX, maxY);
+        }
     }
 }
