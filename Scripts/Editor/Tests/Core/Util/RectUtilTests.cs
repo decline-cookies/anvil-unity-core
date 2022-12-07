@@ -27,18 +27,38 @@ namespace Anvil.Unity.Tests
         }
 
         [Test]
-        public static void CreateFromPointsTest_FourPoint()
+        public static void CreateBoundingRect_FourPoint()
         {
-            Assert.That(nameof(CreateFromPointsTest_FourPoint), Does.StartWith(nameof(RectUtil.CreateFromPoints)));
+            Assert.That(nameof(CreateBoundingRect_FourPoint), Does.StartWith(nameof(RectUtil.CreateBoundingRect)));
 
-            Rect rect = RectUtil.CreateFromPoints(new Vector2(1, 2), new Vector2(3, 4), new Vector2(1, 4), new Vector2(3, 2));
+            Rect rect = RectUtil.CreateBoundingRect(new Vector2(1, 2), new Vector2(3, 4), new Vector2(1, 4), new Vector2(3, 2));
 
             Assert.That(rect.min.x, Is.EqualTo(1));
             Assert.That(rect.min.y, Is.EqualTo(2));
             Assert.That(rect.max.x, Is.EqualTo(3));
             Assert.That(rect.max.y, Is.EqualTo(4));
 
-            rect = RectUtil.CreateFromPoints(new Vector2(3, 4), new Vector2(1, 2), new Vector2(3, 2), new Vector2(1, 4));
+            rect = RectUtil.CreateBoundingRect(new Vector2(3, 4), new Vector2(1, 2), new Vector2(3, 2), new Vector2(1, 4));
+
+            Assert.That(rect.min.x, Is.EqualTo(1));
+            Assert.That(rect.min.y, Is.EqualTo(2));
+            Assert.That(rect.max.x, Is.EqualTo(3));
+            Assert.That(rect.max.y, Is.EqualTo(4));
+        }
+
+        [Test]
+        public static void CreateBoundingRect_NPoint()
+        {
+            Assert.That(nameof(CreateBoundingRect_NPoint), Does.StartWith(nameof(RectUtil.CreateBoundingRect)));
+
+            Rect rect = RectUtil.CreateBoundingRect(new Vector2(1, 2), new Vector2(3, 4), new Vector2(1, 4), new Vector2(3, 2), new Vector2(3, 2));
+
+            Assert.That(rect.min.x, Is.EqualTo(1));
+            Assert.That(rect.min.y, Is.EqualTo(2));
+            Assert.That(rect.max.x, Is.EqualTo(3));
+            Assert.That(rect.max.y, Is.EqualTo(4));
+
+            rect = RectUtil.CreateBoundingRect(new Vector2(1, 4), new Vector2(3, 4), new Vector2(1, 2), new Vector2(3, 2), new Vector2(1, 4));
 
             Assert.That(rect.min.x, Is.EqualTo(1));
             Assert.That(rect.min.y, Is.EqualTo(2));
