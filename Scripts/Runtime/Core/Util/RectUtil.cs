@@ -69,6 +69,5 @@ namespace Anvil.Unity.Core
 
             return Rect.MinMaxRect(minX, minY, maxX, maxY);
         }
-
     }
 }
