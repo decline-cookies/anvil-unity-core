@@ -17,7 +17,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void GetInverseTest()
         {
-            Assert.That(nameof(GetInverseTest), Does.StartWith(nameof(MathExtension.GetInverse)));
+            Assert.That(nameof(GetInverseTest), Is.EqualTo(nameof(MathExtension.GetInverse) + "Test"));
 
             Assert.That(new float3(1f).GetInverse(), Is.EqualTo(new float3(1f)));
             Assert.That(new float3(2f).GetInverse(), Is.EqualTo(new float3(0.5f)));
@@ -35,7 +35,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void GetInverseSafeTest()
         {
-            Assert.That(nameof(GetInverseSafeTest), Does.StartWith(nameof(MathExtension.GetInverseSafe)));
+            Assert.That(nameof(GetInverseSafeTest), Is.EqualTo(nameof(MathExtension.GetInverseSafe) + "Test"));
 
             Assert.That(new float3(1f).GetInverseSafe(), Is.EqualTo(new float3(1f)));
             Assert.That(new float3(2f).GetInverseSafe(), Is.EqualTo(new float3(0.5f)));
@@ -53,7 +53,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelyTest_float()
         {
-            Assert.That(nameof(IsApproximatelyTest_float), Does.StartWith(nameof(MathExtension.IsApproximately)));
+            Assert.That(nameof(IsApproximatelyTest_float), Does.StartWith(nameof(MathExtension.IsApproximately) + "Test"));
 
             float one = 1f;
             float infinity = float.PositiveInfinity;
@@ -85,7 +85,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelyTest_float2()
         {
-            Assert.That(nameof(IsApproximatelyTest_float2), Does.StartWith(nameof(MathExtension.IsApproximately)));
+            Assert.That(nameof(IsApproximatelyTest_float2), Does.StartWith(nameof(MathExtension.IsApproximately) + "Test"));
 
             float2 one = new float2(1f);
             float2 infinity_negativeInfinity = new float2(float.PositiveInfinity, float.NegativeInfinity);
@@ -118,7 +118,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelyTest_float3()
         {
-            Assert.That(nameof(IsApproximatelyTest_float3), Does.StartWith(nameof(MathExtension.IsApproximately)));
+            Assert.That(nameof(IsApproximatelyTest_float3), Does.StartWith(nameof(MathExtension.IsApproximately) + "Test"));
 
             float3 one = new float3(1f);
             float3 infinity_negativeInfinity_NaN = new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN);
@@ -147,7 +147,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelyTest_float4()
         {
-            Assert.That(nameof(IsApproximatelyTest_float4), Does.StartWith(nameof(MathExtension.IsApproximately)));
+            Assert.That(nameof(IsApproximatelyTest_float4), Does.StartWith(nameof(MathExtension.IsApproximately) + "Test"));
 
             float4 one = new float4(1f);
             float4 infinity_negativeInfinity_NaN = new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN);
@@ -173,7 +173,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelyTest_float3x3()
         {
-            Assert.That(nameof(IsApproximatelyTest_float3x3), Does.StartWith(nameof(MathExtension.IsApproximately)));
+            Assert.That(nameof(IsApproximatelyTest_float3x3), Does.StartWith(nameof(MathExtension.IsApproximately) + "Test"));
 
             float3x3 one = new float3x3(1f);
             float3x3 infinity_negativeInfinity_NaN_column = new float3x3(float.PositiveInfinity, float.NegativeInfinity, float.NaN);
@@ -207,7 +207,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelyTest_float4x4()
         {
-            Assert.That(nameof(IsApproximatelyTest_float4x4), Does.StartWith(nameof(MathExtension.IsApproximately)));
+            Assert.That(nameof(IsApproximatelyTest_float4x4), Does.StartWith(nameof(MathExtension.IsApproximately) + "Test"));
 
             float4x4 one = new float4x4(1f);
             float4x4 infinity_negativeInfinity_NaN_column = new float4x4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN);
@@ -243,7 +243,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelySafeTest_float()
         {
-            Assert.That(nameof(IsApproximatelySafeTest_float), Does.StartWith(nameof(MathExtension.IsApproximatelySafe)));
+            Assert.That(nameof(IsApproximatelySafeTest_float), Does.StartWith(nameof(MathExtension.IsApproximatelySafe) + "Test"));
 
             float one = 1f;
             float infinity = float.PositiveInfinity;
@@ -274,7 +274,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelySafeTest_float2()
         {
-            Assert.That(nameof(IsApproximatelySafeTest_float2), Does.StartWith(nameof(MathExtension.IsApproximatelySafe)));
+            Assert.That(nameof(IsApproximatelySafeTest_float2), Does.StartWith(nameof(MathExtension.IsApproximatelySafe) + "Test"));
 
             float2 one = new float2(1f);
             float2 infinity_negativeInfinity = new float2(float.PositiveInfinity, float.NegativeInfinity);
@@ -307,7 +307,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelySafeTest_float3()
         {
-            Assert.That(nameof(IsApproximatelySafeTest_float3), Does.StartWith(nameof(MathExtension.IsApproximatelySafe)));
+            Assert.That(nameof(IsApproximatelySafeTest_float3), Does.StartWith(nameof(MathExtension.IsApproximatelySafe) + "Test"));
 
             float3 one = new float3(1f);
             float3 infinity_negativeInfinity_NaN = new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN);
@@ -336,7 +336,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelySafeTest_float4()
         {
-            Assert.That(nameof(IsApproximatelySafeTest_float4), Does.StartWith(nameof(MathExtension.IsApproximatelySafe)));
+            Assert.That(nameof(IsApproximatelySafeTest_float4), Does.StartWith(nameof(MathExtension.IsApproximatelySafe) + "Test"));
 
             float4 one = new float4(1f);
             float4 infinity_negativeInfinity_NaN_three = new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f);
@@ -362,7 +362,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelySafeTest_float3x3()
         {
-            Assert.That(nameof(IsApproximatelySafeTest_float3x3), Does.StartWith(nameof(MathExtension.IsApproximatelySafe)));
+            Assert.That(nameof(IsApproximatelySafeTest_float3x3), Does.StartWith(nameof(MathExtension.IsApproximatelySafe) + "Test"));
 
             float3x3 one = new float3x3(1f);
             float3x3 infinity_negativeInfinity_NaN_column = new float3x3(float.PositiveInfinity, float.NegativeInfinity, float.NaN);
@@ -396,7 +396,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsApproximatelySafeTest_float4x4()
         {
-            Assert.That(nameof(IsApproximatelySafeTest_float4x4), Does.StartWith(nameof(MathExtension.IsApproximatelySafe)));
+            Assert.That(nameof(IsApproximatelySafeTest_float4x4), Does.StartWith(nameof(MathExtension.IsApproximatelySafe) + "Test"));
 
             float4x4 one = new float4x4(1f);
             float4x4 infinity_negativeInfinity_NaN_three_column = new float4x4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f);
@@ -432,7 +432,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void ToSignedInfiniteTest()
         {
-            Assert.That(nameof(ToSignedInfiniteTest), Does.StartWith(nameof(MathExtension.ToSignedInfinite)));
+            Assert.That(nameof(ToSignedInfiniteTest), Is.EqualTo(nameof(MathExtension.ToSignedInfinite) + "Test"));
 
             float3 zero = float3.zero;
             float3 one = new float3(1f);
@@ -459,7 +459,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsEqualOrNaNTest_float()
         {
-            Assert.That(nameof(IsEqualOrNaNTest_float), Does.StartWith(nameof(MathExtension.IsEqualOrNaN)));
+            Assert.That(nameof(IsEqualOrNaNTest_float), Does.StartWith(nameof(MathExtension.IsEqualOrNaN) + "Test"));
 
             float zero = 0f;
             float one = 1f;
@@ -486,7 +486,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsEqualOrNaNTest_float2()
         {
-            Assert.That(nameof(IsEqualOrNaNTest_float2), Does.StartWith(nameof(MathExtension.IsEqualOrNaN)));
+            Assert.That(nameof(IsEqualOrNaNTest_float2), Does.StartWith(nameof(MathExtension.IsEqualOrNaN) + "Test"));
 
             float2 zero = float2.zero;
             float2 one = new float2(1f);
@@ -518,7 +518,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsEqualOrNaNTest_float3()
         {
-            Assert.That(nameof(IsEqualOrNaNTest_float3), Does.StartWith(nameof(MathExtension.IsEqualOrNaN)));
+            Assert.That(nameof(IsEqualOrNaNTest_float3), Does.StartWith(nameof(MathExtension.IsEqualOrNaN) + "Test"));
 
             float3 zero = float3.zero;
             float3 one = new float3(1f);
@@ -550,7 +550,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsEqualOrNaNTest_float4()
         {
-            Assert.That(nameof(IsEqualOrNaNTest_float4), Does.StartWith(nameof(MathExtension.IsEqualOrNaN)));
+            Assert.That(nameof(IsEqualOrNaNTest_float4), Does.StartWith(nameof(MathExtension.IsEqualOrNaN) + "Test"));
 
             float4 zero = float4.zero;
             float4 one = new float4(1f);
@@ -582,7 +582,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsEqualOrNaNTest_float3x3()
         {
-            Assert.That(nameof(IsEqualOrNaNTest_float3x3), Does.StartWith(nameof(MathExtension.IsEqualOrNaN)));
+            Assert.That(nameof(IsEqualOrNaNTest_float3x3), Does.StartWith(nameof(MathExtension.IsEqualOrNaN) + "Test"));
 
             float3x3 zero = float3x3.zero;
             float3x3 one = new float3x3(1f);
@@ -626,7 +626,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void IsEqualOrNaNTest_float4x4()
         {
-            Assert.That(nameof(IsEqualOrNaNTest_float4x4), Does.StartWith(nameof(MathExtension.IsEqualOrNaN)));
+            Assert.That(nameof(IsEqualOrNaNTest_float4x4), Does.StartWith(nameof(MathExtension.IsEqualOrNaN) + "Test"));
 
             float4x4 zero = float4x4.zero;
             float4x4 one = new float4x4(1f);
