@@ -28,7 +28,7 @@ namespace Anvil.Unity.Tests
             Assert.That(new float3(7f, -2f, 0f).GetInverse(), Is.EqualTo(new float3(1f/7f, -0.5f, float.PositiveInfinity)));
 
             Assert.That(float3.zero.GetInverse(), Is.EqualTo(new float3(float.PositiveInfinity)));
-            Assert.That(new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN), Is.EqualTo(new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN)).Using<float3>(EqualityWithNaN));
+            Assert.That(new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN).GetInverse(), Is.EqualTo(new float3(0, 0, float.NaN)).Using<float3>(EqualityWithNaN));
         }
 
         // ----- GetInverseSafe ----- //
@@ -90,6 +90,7 @@ namespace Anvil.Unity.Tests
             float2 one = new float2(1f);
             float2 infinity_negativeInfinity = new float2(float.PositiveInfinity, float.NegativeInfinity);
             float2 naN = new float2(float.NaN);
+            float2 five_naN = new float2(5f, float.NaN);
 
             Assert.That(one.IsApproximately(one), Is.EqualTo(new bool2(true)));
             Assert.That((-one).IsApproximately(-one), Is.EqualTo(new bool2(true)));
@@ -110,6 +111,8 @@ namespace Anvil.Unity.Tests
 
             Assert.That(naN.IsApproximately(naN), Is.EqualTo(new bool2(false)));
             Assert.That(naN.IsApproximately(one), Is.EqualTo(new bool2(false)));
+
+            Assert.That(five_naN.IsApproximately(five_naN), Is.EqualTo(new bool2(true, false)));
         }
 
         [Test]
@@ -119,6 +122,7 @@ namespace Anvil.Unity.Tests
 
             float3 one = new float3(1f);
             float3 infinity_negativeInfinity_NaN = new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN);
+            float3 infinity_NaN_three = new float3(float.PositiveInfinity, float.NaN, 3f);
 
             Assert.That(one.IsApproximately(one), Is.EqualTo(new bool3(true)));
             Assert.That((-one).IsApproximately(-one), Is.EqualTo(new bool3(true)));
@@ -136,6 +140,8 @@ namespace Anvil.Unity.Tests
             Assert.That(infinity_negativeInfinity_NaN.IsApproximately(infinity_negativeInfinity_NaN), Is.EqualTo(new bool3(false)));
             Assert.That(infinity_negativeInfinity_NaN.IsApproximately(one), Is.EqualTo(new bool3(false)));
             Assert.That(infinity_negativeInfinity_NaN.IsApproximately(-infinity_negativeInfinity_NaN), Is.EqualTo(new bool3(false)));
+
+            Assert.That(infinity_NaN_three.IsApproximately(infinity_NaN_three), Is.EqualTo(new bool3(false, false, true)));
         }
 
         [Test]
@@ -273,6 +279,7 @@ namespace Anvil.Unity.Tests
             float2 one = new float2(1f);
             float2 infinity_negativeInfinity = new float2(float.PositiveInfinity, float.NegativeInfinity);
             float2 naN = new float2(float.NaN);
+            float2 five_naN = new float2(5f, float.NaN);
 
             Assert.That(one.IsApproximatelySafe(one), Is.EqualTo(new bool2(true)));
             Assert.That((-one).IsApproximatelySafe(-one), Is.EqualTo(new bool2(true)));
@@ -293,6 +300,8 @@ namespace Anvil.Unity.Tests
 
             Assert.That(naN.IsApproximatelySafe(naN), Is.EqualTo(new bool2(true)));
             Assert.That(naN.IsApproximatelySafe(one), Is.EqualTo(new bool2(false)));
+
+            Assert.That(five_naN.IsApproximatelySafe(five_naN), Is.EqualTo(new bool2(true)));
         }
 
         [Test]
@@ -302,6 +311,7 @@ namespace Anvil.Unity.Tests
 
             float3 one = new float3(1f);
             float3 infinity_negativeInfinity_NaN = new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN);
+            float3 infinity_NaN_three = new float3(float.PositiveInfinity, float.NaN, 3f);
 
             Assert.That(one.IsApproximatelySafe(one), Is.EqualTo(new bool3(true)));
             Assert.That((-one).IsApproximatelySafe(-one), Is.EqualTo(new bool3(true)));
@@ -311,14 +321,16 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximatelySafe(one - new float3(float.Epsilon)), Is.EqualTo(new bool3(true)));
             Assert.That(one.IsApproximatelySafe(one + new float3(float.Epsilon)), Is.EqualTo(new bool3(true)));
 
-            Assert.That(one.IsApproximatelySafe(one - new float3(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3(false)));
-            Assert.That(one.IsApproximatelySafe(one + new float3(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3(false)));
+            Assert.That(one.IsApproximatelySafe(one - new float3(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3(false)));
+            Assert.That(one.IsApproximatelySafe(one + new float3(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3(false)));
 
             Assert.That(float3.zero.IsApproximatelySafe(float3.zero), Is.EqualTo(new bool3(true)));
 
             Assert.That(infinity_negativeInfinity_NaN.IsApproximatelySafe(infinity_negativeInfinity_NaN), Is.EqualTo(new bool3(true)));
             Assert.That(infinity_negativeInfinity_NaN.IsApproximatelySafe(one), Is.EqualTo(new bool3(false)));
             Assert.That(infinity_negativeInfinity_NaN.IsApproximatelySafe(-infinity_negativeInfinity_NaN), Is.EqualTo(new bool3(false, false, true)));
+
+            Assert.That(infinity_NaN_three.IsApproximatelySafe(infinity_NaN_three), Is.EqualTo(new bool3(true)));
         }
 
         [Test]
@@ -327,7 +339,7 @@ namespace Anvil.Unity.Tests
             Assert.That(nameof(IsApproximatelySafeTest_float4), Does.StartWith(nameof(MathExtension.IsApproximatelySafe)));
 
             float4 one = new float4(1f);
-            float4 infinity_negativeInfinity_NaN = new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN);
+            float4 infinity_negativeInfinity_NaN_three = new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f);
 
             Assert.That(one.IsApproximatelySafe(one), Is.EqualTo(new bool4(true)));
             Assert.That((-one).IsApproximatelySafe(-one), Is.EqualTo(new bool4(true)));
@@ -342,9 +354,9 @@ namespace Anvil.Unity.Tests
 
             Assert.That(float4.zero.IsApproximatelySafe(float4.zero), Is.EqualTo(new bool4(true)));
 
-            Assert.That(infinity_negativeInfinity_NaN.IsApproximatelySafe(infinity_negativeInfinity_NaN), Is.EqualTo(new bool4(true)));
-            Assert.That(infinity_negativeInfinity_NaN.IsApproximatelySafe(one), Is.EqualTo(new bool4(false)));
-            Assert.That(infinity_negativeInfinity_NaN.IsApproximatelySafe(-infinity_negativeInfinity_NaN), Is.EqualTo(new bool4(false, false, true, true)));
+            Assert.That(infinity_negativeInfinity_NaN_three.IsApproximatelySafe(infinity_negativeInfinity_NaN_three), Is.EqualTo(new bool4(true)));
+            Assert.That(infinity_negativeInfinity_NaN_three.IsApproximatelySafe(one), Is.EqualTo(new bool4(false)));
+            Assert.That(infinity_negativeInfinity_NaN_three.IsApproximatelySafe(-infinity_negativeInfinity_NaN_three), Is.EqualTo(new bool4(false, false, true, false)));
         }
 
         [Test]
@@ -387,12 +399,12 @@ namespace Anvil.Unity.Tests
             Assert.That(nameof(IsApproximatelySafeTest_float4x4), Does.StartWith(nameof(MathExtension.IsApproximatelySafe)));
 
             float4x4 one = new float4x4(1f);
-            float4x4 infinity_negativeInfinity_NaN_column = new float4x4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN);
-            float4x4 infinity_negativeInfinity_NaN_row = new float4x4(
-                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN),
-                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN),
-                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN),
-                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN)
+            float4x4 infinity_negativeInfinity_NaN_three_column = new float4x4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f);
+            float4x4 infinity_negativeInfinity_NaN_three_row = new float4x4(
+                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f),
+                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f),
+                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f),
+                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f)
             );
 
             Assert.That(one.IsApproximatelySafe(one), Is.EqualTo(new bool4x4(true)));
@@ -408,12 +420,12 @@ namespace Anvil.Unity.Tests
 
             Assert.That(float4x4.zero.IsApproximatelySafe(float4x4.zero), Is.EqualTo(new bool4x4(true)));
 
-            Assert.That(infinity_negativeInfinity_NaN_column.IsApproximatelySafe(infinity_negativeInfinity_NaN_column), Is.EqualTo(new bool4x4(true)));
-            Assert.That(infinity_negativeInfinity_NaN_column.IsApproximatelySafe(one), Is.EqualTo(new bool4x4(false)));
-            Assert.That(infinity_negativeInfinity_NaN_column.IsApproximatelySafe(-infinity_negativeInfinity_NaN_column), Is.EqualTo(new bool4x4(false, false, true, true)));
+            Assert.That(infinity_negativeInfinity_NaN_three_column.IsApproximatelySafe(infinity_negativeInfinity_NaN_three_column), Is.EqualTo(new bool4x4(true)));
+            Assert.That(infinity_negativeInfinity_NaN_three_column.IsApproximatelySafe(one), Is.EqualTo(new bool4x4(false)));
+            Assert.That(infinity_negativeInfinity_NaN_three_column.IsApproximatelySafe(-infinity_negativeInfinity_NaN_three_column), Is.EqualTo(new bool4x4(false, false, true, false)));
 
-            Assert.That(infinity_negativeInfinity_NaN_row.IsApproximatelySafe(infinity_negativeInfinity_NaN_row), Is.EqualTo(new bool4x4(true)));
-            Assert.That(infinity_negativeInfinity_NaN_row.IsApproximatelySafe(one), Is.EqualTo(new bool4x4(false)));
+            Assert.That(infinity_negativeInfinity_NaN_three_row.IsApproximatelySafe(infinity_negativeInfinity_NaN_three_row), Is.EqualTo(new bool4x4(true)));
+            Assert.That(infinity_negativeInfinity_NaN_three_row.IsApproximatelySafe(one), Is.EqualTo(new bool4x4(false)));
         }
 
         // ----- ToSignedInfinite ----- //
