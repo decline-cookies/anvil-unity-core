@@ -28,7 +28,7 @@ namespace Anvil.Unity.Tests
             Assert.That(new float3(7f, -2f, 0f).GetInverse(), Is.EqualTo(new float3(1f/7f, -0.5f, float.PositiveInfinity)));
 
             Assert.That(float3.zero.GetInverse(), Is.EqualTo(new float3(float.PositiveInfinity)));
-            Assert.That(new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN), Is.EqualTo(new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN)).Using<float3>(EqualityWithNaN));
+            Assert.That(new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN).GetInverse(), Is.EqualTo(new float3(0, 0, float.NaN)).Using<float3>(EqualityWithNaN));
         }
 
         // ----- GetInverseSafe ----- //
