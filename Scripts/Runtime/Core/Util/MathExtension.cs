@@ -26,7 +26,7 @@ namespace Anvil.Unity.Core
         }
 
         /// <summary>
-        /// Get the inverse of a <see cref="float3"/> with any <see cref="float.NaN"/> or infinite components set to 0
+        /// Get the inverse of a <see cref="float3"/> with any <see cref="float.NaN"/> or infinite components set to 0.
         /// </summary>
         /// <param name="value">The value to get the inverse of.</param>
         /// <returns>The inverted value</returns>
@@ -48,7 +48,7 @@ namespace Anvil.Unity.Core
         /// <see cref="MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE"/>.
         /// </returns>
         /// <remarks>
-        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximately"/>.
+        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximatelySafe"/>.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsApproximately(this float a, float b)
@@ -67,7 +67,7 @@ namespace Anvil.Unity.Core
         /// <see cref="MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE"/>.
         /// </returns>
         /// <remarks>
-        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximately"/>.
+        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximatelySafe"/>.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool2 IsApproximately(this float2 a, float2 b)
@@ -86,7 +86,7 @@ namespace Anvil.Unity.Core
         /// <see cref="MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE"/>.
         /// </returns>
         /// <remarks>
-        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximately"/>.
+        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximatelySafe"/>.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool3 IsApproximately(this float3 a, float3 b)
@@ -105,7 +105,7 @@ namespace Anvil.Unity.Core
         /// <see cref="MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE"/>.
         /// </returns>
         /// <remarks>
-        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximately"/>.
+        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximatelySafe"/>.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool4 IsApproximately(this float4 a, float4 b)
@@ -124,7 +124,7 @@ namespace Anvil.Unity.Core
         /// <see cref="MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE"/>.
         /// </returns>
         /// <remarks>
-        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximately"/>.
+        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximatelySafe"/>.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool3x3 IsApproximately(this float3x3 a, float3x3 b)
@@ -147,7 +147,7 @@ namespace Anvil.Unity.Core
         /// <see cref="MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE"/>.
         /// </returns>
         /// <remarks>
-        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximately"/>.
+        /// Resolves infinite and NaN comparisons as false with improved performance vs <see cref="IsApproximatelySafe"/>.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool4x4 IsApproximately(this float4x4 a, float4x4 b)
