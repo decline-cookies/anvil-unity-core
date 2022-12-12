@@ -56,7 +56,7 @@ namespace Anvil.Unity.Core
             new quaternion(-q.value.z, q.value.w, q.value.x, -q.value.y);
 
         /// <summary>
-        /// Rotate the quaternion 180 degrees around the local z axis.
+        /// Rotate the quaternion 180 degrees around the local Z axis.
         /// </summary>
         /// <param name="q">The quaternion to rotate</param>
         /// <returns>The rotated quaternion</returns>
