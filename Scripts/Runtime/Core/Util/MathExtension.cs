@@ -14,7 +14,7 @@ namespace Anvil.Unity.Core
         /// Get the inverse of a <see cref="float3"/>.
         /// </summary>
         /// <remarks>
-        /// Any components that are 0 will invert to <see cref="float.NaN"/>.
+        /// Any components that are 0 will invert to <see cref="float.PositiveInfinity"/>.
         /// Use <see cref="GetInverseSafe" /> if this is a possibility.
         /// </remarks>
         /// <param name="value">The value to get the inverse of.</param>
