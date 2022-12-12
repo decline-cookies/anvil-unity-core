@@ -72,12 +72,12 @@ namespace Anvil.Unity.Core
         /// This method and related methods adapted from:
         /// https://github.com/FreyaHolmer/Mathfs/blob/446593cea11f7a25b8e73b8398d77f665039bcee/Runtime/Extensions.cs#L159-L177
         /// </remarks>
-        public static quaternion Rotate180Around( this quaternion q, int axis, Space space ) {
+        public static quaternion Rotate180Around( this quaternion q, Axis axis, Space space ) {
             return axis switch {
-                0 => space == Space.Self ? Rotate180AroundSelfX( q ) : Rotate180AroundWorldX( q ),
-                1 => space == Space.Self ? Rotate180AroundSelfY( q ) : Rotate180AroundWorldY( q ),
-                2 => space == Space.Self ? Rotate180AroundSelfZ( q ) : Rotate180AroundWorldZ( q ),
-                _ => throw new ArgumentOutOfRangeException( nameof(axis), $"Invalid axis: {axis}. Expected 0, 1 or 2" )
+                Axis.X => space == Space.Self ? Rotate180AroundSelfX( q ) : Rotate180AroundWorldX( q ),
+                Axis.Y => space == Space.Self ? Rotate180AroundSelfY( q ) : Rotate180AroundWorldY( q ),
+                Axis.Z => space == Space.Self ? Rotate180AroundSelfZ( q ) : Rotate180AroundWorldZ( q ),
+                _ => throw new ArgumentOutOfRangeException( nameof(axis), $"Invalid axis: {axis}." )
             };
         }
 
