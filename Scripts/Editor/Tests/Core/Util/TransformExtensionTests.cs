@@ -9,7 +9,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void SetLossyScaleTest()
         {
-            Assert.That(nameof(SetLossyScaleTest), Does.StartWith(nameof(TransformExtension.SetLossyScale)));
+            Assert.That(nameof(SetLossyScaleTest), Is.EqualTo(nameof(TransformExtension.SetLossyScale) + "Test"));
 
             Vector3 scale_two = new Vector3(2f, 2f, 2f);
             Vector3 scale_two_one_two = new Vector3(2f, 1f, 2f);

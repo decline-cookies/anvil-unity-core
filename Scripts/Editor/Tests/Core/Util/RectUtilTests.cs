@@ -9,7 +9,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void CreateFromPointsTest_TwoPoint()
         {
-            Assert.That(nameof(CreateFromPointsTest_TwoPoint), Does.StartWith(nameof(RectUtil.CreateFromPoints)));
+            Assert.That(nameof(CreateFromPointsTest_TwoPoint), Does.StartWith(nameof(RectUtil.CreateFromPoints) + "Test"));
 
             Rect rect = RectUtil.CreateFromPoints(new Vector2(1, 2), new Vector2(3, 4));
 
@@ -27,9 +27,9 @@ namespace Anvil.Unity.Tests
         }
 
         [Test]
-        public static void CreateBoundingRect_FourPoint()
+        public static void CreateBoundingRectTest_FourPoint()
         {
-            Assert.That(nameof(CreateBoundingRect_FourPoint), Does.StartWith(nameof(RectUtil.CreateBoundingRect)));
+            Assert.That(nameof(CreateBoundingRectTest_FourPoint), Does.StartWith(nameof(RectUtil.CreateBoundingRect) + "Test"));
 
             Rect rect = RectUtil.CreateBoundingRect(new Vector2(1, 2), new Vector2(3, 4), new Vector2(1, 4), new Vector2(3, 2));
 
@@ -47,9 +47,9 @@ namespace Anvil.Unity.Tests
         }
 
         [Test]
-        public static void CreateBoundingRect_NPoint()
+        public static void CreateBoundingRectTest_NPoint()
         {
-            Assert.That(nameof(CreateBoundingRect_NPoint), Does.StartWith(nameof(RectUtil.CreateBoundingRect)));
+            Assert.That(nameof(CreateBoundingRectTest_NPoint), Does.StartWith(nameof(RectUtil.CreateBoundingRect) + "Test"));
 
             Rect rect = RectUtil.CreateBoundingRect(new Vector2(1, 2), new Vector2(3, 4), new Vector2(1, 4), new Vector2(3, 2), new Vector2(3, 2));
 
@@ -69,7 +69,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void AbsSizeTest()
         {
-            Assert.That(nameof(AbsSizeTest), Does.StartWith(nameof(RectUtil.AbsSize)));
+            Assert.That(nameof(AbsSizeTest), Is.EqualTo(nameof(RectUtil.AbsSize) + "Test"));
 
             Rect rect_five_five = new Rect(5, 5, 5, 5);
             Rect rect_negativeFive_negativeFive = new Rect(-5, -5, -5, -5);
@@ -83,7 +83,7 @@ namespace Anvil.Unity.Tests
         [Test]
         public static void AreEquivalentTest()
         {
-            Assert.That(nameof(AreEquivalentTest), Does.StartWith(nameof(RectUtil.AreEquivalent)));
+            Assert.That(nameof(AreEquivalentTest), Is.EqualTo(nameof(RectUtil.AreEquivalent) + "Test"));
 
             Rect rect_five_five = new Rect(5, 5, 5, 5);
             Rect rect_ten_negativeFive = new Rect(10,10,-5,-5);
