@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using Anvil.CSharp.Mathematics;
 using Unity.Mathematics;
@@ -401,6 +402,132 @@ namespace Anvil.Unity.Core
                        math.isnan(a.c1) & math.isnan(b.c1),
                        math.isnan(a.c2) & math.isnan(b.c2),
                        math.isnan(a.c3) & math.isnan(b.c3));
+        }
+
+        /// <summary>
+        /// Returns a string representation of the value using the specified format and current culture.
+        /// </summary>
+        /// <param name="value">The value to format.</param>
+        /// <param name="format">
+        /// The format string.
+        /// For valid syntax see:
+        /// https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers
+        /// </param>
+        /// <returns>The string representation of the value.</returns>
+        /// <remarks>
+        /// This is a fill to match the <see cref="int"/> interface. Unity doesn't define this convenience overload.
+        /// Uses <see cref="NumberFormatInfo.CurrentInfo"/> to get the current culture. This matches the
+        /// <see cref="int"/> implementation.
+        /// https://referencesource.microsoft.com/#mscorlib/system/single.cs,dda909df0f8d2fd0
+        /// </remarks>
+        public static string ToString(this int2 value, string format)
+        {
+            return value.ToString(format, NumberFormatInfo.CurrentInfo);
+        }
+
+        /// <summary>
+        /// Returns a string representation of the value using the specified format and current culture.
+        /// </summary>
+        /// <param name="value">The value to format.</param>
+        /// <param name="format">
+        /// The format string.
+        /// For valid syntax see:
+        /// https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers
+        /// </param>
+        /// <returns>The string representation of the value.</returns>
+        /// <remarks>
+        /// This is a fill to match the <see cref="int"/> interface. Unity doesn't define this convenience overload.
+        /// Uses <see cref="NumberFormatInfo.CurrentInfo"/> to get the current culture. This matches the
+        /// <see cref="int"/> implementation.
+        /// https://referencesource.microsoft.com/#mscorlib/system/single.cs,dda909df0f8d2fd0
+        /// </remarks>
+        public static string ToString(this int3 value, string format)
+        {
+            return value.ToString(format, NumberFormatInfo.CurrentInfo);
+        }
+
+        /// <summary>
+        /// Returns a string representation of the value using the specified format and current culture.
+        /// </summary>
+        /// <param name="value">The value to format.</param>
+        /// <param name="format">
+        /// The format string.
+        /// For valid syntax see:
+        /// https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers
+        /// </param>
+        /// <returns>The string representation of the value.</returns>
+        /// <remarks>
+        /// This is a fill to match the <see cref="int"/> interface. Unity doesn't define this convenience overload.
+        /// Uses <see cref="NumberFormatInfo.CurrentInfo"/> to get the current culture. This matches the
+        /// <see cref="int"/> implementation.
+        /// https://referencesource.microsoft.com/#mscorlib/system/single.cs,dda909df0f8d2fd0
+        /// </remarks>
+        public static string ToString(this int4 value, string format)
+        {
+            return value.ToString(format, NumberFormatInfo.CurrentInfo);
+        }
+
+        /// <summary>
+        /// Returns a string representation of the value using the specified format and current culture.
+        /// </summary>
+        /// <param name="value">The value to format.</param>
+        /// <param name="format">
+        /// The format string.
+        /// For valid syntax see:
+        /// https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers
+        /// </param>
+        /// <returns>The string representation of the value.</returns>
+        /// <remarks>
+        /// This is a fill to match the <see cref="float"/> interface. Unity doesn't define this convenience overload.
+        /// Uses <see cref="NumberFormatInfo.CurrentInfo"/> to get the current culture. This matches the
+        /// <see cref="float"/> implementation.
+        /// https://referencesource.microsoft.com/#mscorlib/system/single.cs,dda909df0f8d2fd0
+        /// </remarks>
+        public static string ToString(this float2 value, string format)
+        {
+            return value.ToString(format, NumberFormatInfo.CurrentInfo);
+        }
+
+        /// <summary>
+        /// Returns a string representation of the value using the specified format and current culture.
+        /// </summary>
+        /// <param name="value">The value to format.</param>
+        /// <param name="format">
+        /// The format string.
+        /// For valid syntax see:
+        /// https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers
+        /// </param>
+        /// <returns>The string representation of the value.</returns>
+        /// <remarks>
+        /// This is a fill to match the <see cref="float"/> interface. Unity doesn't define this convenience overload.
+        /// Uses <see cref="NumberFormatInfo.CurrentInfo"/> to get the current culture. This matches the
+        /// <see cref="float"/> implementation.
+        /// https://referencesource.microsoft.com/#mscorlib/system/single.cs,dda909df0f8d2fd0
+        /// </remarks>
+        public static string ToString(this float3 value, string format)
+        {
+            return value.ToString(format, NumberFormatInfo.CurrentInfo);
+        }
+
+        /// <summary>
+        /// Returns a string representation of the value using the specified format and current culture.
+        /// </summary>
+        /// <param name="value">The value to format.</param>
+        /// <param name="format">
+        /// The format string.
+        /// For valid syntax see:
+        /// https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers
+        /// </param>
+        /// <returns>The string representation of the value.</returns>
+        /// <remarks>
+        /// This is a fill to match the <see cref="float"/> interface. Unity doesn't define this convenience overload.
+        /// Uses <see cref="NumberFormatInfo.CurrentInfo"/> to get the current culture. This matches the
+        /// <see cref="float"/> implementation.
+        /// https://referencesource.microsoft.com/#mscorlib/system/single.cs,dda909df0f8d2fd0
+        /// </remarks>
+        public static string ToString(this float4 value, string format)
+        {
+            return value.ToString(format, NumberFormatInfo.CurrentInfo);
         }
     }
 }

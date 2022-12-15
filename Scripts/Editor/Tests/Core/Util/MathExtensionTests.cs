@@ -668,5 +668,65 @@ namespace Anvil.Unity.Tests
                 );
             Assert.That(nan_negativeOne_zero_columns.IsEqualOrNaN(zero), Is.EqualTo(new bool4x4(false, false, true, true)));
         }
+
+        [Test]
+        public static void ToStringTest_float2()
+        {
+            Assert.That(nameof(ToStringTest_float2), Does.StartWith(nameof(MathExtension.ToString)));
+
+            float2 pointFive_negativePointFive = new float2(0.5f, -0.5f);
+
+            Assert.That(pointFive_negativePointFive.ToString(" 000.##;-000.00"), Is.EqualTo("float2( 000.5f, -000.50f)"));
+        }
+
+        [Test]
+        public static void ToStringTest_float3()
+        {
+            Assert.That(nameof(ToStringTest_float3), Does.StartWith(nameof(MathExtension.ToString)));
+
+            float3 pointFive_negativePointFive = new float3(0.5f, -0.5f, 5f);
+
+            Assert.That(pointFive_negativePointFive.ToString(" 000.##;-000.00"), Is.EqualTo("float3( 000.5f, -000.50f,  005f)"));
+        }
+
+        [Test]
+        public static void ToStringTest_float4()
+        {
+            Assert.That(nameof(ToStringTest_float4), Does.StartWith(nameof(MathExtension.ToString)));
+
+            float4 pointFive_negativePointFive = new float4(0.5f, -0.5f, 5f, -5f);
+
+            Assert.That(pointFive_negativePointFive.ToString(" 000.##;-000.00"), Is.EqualTo("float4( 000.5f, -000.50f,  005f, -005.00f)"));
+        }
+
+        [Test]
+        public static void ToStringTest_int2()
+        {
+            Assert.That(nameof(ToStringTest_int2), Does.StartWith(nameof(MathExtension.ToString)));
+
+            int2 pointFive_negativePointFive = new int2(5, -5);
+
+            Assert.That(pointFive_negativePointFive.ToString(" 000;-000"), Is.EqualTo("int2( 005, -005)"));
+        }
+
+        [Test]
+        public static void ToStringTest_int3()
+        {
+            Assert.That(nameof(ToStringTest_int3), Does.StartWith(nameof(MathExtension.ToString)));
+
+            int3 pointFive_negativePointFive = new int3(5, -5, 50);
+
+            Assert.That(pointFive_negativePointFive.ToString(" 000;-000"), Is.EqualTo("int3( 005, -005,  050)"));
+        }
+
+        [Test]
+        public static void ToStringTest_int4()
+        {
+            Assert.That(nameof(ToStringTest_int4), Does.StartWith(nameof(MathExtension.ToString)));
+
+            int4 pointFive_negativePointFive = new int4(5, -5, 50, -50);
+
+            Assert.That(pointFive_negativePointFive.ToString(" 000;-000"), Is.EqualTo("int4( 005, -005,  050, -050)"));
+        }
     }
 }
