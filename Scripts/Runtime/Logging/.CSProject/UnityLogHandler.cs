@@ -14,9 +14,12 @@ namespace Anvil.Unity.Logging
     {
         public const uint PRIORITY = ConsoleLogHandler.PRIORITY + 10;
 
-        protected override string DefaultLogFormat =>
-            $"({LOG_PART_CALLER_TYPE}.{LOG_PART_CALLER_METHOD}) {LOG_PART_MESSAGE}\n" +
-            $"(at {LOG_PART_CALLER_FILE}:{LOG_PART_CALLER_LINE})";
+        protected override string DefaultLogFormat
+        {
+            get =>
+                $"<color=#DDDDDD>({LOG_PART_CALLER_TYPE}.{LOG_PART_CALLER_METHOD})</color> {LOG_PART_MESSAGE}\n" +
+                $"(at {LOG_PART_CALLER_FILE}:{LOG_PART_CALLER_LINE})";
+        }
 
         protected override void HandleFormattedLog(LogLevel level, string formattedLog)
         {
