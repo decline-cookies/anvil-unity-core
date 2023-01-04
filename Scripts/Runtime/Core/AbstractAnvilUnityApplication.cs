@@ -41,6 +41,8 @@ namespace Anvil.Unity.Core
         //Sealing to ensure inheriting classes can't override this behaviour
         protected sealed override void Awake()
         {
+            base.Awake();
+
             Application.quitting += Application_Quitting;
             InitDontDestroyOnLoadGameObjects();
             Init();
