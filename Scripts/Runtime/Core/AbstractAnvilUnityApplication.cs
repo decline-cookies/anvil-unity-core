@@ -25,11 +25,21 @@ namespace Anvil.Unity.Core
         /// </summary>
         public event Action OnAppLostFocus;
         /// <summary>
-        /// Dispatches when the application is quitting via <see cref="Application.quitting"/>. This will not dispatch
+        /// Dispatches when the application is quitting via <see cref="QuitState.OnQuitting"/>. This will not dispatch
         /// if the application is force quit or crashes. The application cannot cancel the quit process at the time this
         /// dispatches. <see cref="Application.wantsToQuit"/> if the quit process needs to be cancelled.
         /// </summary>
-        public event Action OnAppQuitting;
+        public event Action OnAppQuitting
+        {
+            add => QuitState.OnQuitting += value;
+            remove => QuitState.OnQuitting -= value;
+        }
+
+        /// <inheritdoc cref="QuitState.IsQuitting"/>
+        public bool IsQuitting
+        {
+            get => QuitState.IsQuitting;
+        }
 
         /// <summary>
         /// An array of GameObjects that are linked to the application that shouldn't be destroyed on a
@@ -43,19 +53,16 @@ namespace Anvil.Unity.Core
         {
             base.Awake();
 
-            Application.quitting += Application_Quitting;
             InitDontDestroyOnLoadGameObjects();
             Init();
         }
 
         protected override void DisposeSelf()
         {
-            Application.quitting -= Application_Quitting;
             OnAppPaused = null;
             OnAppResumed = null;
             OnAppGainedFocus = null;
             OnAppLostFocus = null;
-            OnAppQuitting = null;
 
             base.DisposeSelf();
         }
@@ -98,11 +105,5 @@ namespace Anvil.Unity.Core
                 OnAppResumed?.Invoke();
             }
         }
-
-        private void Application_Quitting()
-        {
-            OnAppQuitting?.Invoke();
-        }
     }
 }
-
