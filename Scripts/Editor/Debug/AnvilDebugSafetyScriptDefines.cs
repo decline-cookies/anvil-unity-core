@@ -5,6 +5,7 @@ namespace Anvil.Unity.Editor.Debug
     /// <summary>
     /// Sets up script defines for common Anvil specific script defines
     /// </summary>
+    [InitializeOnLoad]
     public static class AnvilDebugSafetyScriptDefines
     {
         /// <summary>
@@ -39,6 +40,12 @@ namespace Anvil.Unity.Editor.Debug
                                                                                                                                 ANVIL_DEBUG_SAFETY
                                                                                                                             },
                                                                                                                             null);
+
+        static AnvilDebugSafetyScriptDefines()
+        {
+            ScriptDefinesToggle.RegisterScriptDefineDefinition(ANVIL_DEBUG_SAFETY_DEFINITION);
+            ScriptDefinesToggle.RegisterScriptDefineDefinition(ANVIL_DEBUG_SAFETY_EXPENSIVE_DEFINITION);
+        }
 
 
         [MenuItem(ANVIL_DEBUG_SAFETY_MENU_PATH, true)]
