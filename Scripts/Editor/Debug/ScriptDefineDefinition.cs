@@ -15,36 +15,19 @@ namespace Anvil.Unity.Editor.Debug
         internal HashSet<string> RequiredDefines { get; }
         internal HashSet<string> DependentDefines { get; }
 
+        /// <summary>
+        /// Creates a new <see cref="ScriptDefineDefinition"/> instance.
+        /// </summary>
+        /// <param name="define">The Script Define to add/remove to/from PlayerSettings</param>
+        /// <param name="menuPath">The path to show in the menu for toggling on and off. <see cref="ScriptDefinesToggle.MENU_PATH_BASE"/></param>
+        /// <param name="requiredDefines">Script Defines that are required to be set in order for this to be set.</param>
+        /// <param name="dependentDefines">Script Defines that require this to be set.</param>
         public ScriptDefineDefinition(string define, string menuPath, IEnumerable<string> requiredDefines, IEnumerable<string> dependentDefines)
         {
             Define = define;
             MenuPath = menuPath;
             RequiredDefines = requiredDefines != null ? requiredDefines.ToHashSet() : new HashSet<string>();
             DependentDefines = dependentDefines != null ? dependentDefines.ToHashSet() : new HashSet<string>();
-        }
-
-        internal void MergeIn(ScriptDefineDefinition other)
-        {
-            int requiredCount = RequiredDefines.Count;
-            int dependentCount = DependentDefines.Count;
-            RequiredDefines.UnionWith(other.RequiredDefines);
-            DependentDefines.UnionWith(other.DependentDefines);
-            
-            //If something changed we should validate it's safe
-            if (RequiredDefines.Count == requiredCount
-             && DependentDefines.Count == dependentCount)
-            {
-                return;
-            }
-
-            HashSet<string> dupes = new HashSet<string>(RequiredDefines);
-            dupes.IntersectWith(DependentDefines);
-            if (dupes.Count == 0)
-            {
-                return;
-            }
-
-            throw new InvalidOperationException($"Circular reference detected! The script define {Define} requires and depends on {string.Join("," , dupes)}. Please check your {nameof(ScriptDefineDefinition)}s to ensure you have set them up properly.");
         }
     }
 }
