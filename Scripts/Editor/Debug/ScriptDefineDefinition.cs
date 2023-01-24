@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +5,7 @@ namespace Anvil.Unity.Editor.Debug
 {
     /// <summary>
     /// Defines information for use with a Script Define and the behaviour when toggling on and off.
-    /// <see cref="ScriptDefinesToggle"/>
+    /// See: <see cref="ScriptDefinesToggle"/>
     /// </summary>
     public class ScriptDefineDefinition
     {
@@ -26,8 +25,12 @@ namespace Anvil.Unity.Editor.Debug
         {
             Define = define;
             MenuPath = menuPath;
-            RequiredDefines = requiredDefines != null ? requiredDefines.ToHashSet() : new HashSet<string>();
-            DependentDefines = dependentDefines != null ? dependentDefines.ToHashSet() : new HashSet<string>();
+            RequiredDefines = requiredDefines != null
+                ? requiredDefines.ToHashSet()
+                : new HashSet<string>();
+            DependentDefines = dependentDefines != null
+                ? dependentDefines.ToHashSet()
+                : new HashSet<string>();
         }
     }
 }

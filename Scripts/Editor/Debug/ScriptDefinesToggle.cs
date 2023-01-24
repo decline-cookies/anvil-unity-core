@@ -38,6 +38,7 @@ namespace Anvil.Unity.Editor.Debug
         {
             PlayerSettings.GetScriptingDefineSymbols(NAMED_BUILD_TARGET, out string[] defines);
             HashSet<string> definesHashSet = defines.ToHashSet();
+            int definesHashSetCount = definesHashSet.Count;
 
             foreach (ScriptDefineDefinition scriptDefineDefinition in SCRIPT_DEFINE_DEFINITIONS_LOOKUP.Values)
             {
@@ -47,17 +48,22 @@ namespace Anvil.Unity.Editor.Debug
                 {
                     continue;
                 }
-                
+
                 //Ensure that our requirements are present in case some other script or the developer manually removed them
                 foreach (string define in scriptDefineDefinition.RequiredDefines.Where(define => !definesHashSet.Contains(define)))
                 {
                     LOGGER.Error($"{scriptDefineDefinition.Define} requires that {define} is set, but it's not present! Removing {scriptDefineDefinition.Define} and all dependencies if they were set.");
                     RemoveDependentDefines(scriptDefineDefinition, definesHashSet);
-                    PlayerSettings.SetScriptingDefineSymbols(NAMED_BUILD_TARGET, definesHashSet.ToArray());
                 }
             }
+
+            //If we made any changes, then update the PlayerSettings
+            if (definesHashSet.Count != definesHashSetCount)
+            {
+                PlayerSettings.SetScriptingDefineSymbols(NAMED_BUILD_TARGET, definesHashSet.ToArray());
+            }
         }
-        
+
         /// <summary>
         /// Registers a <see cref="ScriptDefineDefinition"/> so that the editor is aware of requirements and dependencies
         /// for a specific Script Define
@@ -91,7 +97,7 @@ namespace Anvil.Unity.Editor.Debug
         {
             if (!SCRIPT_DEFINE_DEFINITIONS_LOOKUP.TryGetValue(define, out ScriptDefineDefinition scriptDefineDefinition))
             {
-                throw new InvalidOperationException($"Trying to get Script Define Definition for {define} but it doesn't exist! Did you call {nameof(ScriptDefinesToggle.RegisterScriptDefineDefinition)}?");
+                throw new InvalidOperationException($"Trying to get Script Define Definition for {define} but it doesn't exist! Did you call {nameof(RegisterScriptDefineDefinition)}?");
             }
 
             return scriptDefineDefinition;
@@ -125,7 +131,7 @@ namespace Anvil.Unity.Editor.Debug
             string[] dupes = scriptDefineDefinition.DependentDefines.Intersect(scriptDefineDefinition.RequiredDefines).ToArray();
             if (dupes.Any())
             {
-                throw new InvalidOperationException($"Circular reference detected! The script define {scriptDefineDefinition.Define} requires and depends on {string.Join("," , dupes)}. Please check your {nameof(ScriptDefineDefinition)}s to ensure you have set them up properly.");
+                throw new InvalidOperationException($"Circular reference detected! The script define {scriptDefineDefinition.Define} requires and depends on {string.Join(",", dupes)}. Please check your {nameof(ScriptDefineDefinition)}s to ensure you have set them up properly.");
             }
         }
 
@@ -145,7 +151,7 @@ namespace Anvil.Unity.Editor.Debug
                 dependentDefineDefinition.RequiredDefines.Add(cachedScriptDefineDefinition.Define);
             }
         }
-        
+
         /// <summary>
         /// Validator function to show if a given Script Define is currently enabled or not.
         /// Call this to validate a Script Define menu item.
@@ -159,7 +165,7 @@ namespace Anvil.Unity.Editor.Debug
             Menu.SetChecked(scriptDefineDefinition.MenuPath, isEnabled);
             return true;
         }
-        
+
         /// <summary>
         /// Toggle function to turn on or off a given Script Define.
         /// Call this to toggle a Script Define from the menu.
@@ -170,7 +176,7 @@ namespace Anvil.Unity.Editor.Debug
             //App level script defines may require framework level script defines to be turned on, this ensures
             //that we get a project consolidated view of what to turn on/off
             scriptDefineDefinition = GetCachedScriptDefineDefinition(scriptDefineDefinition.Define);
-            
+
             PlayerSettings.GetScriptingDefineSymbols(NAMED_BUILD_TARGET, out string[] defines);
             HashSet<string> definesHashSet = defines.ToHashSet();
 
@@ -201,7 +207,7 @@ namespace Anvil.Unity.Editor.Debug
                 RemoveDependentDefines(dependentDefineDefinition, definesHashSet);
             }
         }
-        
+
         private static void AddRequiredDefines(ScriptDefineDefinition scriptDefineDefinition, HashSet<string> definesHashSet)
         {
             //Add ourself

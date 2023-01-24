@@ -13,13 +13,13 @@ namespace Anvil.Unity.Editor.Debug
         /// Should not be performance intensive.
         /// </summary>
         public const string ANVIL_DEBUG_SAFETY = "ANVIL_DEBUG_SAFETY";
-        
+
         /// <summary>
         /// Script Define for code safety checks that are expensive to determine.
         /// </summary>
         public const string ANVIL_DEBUG_SAFETY_EXPENSIVE = "ANVIL_DEBUG_SAFETY_EXPENSIVE";
-        
-        
+
+
         private const string ANVIL_DEBUG_SAFETY_MENU_PATH = ScriptDefinesToggle.MENU_PATH_BASE + "/" + ANVIL_DEBUG_SAFETY;
         private const string ANVIL_DEBUG_SAFETY_EXPENSIVE_MENU_PATH = ScriptDefinesToggle.MENU_PATH_BASE + "/" + ANVIL_DEBUG_SAFETY_EXPENSIVE;
 
@@ -48,28 +48,28 @@ namespace Anvil.Unity.Editor.Debug
         }
 
 
-        [MenuItem(ANVIL_DEBUG_SAFETY_MENU_PATH, true)]
-        private static bool Toggle_Validator_Safety()
-        {
-            return ScriptDefinesToggle.Toggle_Validator(ANVIL_DEBUG_SAFETY_DEFINITION);
-        }
-
         [MenuItem(ANVIL_DEBUG_SAFETY_MENU_PATH)]
         private static void Toggle_Safety()
         {
             ScriptDefinesToggle.Toggle(ANVIL_DEBUG_SAFETY_DEFINITION);
         }
 
-        [MenuItem(ANVIL_DEBUG_SAFETY_EXPENSIVE_MENU_PATH, true)]
-        private static bool Toggle_Validator_Safety_Expensive()
+        [MenuItem(ANVIL_DEBUG_SAFETY_MENU_PATH, true)]
+        private static bool Toggle_Safety_Validator()
         {
-            return ScriptDefinesToggle.Toggle_Validator(ANVIL_DEBUG_SAFETY_EXPENSIVE_DEFINITION);
+            return ScriptDefinesToggle.Toggle_Validator(ANVIL_DEBUG_SAFETY_DEFINITION);
         }
 
         [MenuItem(ANVIL_DEBUG_SAFETY_EXPENSIVE_MENU_PATH)]
         private static void Toggle_Safety_Expensive()
         {
             ScriptDefinesToggle.Toggle(ANVIL_DEBUG_SAFETY_EXPENSIVE_DEFINITION);
+        }
+
+        [MenuItem(ANVIL_DEBUG_SAFETY_EXPENSIVE_MENU_PATH, true)]
+        private static bool Toggle_Safety_Expensive_Validator()
+        {
+            return ScriptDefinesToggle.Toggle_Validator(ANVIL_DEBUG_SAFETY_EXPENSIVE_DEFINITION);
         }
     }
 }
