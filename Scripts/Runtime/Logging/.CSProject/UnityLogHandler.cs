@@ -78,6 +78,7 @@ namespace Anvil.Unity.Logging
         private int m_NextAvailableColorIndex = 0;
 
         private LogHighlightMode m_HighlightMode;
+
         /// <summary>
         /// Sets the mode used to select a highlight color.
         /// See <see cref="LogHighlightMode"/> for options.
@@ -96,8 +97,8 @@ namespace Anvil.Unity.Logging
         protected override string DefaultLogFormat
         {
             get =>
-                $"<color={LOG_PART_LOG_HIGHLIGHT_COLOR}>({LOG_PART_CALLER_TYPE}.{LOG_PART_CALLER_METHOD})</color> {LOG_PART_MESSAGE}\n" +
-                $"(at {LOG_PART_CALLER_FILE}:{LOG_PART_CALLER_LINE})";
+                $"<color={LOG_PART_LOG_HIGHLIGHT_COLOR}>({LOG_PART_CALLER_TYPE}.{LOG_PART_CALLER_METHOD})</color> {LOG_PART_MESSAGE}\n"
+                + $"(at {LOG_PART_CALLER_FILE}:{LOG_PART_CALLER_LINE})";
         }
 
         public UnityLogHandler() : base()
@@ -112,12 +113,15 @@ namespace Anvil.Unity.Logging
                 case LogLevel.Debug:
                     Debug.Log(formattedLog);
                     break;
+
                 case LogLevel.Warning:
                     Debug.LogWarning(formattedLog);
                     break;
+
                 case LogLevel.Error:
                     Debug.LogError(formattedLog);
                     break;
+
                 default:
                     throw new NotImplementedException($"Unhandled log level: {level}");
             }
@@ -131,8 +135,7 @@ namespace Anvil.Unity.Logging
                 LogHighlightMode.Rainbow_PerType => GetColorForType(callerInfo.TypeName),
                 LogHighlightMode.Rainbow_PerMethod => GetColorForMethod(in callerInfo),
                 LogHighlightMode.Rainbow_PerCallSite => GetColorForCallSite(in callerInfo),
-                _ => throw new NotImplementedException(
-                    $"Not handling implemented for {nameof(HighlightMode)} {HighlightMode}")
+                _ => throw new NotImplementedException($"Not handling implemented for {nameof(HighlightMode)} {HighlightMode}")
             };
         }
 
@@ -152,7 +155,7 @@ namespace Anvil.Unity.Logging
         private string GetColorForMethod(in CallerInfo callerInfo)
         {
             int callsiteKey = (callerInfo.FilePath, callerInfo.MethodName).GetHashCode();
-            if(!m_RainbowColorLookup.TryGetValue(callsiteKey, out int colorIndex))
+            if (!m_RainbowColorLookup.TryGetValue(callsiteKey, out int colorIndex))
             {
                 colorIndex = m_NextAvailableColorIndex;
                 m_RainbowColorLookup.Add(callsiteKey, m_NextAvailableColorIndex);
@@ -165,7 +168,7 @@ namespace Anvil.Unity.Logging
         private string GetColorForCallSite(in CallerInfo callerInfo)
         {
             int callsiteKey = (callerInfo.FilePath, callerInfo.LineNumber).GetHashCode();
-            if(!m_RainbowColorLookup.TryGetValue(callsiteKey, out int colorIndex))
+            if (!m_RainbowColorLookup.TryGetValue(callsiteKey, out int colorIndex))
             {
                 colorIndex = m_NextAvailableColorIndex;
                 m_RainbowColorLookup.Add(callsiteKey, m_NextAvailableColorIndex);
@@ -187,14 +190,17 @@ namespace Anvil.Unity.Logging
             /// A single highlight color used for all messages
             /// </summary>
             Constant,
+
             /// <summary>
             /// A highlight color is selected for each unique type a log is emitted from.
             /// </summary>
             Rainbow_PerType,
+
             /// <summary>
             /// A highlight color is selected for each unique method a log is emitted from.
             /// </summary>
             Rainbow_PerMethod,
+
             /// <summary>
             /// A highlight color is selected for each unique call site a log is emitted from.
             /// </summary>
