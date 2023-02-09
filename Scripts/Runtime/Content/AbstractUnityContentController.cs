@@ -1,4 +1,3 @@
-using Anvil.CSharp.Command;
 using Anvil.CSharp.Content;
 using Anvil.Unity.Asset;
 using UnityEngine;
@@ -18,9 +17,8 @@ namespace Anvil.Unity.Content
         //TODO: Remove later on
         private LoadResourceCommand<GameObject> m_LoadResourceCommand;
 
-        protected AbstractUnityContentController(string contentGroupID, string contentLoadingID) : base(contentGroupID, contentLoadingID)
-        {
-        }
+        protected AbstractUnityContentController(string contentGroupID, string contentLoadingID)
+            : base(contentGroupID, contentLoadingID) { }
 
         protected override void DisposeSelf()
         {
@@ -60,4 +58,3 @@ namespace Anvil.Unity.Content
         }
     }
 }
-

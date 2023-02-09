@@ -1,5 +1,3 @@
-
-
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -90,7 +88,7 @@ namespace Anvil.Unity.Core
             // - Do math.min(i + 2, points.Length) instead of (i + 1) % points.Length to avoid potential cache invalidation
             // - Strides of 4 but do a separate math.min(batchMinX, minX) call
             // - Is it even worth batching?
-            for (int i = 0; i < points.Length; i+=3)
+            for (int i = 0; i < points.Length; i += 3)
             {
                 Vector2 point1 = points[i];
                 // wrap around if the batch size is not a multiple of points.Length
@@ -165,6 +163,5 @@ namespace Anvil.Unity.Core
 
             return math.all(rect1_float.IsApproximately(rect2_float));
         }
-
     }
 }

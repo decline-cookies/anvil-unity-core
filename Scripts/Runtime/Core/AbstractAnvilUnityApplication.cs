@@ -12,18 +12,22 @@ namespace Anvil.Unity.Core
         /// Dispatches when the application is paused via <see cref="MonoBehaviour.OnApplicationPause(true)"/>
         /// </summary>
         public event Action OnAppPaused;
+
         /// <summary>
         /// Dispatches when the application is resumed via <see cref="MonoBehaviour.OnApplicationPause(false)"/>
         /// </summary>
         public event Action OnAppResumed;
+
         /// <summary>
         /// Dispatches when the application gains focus via <see cref="MonoBehaviour.OnApplicationFocus(true)"/>
         /// </summary>
         public event Action OnAppGainedFocus;
+
         /// <summary>
         /// Dispatches when the application loses focus via <see cref="MonoBehaviour.OnApplicationFocus(false)"/>
         /// </summary>
         public event Action OnAppLostFocus;
+
         /// <summary>
         /// Dispatches when the application is quitting via <see cref="QuitState.OnQuitting"/>. This will not dispatch
         /// if the application is force quit or crashes. The application cannot cancel the quit process at the time this

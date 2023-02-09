@@ -9,9 +9,7 @@ namespace Anvil.Unity.Data
     /// </summary>
     public class UnityProxyString : ProxyString
     {
-        public UnityProxyString(string value) : base(value)
-        {
-        }
+        public UnityProxyString(string value) : base(value) { }
 
         public override object ToType(Type conversionType, IFormatProvider provider)
         {

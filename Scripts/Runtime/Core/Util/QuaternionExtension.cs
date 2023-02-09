@@ -72,12 +72,14 @@ namespace Anvil.Unity.Core
         /// This method and related methods adapted from:
         /// https://github.com/FreyaHolmer/Mathfs/blob/446593cea11f7a25b8e73b8398d77f665039bcee/Runtime/Extensions.cs#L159-L177
         /// </remarks>
-        public static quaternion Rotate180Around( this quaternion q, Axis axis, Space space ) {
-            return axis switch {
-                Axis.X => space == Space.Self ? Rotate180AroundSelfX( q ) : Rotate180AroundWorldX( q ),
-                Axis.Y => space == Space.Self ? Rotate180AroundSelfY( q ) : Rotate180AroundWorldY( q ),
-                Axis.Z => space == Space.Self ? Rotate180AroundSelfZ( q ) : Rotate180AroundWorldZ( q ),
-                _ => throw new ArgumentOutOfRangeException( nameof(axis), $"Invalid axis: {axis}." )
+        public static quaternion Rotate180Around(this quaternion q, Axis axis, Space space)
+        {
+            return axis switch
+            {
+                Axis.X => space == Space.Self ? Rotate180AroundSelfX(q) : Rotate180AroundWorldX(q),
+                Axis.Y => space == Space.Self ? Rotate180AroundSelfY(q) : Rotate180AroundWorldY(q),
+                Axis.Z => space == Space.Self ? Rotate180AroundSelfZ(q) : Rotate180AroundWorldZ(q),
+                _ => throw new ArgumentOutOfRangeException(nameof(axis), $"Invalid axis: {axis}.")
             };
         }
 
@@ -126,6 +128,7 @@ namespace Anvil.Unity.Core
                     }
                     break;
                 }
+
                 case math.RotationOrder.ZXY:
                 {
                     var y1 = d2.y - d1.x;
@@ -147,6 +150,7 @@ namespace Anvil.Unity.Core
                     }
                     break;
                 }
+
                 case math.RotationOrder.YXZ:
                 {
                     var y1 = d2.y + d1.x;
@@ -168,6 +172,7 @@ namespace Anvil.Unity.Core
                     }
                     break;
                 }
+
                 case math.RotationOrder.YZX:
                 {
                     var y1 = d2.x - d1.z;
@@ -189,6 +194,7 @@ namespace Anvil.Unity.Core
                     }
                     break;
                 }
+
                 case math.RotationOrder.XZY:
                 {
                     var y1 = d2.x + d1.z;
@@ -210,6 +216,7 @@ namespace Anvil.Unity.Core
                     }
                     break;
                 }
+
                 case math.RotationOrder.XYZ:
                 {
                     var y1 = d2.z - d1.y;
@@ -220,7 +227,8 @@ namespace Anvil.Unity.Core
                         var z1 = d2.x + d1.z;
                         var z2 = d3.x + d3.w - d3.y - d3.z;
                         euler = new float3(math.atan2(x1, x2), -math.asin(y1), math.atan2(z1, z2));
-                    } else //xzx
+                    }
+                    else //xzx
                     {
                         y1 = math.clamp(y1, -1.0f, 1.0f);
                         var abcd = new float4(d2.z, d1.y, d2.x, d1.z);
@@ -233,20 +241,26 @@ namespace Anvil.Unity.Core
             }
             return EulerReorderBack(euler, order);
         }
+
         private static float3 EulerReorderBack(float3 euler, math.RotationOrder order)
         {
             switch (order)
             {
                 case math.RotationOrder.XZY:
                     return euler.xzy;
+
                 case math.RotationOrder.YZX:
                     return euler.zxy;
+
                 case math.RotationOrder.YXZ:
                     return euler.yxz;
+
                 case math.RotationOrder.ZXY:
                     return euler.yzx;
+
                 case math.RotationOrder.ZYX:
                     return euler.zyx;
+
                 case math.RotationOrder.XYZ:
                 default:
                     return euler;

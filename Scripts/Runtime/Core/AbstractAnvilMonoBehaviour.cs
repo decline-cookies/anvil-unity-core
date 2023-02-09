@@ -25,6 +25,7 @@ namespace Anvil.Unity.Core
         public bool IsDisposing { get; private set; }
 
         private Logger? m_Logger;
+
         /// <summary>
         /// Returns a <see cref="Logger"/> for this instance to emit log messages with.
         /// Lazy instantiated.
@@ -75,9 +76,6 @@ namespace Anvil.Unity.Core
         /// <summary>
         /// Override to implement specific Dispose logic.
         /// </summary>
-        protected virtual void DisposeSelf()
-        {
-
-        }
+        protected virtual void DisposeSelf() { }
     }
 }

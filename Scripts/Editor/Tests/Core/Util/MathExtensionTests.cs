@@ -2,7 +2,6 @@ using Anvil.CSharp.Mathematics;
 using Anvil.Unity.Core;
 using NUnit.Framework;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Anvil.Unity.Tests
 {

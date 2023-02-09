@@ -19,13 +19,12 @@ namespace Anvil.Unity.Core
         {
             Type type = target.GetType();
             FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            
+
             IEnumerable<FieldInfo> unsetSerializedFieldReferences = fields.Where(
                 (field) =>
                     IsEditorExposedReferenceField(field)
                     && !field.IsDefined(typeof(PermitUnsetReference))
-                    && IsNullOrUnityNull(field.GetValue(target))
-                );
+                    && IsNullOrUnityNull(field.GetValue(target)));
 
             foreach (FieldInfo field in unsetSerializedFieldReferences)
             {
@@ -41,7 +40,7 @@ namespace Anvil.Unity.Core
         private static bool IsEditorExposedReferenceField(FieldInfo field)
         {
             return (field.IsPublic || field.IsDefined(typeof(SerializeField)))
-                   && field.FieldType.IsSubclassOf(typeof(UnityEngine.Object));
+                && field.FieldType.IsSubclassOf(typeof(UnityEngine.Object));
         }
 
         /// <summary>
@@ -50,7 +49,6 @@ namespace Anvil.Unity.Core
         /// <remarks>
         /// https://answers.unity.com/questions/939119/using-reflection-sometimes-a-field-is-null-and-som.html
         /// </remarks>
-
         /// <param name="obj">The object to evaluate</param>
         /// <returns>true if the object provided is null or set to the Unity placeholder null object.</returns>
         private static bool IsNullOrUnityNull(object obj)

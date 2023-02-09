@@ -34,11 +34,13 @@ namespace Anvil.Unity.Debugging
 
         [UnityLogListener.Exclude]
         public override void WriteLine(string message) { UnityEngine.Debug.Log(message); }
+
         [UnityLogListener.Exclude]
         public override void Write(string message) { WriteLine(message); }
 
         [UnityLogListener.Exclude]
         public override void Fail(string message) { throw new System.Exception(message); }
+
         [UnityLogListener.Exclude]
         public override void Fail(string message, string details) { Fail($"{message}\n{details}"); }
     }

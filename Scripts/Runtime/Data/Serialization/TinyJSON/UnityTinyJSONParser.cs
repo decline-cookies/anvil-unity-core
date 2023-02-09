@@ -20,10 +20,9 @@ namespace Anvil.Unity.Data
 
         protected override bool DTCheckConvert<T>(Variant data, Type type, out T decodedData)
         {
-            if (type == typeof(Color)
-                || type == typeof(Color32))
+            if (type == typeof(Color) || type == typeof(Color32))
             {
-                decodedData = (T) Convert.ChangeType( data, type );
+                decodedData = (T)Convert.ChangeType(data, type);
                 return true;
             }
 
@@ -33,16 +32,16 @@ namespace Anvil.Unity.Data
         protected override bool DTCheckType<T>(Variant data, Type type, out T decodedData)
         {
             return base.DTCheckType(data, type, out decodedData)
-                   || DTCheckVector2Int(data, type, out decodedData)
-                   || DTCheckVector3Int(data, type, out decodedData);
+                || DTCheckVector2Int(data, type, out decodedData)
+                || DTCheckVector3Int(data, type, out decodedData);
         }
 
         private bool DTCheckVector2Int<T>(Variant data, Type type, out T decodedType)
         {
-            if (typeof(Vector2Int).IsAssignableFrom( type ))
+            if (typeof(Vector2Int).IsAssignableFrom(type))
             {
-                Vector2 value = DecodeType<Vector2>( data );
-                decodedType = (T) (object) new Vector2Int(Mathf.RoundToInt(value.x), Mathf.RoundToInt(value.y));
+                Vector2 value = DecodeType<Vector2>(data);
+                decodedType = (T)(object)new Vector2Int(Mathf.RoundToInt(value.x), Mathf.RoundToInt(value.y));
                 return true;
             }
 
@@ -52,10 +51,10 @@ namespace Anvil.Unity.Data
 
         private bool DTCheckVector3Int<T>(Variant data, Type type, out T decodedType)
         {
-            if (typeof(Vector3Int).IsAssignableFrom( type ))
+            if (typeof(Vector3Int).IsAssignableFrom(type))
             {
-                Vector3 value = DecodeType<Vector3>( data );
-                decodedType = (T) (object) new Vector3Int(Mathf.RoundToInt(value.x), Mathf.RoundToInt(value.y), Mathf.RoundToInt(value.z));
+                Vector3 value = DecodeType<Vector3>(data);
+                decodedType = (T)(object)new Vector3Int(Mathf.RoundToInt(value.x), Mathf.RoundToInt(value.y), Mathf.RoundToInt(value.z));
                 return true;
             }
 

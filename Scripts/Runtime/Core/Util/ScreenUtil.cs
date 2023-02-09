@@ -34,7 +34,10 @@ namespace Anvil.Unity.Core
         ///
         /// This is used to maintain a consistent physical sizes across all screen densities.
         /// </param>
-        /// <param name="ignoreOffscreenValues">When the position is beyond the limits of the screen (Ex: x < 0, y > height, etc...) return 0,0 to prevent movement</param>
+        /// <param name="ignoreOffscreenValues">
+        /// When the position is beyond the limits of the screen (Ex: x < 0, y > height, etc...) return 0,0 to prevent
+        /// movement.
+        /// </param>
         /// <returns>A position normalized within a screen edge border.</returns>
         ///
         /// <example>
@@ -58,8 +61,7 @@ namespace Anvil.Unity.Core
 
             // If we're outside of the screen don't scroll
             if (ignoreOffscreenValues
-                && (position.x < 0 || position.x > screenWidth || position.y < 0 || position.y > screenHeight)
-                )
+                && (position.x < 0 || position.x > screenWidth || position.y < 0 || position.y > screenHeight))
             {
                 return Vector2.zero;
             }

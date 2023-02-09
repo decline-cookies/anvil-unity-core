@@ -12,13 +12,14 @@ namespace Anvil.Unity.Content
         /// A local position to place the group <see cref="Transform"/> relative to its parent.
         /// </summary>
         public readonly Vector3 LocalPosition;
+
         /// <summary>
         /// A custom user supplied <see cref="GameObject"/> <see cref="Transform"/> to parent the
         /// <see cref="UnityContentGroup"/> to. If left null (the default), the <see cref="UnityContentGroup"/> will be parented
         /// to the <see cref="UnityContentManager"/>'s ContentRoot.
         /// </summary>
         public readonly Transform GameObjectRoot;
-        
+
         /// <summary>
         /// Constructs a new instance of the <see cref="UnityContentGroupConfigVO"/> to use in construction of a <see cref="UnityContentGroup"/>
         /// </summary>
@@ -33,4 +34,3 @@ namespace Anvil.Unity.Content
         }
     }
 }
-
