@@ -133,8 +133,7 @@ namespace Anvil.Unity.Core
             return new bool3x3(
                 a.c0.IsApproximately(b.c0),
                 a.c1.IsApproximately(b.c1),
-                a.c2.IsApproximately(b.c2)
-            );
+                a.c2.IsApproximately(b.c2));
         }
 
         /// <summary>
@@ -157,8 +156,7 @@ namespace Anvil.Unity.Core
                 a.c0.IsApproximately(b.c0),
                 a.c1.IsApproximately(b.c1),
                 a.c2.IsApproximately(b.c2),
-                a.c3.IsApproximately(b.c3)
-            );
+                a.c3.IsApproximately(b.c3));
         }
 
         /// <summary>
@@ -179,8 +177,8 @@ namespace Anvil.Unity.Core
         public static bool IsApproximatelySafe(this float a, float b)
         {
             return (math.abs(a - b) < MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)
-                   | (math.isnan(a) & math.isnan(b))
-                   | (math.isinf(a) & math.isinf(b) & a == b);
+                | (math.isnan(a) & math.isnan(b))
+                | (math.isinf(a) & math.isinf(b) & a == b);
         }
 
         /// <summary>
@@ -201,8 +199,8 @@ namespace Anvil.Unity.Core
         public static bool2 IsApproximatelySafe(this float2 a, float2 b)
         {
             return (math.abs(a - b) < MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)
-                   | (math.isnan(a) & math.isnan(b))
-                   | (math.isinf(a) & math.isinf(b) & a == b);
+                | (math.isnan(a) & math.isnan(b))
+                | (math.isinf(a) & math.isinf(b) & a == b);
         }
 
         /// <summary>
@@ -223,8 +221,8 @@ namespace Anvil.Unity.Core
         public static bool3 IsApproximatelySafe(this float3 a, float3 b)
         {
             return (math.abs(a - b) < MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)
-                   | (math.isnan(a) & math.isnan(b))
-                   | (math.isinf(a) & math.isinf(b)  & a == b);
+                | (math.isnan(a) & math.isnan(b))
+                | (math.isinf(a) & math.isinf(b) & a == b);
         }
 
         /// <summary>
@@ -245,8 +243,8 @@ namespace Anvil.Unity.Core
         public static bool4 IsApproximatelySafe(this float4 a, float4 b)
         {
             return math.abs(a - b) < MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE
-                   | (math.isnan(a) & math.isnan(b))
-                   | (math.isinf(a) & math.isinf(b) & a == b);
+                | (math.isnan(a) & math.isnan(b))
+                | (math.isinf(a) & math.isinf(b) & a == b);
         }
 
         /// <summary>
@@ -269,8 +267,7 @@ namespace Anvil.Unity.Core
             return new bool3x3(
                 a.c0.IsApproximatelySafe(b.c0),
                 a.c1.IsApproximatelySafe(b.c1),
-                a.c2.IsApproximatelySafe(b.c2)
-            );
+                a.c2.IsApproximatelySafe(b.c2));
         }
 
         /// <summary>
@@ -294,8 +291,7 @@ namespace Anvil.Unity.Core
                 a.c0.IsApproximatelySafe(b.c0),
                 a.c1.IsApproximatelySafe(b.c1),
                 a.c2.IsApproximatelySafe(b.c2),
-                a.c3.IsApproximatelySafe(b.c3)
-            );
+                a.c3.IsApproximatelySafe(b.c3));
         }
 
         /// <summary>
@@ -379,10 +375,10 @@ namespace Anvil.Unity.Core
         public static bool3x3 IsEqualOrNaN(this float3x3 a, float3x3 b)
         {
             return a == b
-                   | new bool3x3(
-                       math.isnan(a.c0) & math.isnan(b.c0),
-                       math.isnan(a.c1) & math.isnan(b.c1),
-                       math.isnan(a.c2) & math.isnan(b.c2));
+                | new bool3x3(
+                    math.isnan(a.c0) & math.isnan(b.c0),
+                    math.isnan(a.c1) & math.isnan(b.c1),
+                    math.isnan(a.c2) & math.isnan(b.c2));
         }
 
         /// <summary>
@@ -397,11 +393,11 @@ namespace Anvil.Unity.Core
         public static bool4x4 IsEqualOrNaN(this float4x4 a, float4x4 b)
         {
             return a == b
-                   | new bool4x4(
-                       math.isnan(a.c0) & math.isnan(b.c0),
-                       math.isnan(a.c1) & math.isnan(b.c1),
-                       math.isnan(a.c2) & math.isnan(b.c2),
-                       math.isnan(a.c3) & math.isnan(b.c3));
+                | new bool4x4(
+                    math.isnan(a.c0) & math.isnan(b.c0),
+                    math.isnan(a.c1) & math.isnan(b.c1),
+                    math.isnan(a.c2) & math.isnan(b.c2),
+                    math.isnan(a.c3) & math.isnan(b.c3));
         }
 
         /// <summary>

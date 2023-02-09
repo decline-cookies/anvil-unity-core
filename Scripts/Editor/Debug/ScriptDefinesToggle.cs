@@ -50,7 +50,9 @@ namespace Anvil.Unity.Editor.Debug
                 }
 
                 //Ensure that our requirements are present in case some other script or the developer manually removed them
-                foreach (string define in scriptDefineDefinition.RequiredDefines.Where(define => !definesHashSet.Contains(define)))
+                var requiredDefines = scriptDefineDefinition
+                    .RequiredDefines.Where(define => !definesHashSet.Contains(define));
+                foreach (string define in requiredDefines)
                 {
                     LOGGER.Error($"{scriptDefineDefinition.Define} requires that {define} is set, but it's not present! Removing {scriptDefineDefinition.Define} and all dependencies if they were set.");
                     RemoveDependentDefines(scriptDefineDefinition, definesHashSet);
@@ -71,7 +73,7 @@ namespace Anvil.Unity.Editor.Debug
         /// <param name="scriptDefineDefinition">The <see cref="ScriptDefineDefinition"/> to register.</param>
         public static void RegisterScriptDefineDefinition(ScriptDefineDefinition scriptDefineDefinition)
         {
-            //Get the cached Script Define Definition if it exists, otherwise make sure it's added 
+            //Get the cached Script Define Definition if it exists, otherwise make sure it's added
             //We now have our ground truth
             ScriptDefineDefinition cachedScriptDefineDefinition = GetOrRegisterCachedScriptDefineDefinition(scriptDefineDefinition);
 
@@ -118,10 +120,7 @@ namespace Anvil.Unity.Editor.Debug
                     continue;
                 }
 
-                relatedScriptDefineDefinition = new ScriptDefineDefinition(define,
-                                                                           null,
-                                                                           null,
-                                                                           null);
+                relatedScriptDefineDefinition = new ScriptDefineDefinition(define, null, null, null);
                 SCRIPT_DEFINE_DEFINITIONS_LOOKUP.Add(define, relatedScriptDefineDefinition);
             }
         }
@@ -135,7 +134,9 @@ namespace Anvil.Unity.Editor.Debug
             }
         }
 
-        private static void UpdateRelationships(ScriptDefineDefinition cachedScriptDefineDefinition, ScriptDefineDefinition incomingScriptDefineDefinition)
+        private static void UpdateRelationships(
+            ScriptDefineDefinition cachedScriptDefineDefinition,
+            ScriptDefineDefinition incomingScriptDefineDefinition)
         {
             foreach (string define in incomingScriptDefineDefinition.RequiredDefines)
             {
@@ -163,6 +164,7 @@ namespace Anvil.Unity.Editor.Debug
             PlayerSettings.GetScriptingDefineSymbols(NAMED_BUILD_TARGET, out string[] defines);
             bool isEnabled = defines.Contains(scriptDefineDefinition.Define);
             Menu.SetChecked(scriptDefineDefinition.MenuPath, isEnabled);
+
             return true;
         }
 
@@ -202,7 +204,8 @@ namespace Anvil.Unity.Editor.Debug
             //Remove ourself
             definesHashSet.Remove(scriptDefineDefinition.Define);
             //Recursively remove any other dependencies
-            foreach (ScriptDefineDefinition dependentDefineDefinition in scriptDefineDefinition.DependentDefines.Select(GetCachedScriptDefineDefinition))
+            IEnumerable<ScriptDefineDefinition> dependentDefineDefinitions = scriptDefineDefinition.DependentDefines.Select(GetCachedScriptDefineDefinition);
+            foreach (ScriptDefineDefinition dependentDefineDefinition in dependentDefineDefinitions)
             {
                 RemoveDependentDefines(dependentDefineDefinition, definesHashSet);
             }
@@ -213,7 +216,8 @@ namespace Anvil.Unity.Editor.Debug
             //Add ourself
             definesHashSet.Add(scriptDefineDefinition.Define);
             //Recursively add any other requirements
-            foreach (ScriptDefineDefinition requiredDefineDefinition in scriptDefineDefinition.RequiredDefines.Select(GetCachedScriptDefineDefinition))
+            IEnumerable<ScriptDefineDefinition> requiredDefineDefinitions = scriptDefineDefinition.RequiredDefines.Select(GetCachedScriptDefineDefinition);
+            foreach (ScriptDefineDefinition requiredDefineDefinition in requiredDefineDefinitions)
             {
                 AddRequiredDefines(requiredDefineDefinition, definesHashSet);
             }

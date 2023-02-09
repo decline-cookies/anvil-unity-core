@@ -63,7 +63,8 @@ namespace Anvil.Unity.Logging
         // should be processed.
         // We want to process the queue as often as possible (within reason) so we can handle
         // the logs as close to the time they were emitted as possible.
-        [DefaultExecutionOrder(int.MaxValue)]   // Execute last in each phase
+        // Execute last in each phase
+        [DefaultExecutionOrder(int.MaxValue)]
         private sealed class PendingLogPump : MonoBehaviour
         {
             public event Action OnProcessPendingLogs;
@@ -74,35 +75,21 @@ namespace Anvil.Unity.Logging
                 // Ensure that the threadID selected by UnityLogListener is the actual main thread ID
                 Debug.Assert(s_Instance.m_UnityMainThreadID == Thread.CurrentThread.ManagedThreadId);
             }
+
             private void Start()
             {
                 m_EndOfFrameRoutine = StartCoroutine(RunEndOfFrameRoutine());
             }
 
-            private void FixedUpdate()
-            {
-                OnProcessPendingLogs?.Invoke();
-            }
+            private void FixedUpdate() => OnProcessPendingLogs?.Invoke();
 
-            private void Update()
-            {
-                OnProcessPendingLogs?.Invoke();
-            }
+            private void Update() => OnProcessPendingLogs?.Invoke();
 
-            private void LateUpdate()
-            {
-                OnProcessPendingLogs?.Invoke();
-            }
+            private void LateUpdate() => OnProcessPendingLogs?.Invoke();
 
-            private void OnPreRender()
-            {
-                OnProcessPendingLogs?.Invoke();
-            }
+            private void OnPreRender() => OnProcessPendingLogs?.Invoke();
 
-            private void OnPostRender()
-            {
-                OnProcessPendingLogs?.Invoke();
-            }
+            private void OnPostRender() => OnProcessPendingLogs?.Invoke();
 
             private IEnumerator RunEndOfFrameRoutine()
             {
@@ -261,9 +248,9 @@ namespace Anvil.Unity.Logging
             // Make UnityEngine.Debug.Assert failures throw an exception instead of just logging an error
             // NOTE: Skip this function and UnityEngine.Logger (check frame index 2)
             MethodBase assertMethod = new StackFrame(2, fNeedFileInfo: true)?.GetMethod();
-            if (assertMethod != null &&
-                assertMethod.Name == nameof(Debug.Assert) &&
-                assertMethod.DeclaringType.Assembly.ToString() == UNITY_DEBUG_ASSEMBLY_STRING)
+            if (assertMethod != null
+                && assertMethod.Name == nameof(Debug.Assert)
+                && assertMethod.DeclaringType.Assembly.ToString() == UNITY_DEBUG_ASSEMBLY_STRING)
             {
                 throw new Exception(string.Format(format, args));
             }

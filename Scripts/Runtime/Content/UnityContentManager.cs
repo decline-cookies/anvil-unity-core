@@ -1,5 +1,4 @@
 ﻿using Anvil.CSharp.Content;
-using Anvil.CSharp.Logging;
 using UnityEngine;
 
 namespace Anvil.Unity.Content
@@ -38,6 +37,7 @@ namespace Anvil.Unity.Content
         protected override AbstractContentGroup CreateGroup(ContentGroupConfigVO configVO)
         {
             UnityContentGroup unityContentGroup = new UnityContentGroup(this, configVO);
+
             return unityContentGroup;
         }
 
@@ -51,8 +51,7 @@ namespace Anvil.Unity.Content
             {
                 Logger.Warning(
                     $"This {nameof(UnityContentManager)} may be destroyed on a scene change. ContentRoot: {ContentRoot.name}"
-                    + $"\nThe {nameof(ContentRoot)} provided is not at the root of the hierarchy."
-                    );
+                    + $"\nThe {nameof(ContentRoot)} provided is not at the root of the hierarchy.");
             }
         }
     }

@@ -18,6 +18,7 @@ namespace Anvil.Unity.Core
         public static event Action OnQuitting;
 
         private static bool s_IsInitialized;
+
         /// <summary>
         /// True if the application is currently in the process of quitting.
         /// (IE: The <see cref="Application.quitting"/> has been invoked.)

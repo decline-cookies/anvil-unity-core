@@ -15,13 +15,13 @@ namespace Anvil.Unity.Data
         {
             if (value is Vector2Int vec2)
             {
-                EncodeObject( (Vector2)vec2, forceTypeHint );
+                EncodeObject((Vector2)vec2, forceTypeHint);
                 return;
             }
 
             if (value is Vector3Int vec3)
             {
-                EncodeObject( (Vector3)vec3, forceTypeHint );
+                EncodeObject((Vector3)vec3, forceTypeHint);
                 return;
             }
 
@@ -38,13 +38,13 @@ namespace Anvil.Unity.Data
                     color32 = (Color32)value;
                 }
 
-                List<byte> data = new List<byte>{ color32.r, color32.g, color32.b };
+                List<byte> data = new List<byte> { color32.r, color32.g, color32.b };
                 if (color32.a < byte.MaxValue)
                 {
-                    data.Add( color32.a );
+                    data.Add(color32.a);
                 }
 
-                EncodeString( "0x" + BitConverter.ToString( data.ToArray() ).Replace( "-", string.Empty ) );
+                EncodeString("0x" + BitConverter.ToString(data.ToArray()).Replace("-", string.Empty));
                 return;
             }
 

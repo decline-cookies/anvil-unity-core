@@ -41,8 +41,7 @@ namespace Anvil.Unity.Editor.AssetImport
                 EditorUtility.DisplayDialog(
                     "Note",
                     "Enabling this option prevents assets and scripts from reloading while the editor is playing. This overrides the behaviour of \"Preferences -> General -> Script Changes While Playing\".",
-                    "Thanks Boss"
-                    );
+                    "Thanks Boss");
             }
 
             bool shouldPreventRefresh = IsEnabled && EditorApplication.isPlaying;

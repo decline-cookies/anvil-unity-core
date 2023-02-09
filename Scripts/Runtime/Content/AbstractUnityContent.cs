@@ -16,7 +16,7 @@ namespace Anvil.Unity.Content
         /// </summary>
         public new TController Controller { get; internal set; }
     }
-    
+
     /// <summary>
     /// A more specific implementation of <see cref="IContent"/> for usage with Unity where the Content is a
     /// <see cref="AbstractAnvilMonoBehaviour"/>
@@ -38,4 +38,3 @@ namespace Anvil.Unity.Content
         }
     }
 }
-

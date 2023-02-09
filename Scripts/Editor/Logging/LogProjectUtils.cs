@@ -81,12 +81,13 @@ namespace Anvil.Unity.Logging
 
             root.Save(projectPath);
 
-            XElement FindReferenceElement(string assemblyName) =>
-                (from itemGroup in root.Elements("ItemGroup")
-                from reference in itemGroup.Elements("Reference")
-                where ((string)reference.Attribute("Include")).Contains(assemblyName)
-                select reference)
-                .Single().Element("HintPath");
+            XElement FindReferenceElement(string assemblyName)
+                => (from itemGroup in root.Elements("ItemGroup")
+                    from reference in itemGroup.Elements("Reference")
+                    where ((string)reference.Attribute("Include")).Contains(assemblyName)
+                    select reference)
+                    .Single()
+                    .Element("HintPath");
         }
 
         private static string GetFileURL(string path) => $"file://{path}";
