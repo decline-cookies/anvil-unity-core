@@ -2,6 +2,7 @@ using Anvil.CSharp.Mathematics;
 using Anvil.Unity.Core;
 using NUnit.Framework;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Anvil.Unity.Tests
 {
@@ -668,6 +669,26 @@ namespace Anvil.Unity.Tests
             Assert.That(nan_negativeOne_zero_columns.IsEqualOrNaN(zero), Is.EqualTo(new bool4x4(false, false, true, true)));
         }
 
+        // ----- ToRGBAFloat ----- //
+        [Test]
+        public static void ToRGBAFloatTest()
+        {
+            Assert.That(nameof(ToRGBAFloatTest), Does.StartWith(nameof(MathExtension.ToRGBAFloat)));
+
+            Assert.That(new Color(0.1f, 0.2f, 0.3f, 0.4f).ToRGBAFloat(), Is.EqualTo(new float4(0.1f, 0.2f, 0.3f, 0.4f)));
+        }
+
+        // ----- ToRGBFloat ----- //
+        [Test]
+        public static void ToRGBFloatTest()
+        {
+            Assert.That(nameof(ToRGBFloatTest), Does.StartWith(nameof(MathExtension.ToRGBFloat)));
+
+            Assert.That(new Color(0.1f, 0.2f, 0.3f, 0.4f).ToRGBFloat(), Is.EqualTo(new float3(0.1f, 0.2f, 0.3f)));
+            Assert.That(new Color(0.1f, 0.2f, 0.3f).ToRGBFloat(), Is.EqualTo(new float3(0.1f, 0.2f, 0.3f)));
+        }
+
+        // ----- ToString ----- //
         [Test]
         public static void ToStringTest_float2()
         {
