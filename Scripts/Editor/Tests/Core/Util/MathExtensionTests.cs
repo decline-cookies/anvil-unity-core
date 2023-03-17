@@ -2,6 +2,7 @@ using Anvil.CSharp.Mathematics;
 using Anvil.Unity.Core;
 using NUnit.Framework;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Anvil.Unity.Tests
 {
@@ -24,7 +25,7 @@ namespace Anvil.Unity.Tests
             Assert.That(new float3(-1f).GetInverse(), Is.EqualTo(new float3(-1f)));
             Assert.That(new float3(-2f).GetInverse(), Is.EqualTo(new float3(-0.5f)));
 
-            Assert.That(new float3(7f, -2f, 0f).GetInverse(), Is.EqualTo(new float3(1f/7f, -0.5f, float.PositiveInfinity)));
+            Assert.That(new float3(7f, -2f, 0f).GetInverse(), Is.EqualTo(new float3(1f / 7f, -0.5f, float.PositiveInfinity)));
 
             Assert.That(float3.zero.GetInverse(), Is.EqualTo(new float3(float.PositiveInfinity)));
             Assert.That(new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN).GetInverse(), Is.EqualTo(new float3(0, 0, float.NaN)).Using<float3>(EqualityWithNaN));
@@ -42,7 +43,7 @@ namespace Anvil.Unity.Tests
             Assert.That(new float3(-1f).GetInverseSafe(), Is.EqualTo(new float3(-1f)));
             Assert.That(new float3(-2f).GetInverseSafe(), Is.EqualTo(new float3(-0.5f)));
 
-            Assert.That(new float3(7f, -2f, 0f).GetInverseSafe(), Is.EqualTo(new float3(1f/7f, -0.5f, 0f)));
+            Assert.That(new float3(7f, -2f, 0f).GetInverseSafe(), Is.EqualTo(new float3(1f / 7f, -0.5f, 0f)));
 
             Assert.That(float3.zero.GetInverseSafe(), Is.EqualTo(float3.zero));
             Assert.That(new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN).GetInverseSafe(), Is.EqualTo(new float3(0, 0, 0f)));
@@ -65,8 +66,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximately(one - float.Epsilon), Is.True);
             Assert.That(one.IsApproximately(one + float.Epsilon), Is.True);
 
-            Assert.That(one.IsApproximately(one - (float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.False);
-            Assert.That(one.IsApproximately(one + (float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.False);
+            Assert.That(one.IsApproximately(one - (float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.False);
+            Assert.That(one.IsApproximately(one + (float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.False);
 
             Assert.That(0f.IsApproximately(0f), Is.True);
 
@@ -99,8 +100,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximately(one - new float2(float.Epsilon)), Is.EqualTo(new bool2(true)));
             Assert.That(one.IsApproximately(one + new float2(float.Epsilon)), Is.EqualTo(new bool2(true)));
 
-            Assert.That(one.IsApproximately(one - new float2(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool2(false)));
-            Assert.That(one.IsApproximately(one + new float2(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool2(false)));
+            Assert.That(one.IsApproximately(one - new float2(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool2(false)));
+            Assert.That(one.IsApproximately(one + new float2(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool2(false)));
 
             Assert.That(float2.zero.IsApproximately(float2.zero), Is.EqualTo(new bool2(true)));
 
@@ -131,8 +132,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximately(one - new float3(float.Epsilon)), Is.EqualTo(new bool3(true)));
             Assert.That(one.IsApproximately(one + new float3(float.Epsilon)), Is.EqualTo(new bool3(true)));
 
-            Assert.That(one.IsApproximately(one - new float3(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3(false)));
-            Assert.That(one.IsApproximately(one + new float3(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3(false)));
+            Assert.That(one.IsApproximately(one - new float3(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3(false)));
+            Assert.That(one.IsApproximately(one + new float3(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3(false)));
 
             Assert.That(float3.zero.IsApproximately(float3.zero), Is.EqualTo(new bool3(true)));
 
@@ -159,8 +160,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximately(one - new float4(float.Epsilon)), Is.EqualTo(new bool4(true)));
             Assert.That(one.IsApproximately(one + new float4(float.Epsilon)), Is.EqualTo(new bool4(true)));
 
-            Assert.That(one.IsApproximately(one - new float4(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4(false)));
-            Assert.That(one.IsApproximately(one + new float4(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4(false)));
+            Assert.That(one.IsApproximately(one - new float4(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4(false)));
+            Assert.That(one.IsApproximately(one + new float4(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4(false)));
 
             Assert.That(float4.zero.IsApproximately(float4.zero), Is.EqualTo(new bool4(true)));
 
@@ -179,8 +180,7 @@ namespace Anvil.Unity.Tests
             float3x3 infinity_negativeInfinity_NaN_row = new float3x3(
                 new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN),
                 new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN),
-                new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN)
-                );
+                new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN));
 
             Assert.That(one.IsApproximately(one), Is.EqualTo(new bool3x3(true)));
             Assert.That((-one).IsApproximately(-one), Is.EqualTo(new bool3x3(true)));
@@ -190,8 +190,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximately(one - new float3x3(float.Epsilon)), Is.EqualTo(new bool3x3(true)));
             Assert.That(one.IsApproximately(one + new float3x3(float.Epsilon)), Is.EqualTo(new bool3x3(true)));
 
-            Assert.That(one.IsApproximately(one - new float3x3(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3x3(false)));
-            Assert.That(one.IsApproximately(one + new float3x3(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3x3(false)));
+            Assert.That(one.IsApproximately(one - new float3x3(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3x3(false)));
+            Assert.That(one.IsApproximately(one + new float3x3(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3x3(false)));
 
             Assert.That(float3x3.zero.IsApproximately(float3x3.zero), Is.EqualTo(new bool3x3(true)));
 
@@ -214,8 +214,7 @@ namespace Anvil.Unity.Tests
                 new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN),
                 new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN),
                 new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN),
-                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN)
-            );
+                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, float.NaN));
 
             Assert.That(one.IsApproximately(one), Is.EqualTo(new bool4x4(true)));
             Assert.That((-one).IsApproximately(-one), Is.EqualTo(new bool4x4(true)));
@@ -225,8 +224,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximately(one - new float4x4(float.Epsilon)), Is.EqualTo(new bool4x4(true)));
             Assert.That(one.IsApproximately(one + new float4x4(float.Epsilon)), Is.EqualTo(new bool4x4(true)));
 
-            Assert.That(one.IsApproximately(one - new float4x4(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4x4(false)));
-            Assert.That(one.IsApproximately(one + new float4x4(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4x4(false)));
+            Assert.That(one.IsApproximately(one - new float4x4(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4x4(false)));
+            Assert.That(one.IsApproximately(one + new float4x4(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4x4(false)));
 
             Assert.That(float4x4.zero.IsApproximately(float4x4.zero), Is.EqualTo(new bool4x4(true)));
 
@@ -255,8 +254,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximatelySafe(one - float.Epsilon), Is.True);
             Assert.That(one.IsApproximatelySafe(one + float.Epsilon), Is.True);
 
-            Assert.That(one.IsApproximatelySafe(one - (float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.False);
-            Assert.That(one.IsApproximatelySafe(one + (float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.False);
+            Assert.That(one.IsApproximatelySafe(one - (float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.False);
+            Assert.That(one.IsApproximatelySafe(one + (float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.False);
 
             Assert.That(0f.IsApproximatelySafe(0f), Is.True);
 
@@ -288,8 +287,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximatelySafe(one - new float2(float.Epsilon)), Is.EqualTo(new bool2(true)));
             Assert.That(one.IsApproximatelySafe(one + new float2(float.Epsilon)), Is.EqualTo(new bool2(true)));
 
-            Assert.That(one.IsApproximatelySafe(one - new float2(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool2(false)));
-            Assert.That(one.IsApproximatelySafe(one + new float2(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool2(false)));
+            Assert.That(one.IsApproximatelySafe(one - new float2(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool2(false)));
+            Assert.That(one.IsApproximatelySafe(one + new float2(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool2(false)));
 
             Assert.That(float2.zero.IsApproximatelySafe(float2.zero), Is.EqualTo(new bool2(true)));
 
@@ -348,8 +347,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximatelySafe(one - new float4(float.Epsilon)), Is.EqualTo(new bool4(true)));
             Assert.That(one.IsApproximatelySafe(one + new float4(float.Epsilon)), Is.EqualTo(new bool4(true)));
 
-            Assert.That(one.IsApproximatelySafe(one - new float4(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4(false)));
-            Assert.That(one.IsApproximatelySafe(one + new float4(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4(false)));
+            Assert.That(one.IsApproximatelySafe(one - new float4(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4(false)));
+            Assert.That(one.IsApproximatelySafe(one + new float4(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4(false)));
 
             Assert.That(float4.zero.IsApproximatelySafe(float4.zero), Is.EqualTo(new bool4(true)));
 
@@ -368,8 +367,7 @@ namespace Anvil.Unity.Tests
             float3x3 infinity_negativeInfinity_NaN_row = new float3x3(
                 new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN),
                 new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN),
-                new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN)
-                );
+                new float3(float.PositiveInfinity, float.NegativeInfinity, float.NaN));
 
             Assert.That(one.IsApproximatelySafe(one), Is.EqualTo(new bool3x3(true)));
             Assert.That((-one).IsApproximatelySafe(-one), Is.EqualTo(new bool3x3(true)));
@@ -379,8 +377,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximatelySafe(one - new float3x3(float.Epsilon)), Is.EqualTo(new bool3x3(true)));
             Assert.That(one.IsApproximatelySafe(one + new float3x3(float.Epsilon)), Is.EqualTo(new bool3x3(true)));
 
-            Assert.That(one.IsApproximatelySafe(one - new float3x3(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3x3(false)));
-            Assert.That(one.IsApproximatelySafe(one + new float3x3(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3x3(false)));
+            Assert.That(one.IsApproximatelySafe(one - new float3x3(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3x3(false)));
+            Assert.That(one.IsApproximatelySafe(one + new float3x3(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool3x3(false)));
 
             Assert.That(float3x3.zero.IsApproximatelySafe(float3x3.zero), Is.EqualTo(new bool3x3(true)));
 
@@ -403,8 +401,7 @@ namespace Anvil.Unity.Tests
                 new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f),
                 new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f),
                 new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f),
-                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f)
-            );
+                new float4(float.PositiveInfinity, float.NegativeInfinity, float.NaN, 3f));
 
             Assert.That(one.IsApproximatelySafe(one), Is.EqualTo(new bool4x4(true)));
             Assert.That((-one).IsApproximatelySafe(-one), Is.EqualTo(new bool4x4(true)));
@@ -414,8 +411,8 @@ namespace Anvil.Unity.Tests
             Assert.That(one.IsApproximatelySafe(one - new float4x4(float.Epsilon)), Is.EqualTo(new bool4x4(true)));
             Assert.That(one.IsApproximatelySafe(one + new float4x4(float.Epsilon)), Is.EqualTo(new bool4x4(true)));
 
-            Assert.That(one.IsApproximatelySafe(one - new float4x4(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4x4(false)));
-            Assert.That(one.IsApproximatelySafe(one + new float4x4(float.Epsilon+MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4x4(false)));
+            Assert.That(one.IsApproximatelySafe(one - new float4x4(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4x4(false)));
+            Assert.That(one.IsApproximatelySafe(one + new float4x4(float.Epsilon + MathUtil.FLOATING_POINT_EQUALITY_TOLERANCE)), Is.EqualTo(new bool4x4(false)));
 
             Assert.That(float4x4.zero.IsApproximatelySafe(float4x4.zero), Is.EqualTo(new bool4x4(true)));
 
@@ -668,6 +665,26 @@ namespace Anvil.Unity.Tests
             Assert.That(nan_negativeOne_zero_columns.IsEqualOrNaN(zero), Is.EqualTo(new bool4x4(false, false, true, true)));
         }
 
+        // ----- ToRGBAFloat ----- //
+        [Test]
+        public static void ToRGBAFloatTest()
+        {
+            Assert.That(nameof(ToRGBAFloatTest), Does.StartWith(nameof(MathExtension.ToRGBAFloat)));
+
+            Assert.That(new Color(0.1f, 0.2f, 0.3f, 0.4f).ToRGBAFloat(), Is.EqualTo(new float4(0.1f, 0.2f, 0.3f, 0.4f)));
+        }
+
+        // ----- ToRGBFloat ----- //
+        [Test]
+        public static void ToRGBFloatTest()
+        {
+            Assert.That(nameof(ToRGBFloatTest), Does.StartWith(nameof(MathExtension.ToRGBFloat)));
+
+            Assert.That(new Color(0.1f, 0.2f, 0.3f, 0.4f).ToRGBFloat(), Is.EqualTo(new float3(0.1f, 0.2f, 0.3f)));
+            Assert.That(new Color(0.1f, 0.2f, 0.3f).ToRGBFloat(), Is.EqualTo(new float3(0.1f, 0.2f, 0.3f)));
+        }
+
+        // ----- ToString ----- //
         [Test]
         public static void ToStringTest_float2()
         {

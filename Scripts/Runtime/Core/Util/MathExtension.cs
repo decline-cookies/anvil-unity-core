@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using Anvil.CSharp.Mathematics;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Anvil.Unity.Core
 {
@@ -398,6 +399,26 @@ namespace Anvil.Unity.Core
                     math.isnan(a.c1) & math.isnan(b.c1),
                     math.isnan(a.c2) & math.isnan(b.c2),
                     math.isnan(a.c3) & math.isnan(b.c3));
+        }
+
+        /// <summary>
+        /// Returns a <see cref="float4"/> representation of a <see cref="Color"/> where the rgba components map to xyzw
+        /// </summary>
+        /// <param name="color">The color to convert.</param>
+        /// <returns>The float representation.</returns>
+        public static float4 ToRGBAFloat(this in Color color)
+        {
+            return new float4(color.r, color.g, color.b, color.a);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="float3"/> representation of a <see cref="Color"/> where the rgb components map to xyz
+        /// </summary>
+        /// <param name="color">The color to convert.</param>
+        /// <returns>The float representation.</returns>
+        public static float3 ToRGBFloat(this in Color color)
+        {
+            return new float3(color.r, color.g, color.b);
         }
 
         /// <summary>
