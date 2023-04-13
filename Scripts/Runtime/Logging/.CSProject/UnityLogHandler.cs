@@ -16,11 +16,10 @@ namespace Anvil.Unity.Logging
         public const uint PRIORITY = ConsoleLogHandler.PRIORITY + 10;
 
         // Colors taken from https://stackoverflow.com/a/20298027/640196
-        // removed colors that don't work well with Unity's dark theme.
+        // removed colors that don't work well with Unity's dark theme or look like error messages.
         private static readonly string[] COLORS = new[]
         {
             "#00FF00",
-            "#FF0000",
             "#01FFFE",
             "#FFA6FE",
             "#FFDB66",
@@ -39,7 +38,6 @@ namespace Anvil.Unity.Logging
             "#FE8900",
             "#7E2DD2",
             "#85A900",
-            "#FF0056",
             "#A42400",
             "#00AE7E",
             "#BDC6FF",
