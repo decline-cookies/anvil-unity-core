@@ -7,7 +7,7 @@ namespace Anvil.Unity.Editor.AssetImport
     /// Prevents the asset database from refreshing until the developer presses the play button.
     /// This means that any changed assets aren't imported and changed source isn't recompiled.
     ///
-    /// No more, waiting for Unity to compile before you can press play and then wait for your game to start!
+    /// No more waiting for Unity to compile before you can press play and then wait for your game to start!
     ///
     /// NOTE: When this is enabled it overrides the behaviour of
     /// Preferences -> General -> Script Changes While Playing
@@ -48,7 +48,7 @@ namespace Anvil.Unity.Editor.AssetImport
                     "Thanks Boss");
             }
 
-            bool shouldPreventRefresh = IsEnabled; // && EditorApplication.isPlaying;
+            bool shouldPreventRefresh = IsEnabled;
             if (shouldPreventRefresh)
             {
                 PreventAutoRefresh();
