@@ -31,6 +31,7 @@ namespace Anvil.Unity.Editor.AssetImport
         static DeferAutoRefreshUntilPlayPressed()
         {
             EditorApplication.playModeStateChanged += EditorApplication_PlayModeStateChanged;
+            UpdateAutoRefreshAtRest();
         }
 
         [MenuItem(MENU_PATH)]
@@ -48,15 +49,7 @@ namespace Anvil.Unity.Editor.AssetImport
                     "Thanks Boss");
             }
 
-            bool shouldPreventRefresh = IsEnabled;
-            if (shouldPreventRefresh)
-            {
-                PreventAutoRefresh();
-            }
-            else
-            {
-                AllowAutoRefresh();
-            }
+            UpdateAutoRefreshAtRest();
         }
 
         [MenuItem(MENU_PATH, true)]
@@ -100,6 +93,23 @@ namespace Anvil.Unity.Editor.AssetImport
                 case PlayModeStateChange.EnteredEditMode:
                     PreventAutoRefresh();
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Set the auto refresh state when the editor state hasn't changed.
+        /// Ensures that we're blocking or allowing auto refresh based on the <see cref="IsEnabled"/> state.
+        /// </summary>
+        private static void UpdateAutoRefreshAtRest()
+        {
+            bool shouldPreventRefresh = IsEnabled;
+            if (shouldPreventRefresh)
+            {
+                PreventAutoRefresh();
+            }
+            else
+            {
+                AllowAutoRefresh();
             }
         }
 
