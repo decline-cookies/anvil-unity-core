@@ -1,4 +1,3 @@
-using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,11 +20,9 @@ namespace Anvil.Unity.Editor.UI
         /// <param name="cancelBtnText">What the "Cancel" button should read</param>
         /// <param name="defaultInputText">The default text in the input box if needed</param>
         /// <returns>
-        /// The input text the user entered.
-        /// If the user pressed the "OK" button, this will be whatever they have entered.
-        /// If the user pressed the "Cancel" button, this will be string.Empty.
+        /// The <see cref="EditorInputDialogResult"/>
         /// </returns>
-        public static string Show(
+        public static EditorInputDialogResult Show(
             string title,
             string description,
             string inputTextLabel,
@@ -34,8 +31,6 @@ namespace Anvil.Unity.Editor.UI
             string defaultInputText = null)
         {
             Vector2 maxPos = GUIUtility.GUIToScreenPoint(new Vector2(Screen.width, Screen.height));
-
-            string result = string.Empty;
 
             EditorInputDialog window = CreateInstance<EditorInputDialog>();
             window.Init(
@@ -46,14 +41,10 @@ namespace Anvil.Unity.Editor.UI
                 okBtnText,
                 cancelBtnText,
                 defaultInputText);
-            window.OnComplete += (resultString) => result = resultString;
             window.ShowModal();
 
-            return result;
+            return window.Result;
         }
-
-
-        private event Action<string> OnComplete;
 
         private string m_Description;
         private string m_InputTextLabel;
@@ -63,6 +54,8 @@ namespace Anvil.Unity.Editor.UI
 
         private bool m_HasInitializedPosition;
         private string m_InputText;
+
+        public EditorInputDialogResult Result { get; private set; }
 
         private void Init(
             Vector2 maxPos,
@@ -102,13 +95,13 @@ namespace Anvil.Unity.Editor.UI
             controlRect.width *= 0.5f;
             if (GUI.Button(controlRect, m_OKBtnText))
             {
-                Complete(false);
+                Complete(EditorInputDialogResult.ResultAction.Ok);
             }
 
             controlRect.x += controlRect.width;
             if (GUI.Button(controlRect, m_CancelBtnText))
             {
-                Complete(true);
+                Complete(EditorInputDialogResult.ResultAction.Cancel);
             }
 
             EditorGUILayout.Space(8);
@@ -128,19 +121,20 @@ namespace Anvil.Unity.Editor.UI
             {
                 return;
             }
-            
+
+
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (currentEvent.keyCode)
             {
                 case KeyCode.Escape:
                     currentEvent.Use();
-                    Complete(true);
+                    Complete(EditorInputDialogResult.ResultAction.Cancel);
                     break;
 
                 case KeyCode.Return:
                 case KeyCode.KeypadEnter:
                     currentEvent.Use();
-                    Complete(false);
+                    Complete(EditorInputDialogResult.ResultAction.Ok);
                     break;
             }
         }
@@ -169,10 +163,9 @@ namespace Anvil.Unity.Editor.UI
             Focus();
         }
 
-        private void Complete(bool isCancel)
+        private void Complete(EditorInputDialogResult.ResultAction resultAction)
         {
-            OnComplete?.Invoke(isCancel ? string.Empty : m_InputText);
-            Close();
+            Result = new EditorInputDialogResult(resultAction, m_InputText);
         }
     }
 }
