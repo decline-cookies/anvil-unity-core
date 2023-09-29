@@ -7,6 +7,12 @@ namespace Anvil.Unity.Editor.Debug
 {
     public static class ConsoleHelper
     {
+        // TODO: Future
+        // Should one wish to extend this functionality, adding this as a custom button overlaid on the Console Window
+        // is probably helpful and better than a tools menu.
+        // Additional features would be the ability to keep track of which error we are on and be able to go next/back
+        // as well as first and last. 
+        
         //Had to figure this out from old Unity decompiled code. Not sure where this is defined today sadly.
         //But it's unlikely to ever change as so much would have to be changed in the Unity Editor to accomodate.
         private const int ERROR_FLAG = 512;
