@@ -3,11 +3,11 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Anvil.Unity.Editor.Debug
+namespace Anvil.Unity.Editor.Debugging
 {
     public static class ConsoleHelper
     {
-        // TODO: Future
+        // TODO: #117
         // Should one wish to extend this functionality, adding this as a custom button overlaid on the Console Window
         // is probably helpful and better than a tools menu.
         // Additional features would be the ability to keep track of which error we are on and be able to go next/back
