@@ -166,6 +166,7 @@ namespace Anvil.Unity.Editor.UI
         private void Complete(EditorInputDialogResult.ResultAction resultAction)
         {
             Result = new EditorInputDialogResult(resultAction, m_InputText);
+            Close();
         }
     }
 }
