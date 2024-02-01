@@ -112,7 +112,7 @@ namespace Anvil.Unity.Core
 #if UNITY_ANDROID
             // According to docs the DPI value returned isn't reliable on Android. The docs have a link to a forum post
             // with a native implementation that works.
-            throw new NotSupportedException("NormalizeToScreenEdgeProcessor is not supported on Android. GetDPI needs to be implemented and tested. See: https://docs.unity3d.com/ScriptReference/Screen-dpi.html");
+            throw new System.NotSupportedException("NormalizeToScreenEdgeProcessor is not supported on Android. GetDPI needs to be implemented and tested. See: https://docs.unity3d.com/ScriptReference/Screen-dpi.html");
 #endif
 
             float dpi = Screen.dpi;
