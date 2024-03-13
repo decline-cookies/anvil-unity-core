@@ -102,7 +102,10 @@ namespace Anvil.Unity.Logging
 
             private void OnDestroy()
             {
-                StopCoroutine(m_EndOfFrameRoutine);
+                if (m_EndOfFrameRoutine != null)
+                {
+                    StopCoroutine(m_EndOfFrameRoutine);
+                }
 
                 // This is our last chance to process
                 OnProcessPendingLogs?.Invoke();
