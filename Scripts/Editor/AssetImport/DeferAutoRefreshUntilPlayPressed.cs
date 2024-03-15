@@ -119,6 +119,7 @@ namespace Anvil.Unity.Editor.AssetImport
             {
                 IsAutoRefreshDisabled = true;
                 AssetDatabase.DisallowAutoRefresh();
+                s_Logger.Debug("Auto asset refresh disabled.");
             }
         }
 
@@ -128,6 +129,7 @@ namespace Anvil.Unity.Editor.AssetImport
             {
                 AssetDatabase.AllowAutoRefresh();
                 IsAutoRefreshDisabled = false;
+                s_Logger.Debug("Auto asset refresh enabled.");
 
                 // Only refresh if the other prevention script isn't blocking refresh.
                 if (!PreventAutoRefreshWhilePlaying.IsAutoRefreshDisabled)
