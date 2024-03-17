@@ -51,6 +51,11 @@ namespace Anvil.Unity.Core
         /// </summary>
         public void Dispose()
         {
+            Dispose(true);
+        }
+
+        private void Dispose(bool shouldDestroyGameObject)
+        {
             if (IsDisposing || IsDisposed)
             {
                 return;
@@ -58,19 +63,38 @@ namespace Anvil.Unity.Core
 
             IsDisposing = true;
             DisposeSelf();
-            Destroy(gameObject);
+
+            if (shouldDestroyGameObject)
+            {
+#if !UNITY_EDITOR
+                Destroy(gameObject);
+#else
+                //If we're running in the Editor via the ExecuteAlways attribute, we're not allowed to call Destroy
+                if (!Application.isPlaying)
+                {
+                    DestroyImmediate(gameObject);
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
+#endif
+            }
+
+
             IsDisposing = false;
             IsDisposed = true;
         }
 
         private void OnDestroy()
         {
-            if (IsDisposing || IsDisposed)
+            if (IsDisposing
+             || IsDisposed)
             {
                 return;
             }
 
-            Dispose();
+            Dispose(false);
         }
 
         /// <summary>
