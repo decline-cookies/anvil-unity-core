@@ -8,6 +8,17 @@ namespace Anvil.Unity.Core
     public static class TransformExtension
     {
         /// <summary>
+        /// Resets the transform's local-space values to default (position zero, rotation zero, scale one).
+        /// </summary>
+        /// <param name="transform">The transform to reset.</param>
+        public static void Reset(this Transform transform)
+        {
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
+        }
+        
+        /// <summary>
         /// Sets the world scale on a transform.
         /// </summary>
         /// <param name="transform">The transform to set the scale on.</param>

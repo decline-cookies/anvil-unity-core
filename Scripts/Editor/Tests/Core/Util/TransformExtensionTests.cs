@@ -9,6 +9,25 @@ namespace Anvil.Unity.Tests
     public class TransformExtensionTests
     {
         [Test]
+        public static void ResetTest()
+        {
+            Assert.That(nameof(ResetTest), Is.EqualTo(nameof(TransformExtension.Reset) + "Test"));
+            
+            Transform transform = new GameObject().transform;
+            
+            transform.localPosition = new Vector3(RandomFloat(), RandomFloat(), RandomFloat());
+            transform.localRotation = Quaternion.Euler(new Vector3(RandomFloat(), RandomFloat(), RandomFloat()));
+            transform.localScale = new Vector3(RandomFloat(), RandomFloat(), RandomFloat());
+            transform.Reset();
+            Assert.That(transform.localPosition, Is.EqualTo(Vector3.zero));
+            Assert.That(transform.localRotation, Is.EqualTo(Quaternion.identity));
+            Assert.That(transform.localScale, Is.EqualTo(Vector3.one));
+            return;
+            
+            float RandomFloat() => Random.Range(-float.MaxValue, float.MaxValue);
+        }
+        
+        [Test]
         public static void SetLossyScaleTest()
         {
             Assert.That(nameof(SetLossyScaleTest), Is.EqualTo(nameof(TransformExtension.SetLossyScale) + "Test"));
