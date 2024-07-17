@@ -9,7 +9,7 @@ namespace Anvil.Unity.Editor.Build
 
 #if UNITY_ANDROID
     /// <summary>
-    /// Caches keystore information to <see cref="EditorPrefs"/> to that developers don't have to re-enter it each time
+    /// Caches keystore information to <see cref="EditorPrefs"/> so that developers don't have to re-enter it each time
     /// Unity is launched.
     /// </summary>
     public class AndroidKeystoreHelper : IPreprocessBuildWithReport
