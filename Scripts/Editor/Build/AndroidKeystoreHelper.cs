@@ -131,16 +131,29 @@ namespace Anvil.Unity.Editor.Build
         }
 
 
+        /// <inheritdoc cref="IPreprocessBuildWithReport"/>
         public int callbackOrder
         {
             get => 0;
         }
 
+        /// <summary>
+        /// Created by the Unity Editor when building to device to pre-process the build.
+        /// Not intended to be used manually by developers.
+        /// </summary>
         public AndroidKeystoreHelper()
         {
 
         }
 
+        /// <summary>
+        /// Verifies that the keystore is configured and that the passwords are set.
+        /// If the passwords are not set this method attempts to retrieve the passwords from <see cref="EditorPrefs"/>.
+        /// If the passwords do not exist in preferences then the user is given the opportunity to provide them and
+        /// optionally save them to <see cref="EditorPrefs"/>.
+        /// </summary>
+        /// <param name="report"><inheritdoc cref="IPreprocessBuildWithReport"/></param>
+        /// <exception cref="BuildFailedException">Thrown if the build cannot be completed.</exception>
         public void OnPreprocessBuild(BuildReport report)
         {
             Logger.Debug("Checking if keystore is configured...");
