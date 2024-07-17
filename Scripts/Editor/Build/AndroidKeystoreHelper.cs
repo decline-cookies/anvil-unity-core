@@ -84,7 +84,7 @@ namespace Anvil.Unity.Editor.Build
         private static bool ApplyKeystorePasswordsFromUser()
         {
             EditorInputDialogResult keystorePass = EditorInputDialog.Show("Enter Keystore Password",
-                "Please enter the keystore password to continue the build.",
+                "Please enter the keystore password.",
                 "Keystore Password",
                 "Ok",
                 "Cancel");
@@ -96,7 +96,7 @@ namespace Anvil.Unity.Editor.Build
             }
 
             EditorInputDialogResult keystoreAliasPass = EditorInputDialog.Show("Enter Keystore Alias Pass",
-                "Please enter the keystore alias password to continue the build.",
+                "Please enter the keystore alias password.",
                 "Keystore Alias Password",
                 "Ok",
                 "Cancel");
