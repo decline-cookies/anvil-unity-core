@@ -46,7 +46,7 @@ namespace Anvil.Unity.Editor.Build
         }
 
 
-        [MenuItem(MENU_PATH_PREFIX+"/Set Keystore Passwords")]
+        [MenuItem(MENU_PATH_PREFIX+"/Set Saved Keystore Passwords")]
         private static void SetKeystorePasswords()
         {
             Logger.Debug("Starting...");
