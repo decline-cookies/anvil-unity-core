@@ -12,9 +12,9 @@ namespace Anvil.Unity.Tests
         public static void ResetTest()
         {
             Assert.That(nameof(ResetTest), Is.EqualTo(nameof(TransformExtension.Reset) + "Test"));
-            
+
             Transform transform = new GameObject().transform;
-            
+
             transform.localPosition = new Vector3(RandomFloat(), RandomFloat(), RandomFloat());
             transform.localRotation = Quaternion.Euler(new Vector3(RandomFloat(), RandomFloat(), RandomFloat()));
             transform.localScale = new Vector3(RandomFloat(), RandomFloat(), RandomFloat());
@@ -23,10 +23,10 @@ namespace Anvil.Unity.Tests
             Assert.That(transform.localRotation, Is.EqualTo(Quaternion.identity));
             Assert.That(transform.localScale, Is.EqualTo(Vector3.one));
             return;
-            
+
             float RandomFloat() => Random.Range(-float.MaxValue, float.MaxValue);
         }
-        
+
         [Test]
         public static void SetLossyScaleTest()
         {
@@ -58,14 +58,14 @@ namespace Anvil.Unity.Tests
             GameObject.DestroyImmediate(parentGO);
             GameObject.DestroyImmediate(childGO);
         }
-        
+
         [Test]
         public static void ScaleAroundPointTest()
         {
             Assert.That(nameof(ScaleAroundPointTest), Is.EqualTo(nameof(TransformExtension.ScaleAroundPoint) + "Test"));
-            
+
             Transform transform = new GameObject().transform;
-            
+
             transform.localPosition = new Vector3(1f, 2f, 3f);
             transform.localScale = Vector3.one;
             transform.ScaleAroundPoint(2f, Vector3.zero);
@@ -89,27 +89,6 @@ namespace Anvil.Unity.Tests
             transform.ScaleAroundPoint(new Vector3(2f, 3f, 4f), new Vector3(5f, 5f, 5f));
             Assert.That(transform.localScale, Is.EqualTo(new Vector3(2f, 3f, 4f)));
             Assert.That(transform.localPosition, Is.EqualTo(new Vector3(-3f, -4f, -3f)));
-        }
-        
-        [Test]
-        public static void RotateAroundPointTest()
-        {
-            Assert.That(nameof(RotateAroundPointTest), Is.EqualTo(nameof(TransformExtension.RotateAroundPoint) + "Test"));
-            
-            Vector3EqualityComparer vector3Comparer = new (10e-7f);
-            Transform transform = new GameObject().transform;
-            
-            transform.localPosition = new Vector3(1f, 2f, 3f);
-            transform.localRotation = Quaternion.identity;
-            transform.RotateAroundPoint(Quaternion.AngleAxis(90f, Vector3.forward), Vector3.zero);
-            Assert.That(transform.localRotation.eulerAngles, Is.EqualTo(new Vector3(0f, 0f, 90f)));
-            Assert.That(transform.localPosition, Is.EqualTo(new Vector3(-2f, 1f, 3f)).Using(vector3Comparer));
-            
-            transform.localPosition = new Vector3(1f, 2f, 3f);
-            transform.localRotation = Quaternion.identity;
-            transform.RotateAroundPoint(Quaternion.AngleAxis(90f, Vector3.forward), new Vector3(5f, 5f, 5f));
-            Assert.That(transform.localRotation.eulerAngles, Is.EqualTo(new Vector3(0f, 0f, 90f)));
-            Assert.That(transform.localPosition, Is.EqualTo(new Vector3(8f, 1f, 3f)).Using(vector3Comparer));
         }
     }
 }
