@@ -17,7 +17,7 @@ namespace Anvil.Unity.Core
             transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one;
         }
-        
+
         /// <summary>
         /// Sets the world scale on a transform.
         /// </summary>
@@ -32,13 +32,13 @@ namespace Anvil.Unity.Core
                 scale.y / transform.lossyScale.y,
                 scale.z / transform.lossyScale.z);
         }
-        
+
         /// <inheritdoc cref="ScaleAroundPoint(UnityEngine.Transform,UnityEngine.Vector3,UnityEngine.Vector3)"/>
         public static void ScaleAroundPoint(this Transform transform, float scale, Vector3 worldSpacePivot)
         {
             transform.ScaleAroundPoint(Vector3.one * scale, worldSpacePivot);
         }
-        
+
         /// <summary>
         /// Scale the transform around a world-space pivot.
         /// </summary>
@@ -52,22 +52,6 @@ namespace Anvil.Unity.Core
             localScale.Scale(scale);
             transform.localScale = localScale;
             transform.localPosition += Vector3.Scale(pivotToPos, scale - Vector3.one);
-        }
-        
-        /// <summary>
-        /// Rotate the transform around a world-space pivot.
-        /// </summary>
-        /// <param name="transform">The transform to rotate.</param>
-        /// <param name="rotation">The rotation applied to the transform.</param>
-        /// <param name="worldSpacePivot">The pivot point around which the rotation is centered.</param>
-        public static void RotateAroundPoint(this Transform transform, Quaternion rotation, Vector3 worldSpacePivot)
-        {
-            Vector3 localSpacePivot = transform.InverseTransformPoint(worldSpacePivot);
-            Vector3 rotatedLocalSpacePivot = rotation * localSpacePivot;
-            Vector3 positionOffset = localSpacePivot - rotatedLocalSpacePivot;
-            
-            transform.localRotation = rotation * transform.localRotation;
-            transform.localPosition += positionOffset;
         }
     }
 }
