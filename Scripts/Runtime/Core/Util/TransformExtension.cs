@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Anvil.Unity.Core
@@ -52,6 +53,34 @@ namespace Anvil.Unity.Core
             localScale.Scale(scale);
             transform.localScale = localScale;
             transform.localPosition += Vector3.Scale(pivotToPos, scale - Vector3.one);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 ConvertLocalPointFrom(this Transform targetTransform, Transform sourceTransform, Vector3 localPoint)
+        {
+            Vector3 point = sourceTransform.TransformPoint(localPoint);
+            return targetTransform.InverseTransformPoint(point);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 ConvertLocalVectorFrom(this Transform targetTransform, Transform sourceTransform, Vector3 localVector)
+        {
+            Vector3 vector = sourceTransform.TransformVector(localVector);
+            return targetTransform.InverseTransformVector(vector);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 ConvertLocalDirectionFrom(this Transform targetTransform, Transform sourceTransform, Vector3 localDirection)
+        {
+            Vector3 direction = sourceTransform.TransformDirection(localDirection);
+            return targetTransform.InverseTransformDirection(direction);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quaternion ConvertLocalRotationFrom(this Transform targetTransform, Transform sourceTransform, Quaternion localRotation)
+        {
+            Quaternion rotation = (sourceTransform.rotation * localRotation);
+            return Quaternion.Inverse(targetTransform.rotation) * rotation;
         }
     }
 }
