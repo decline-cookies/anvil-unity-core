@@ -14,7 +14,11 @@ namespace Anvil.Unity.Content
         /// <summary>
         /// Gets/Sets the corresponding Controller as strongly typed version of <see cref="AbstractUnityContentController"/>
         /// </summary>
-        public new TController Controller { get; internal set; }
+        public new TController Controller
+        {
+            get => (TController)base.Controller;
+            internal set => base.Controller = value;
+        }
     }
 
     /// <summary>
