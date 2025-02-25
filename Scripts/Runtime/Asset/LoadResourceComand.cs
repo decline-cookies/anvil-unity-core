@@ -48,6 +48,10 @@ namespace Anvil.Unity.Asset
 
         protected override void DisposeSelf()
         {
+            if (m_ResourceRequest != null)
+            {
+                m_ResourceRequest.completed -= ResourceRequest_Completed;
+            }
             m_ResourceRequest = null;
 
             base.DisposeSelf();
