@@ -104,7 +104,7 @@ namespace Anvil.Unity.Editor.AssetImport
                 // Only refresh if the other prevention script isn't blocking refresh.
                 if (!DeferAutoRefreshUntilPlayPressed.IsAutoRefreshDisabled)
                 {
-                    AssetDatabase.Refresh();
+                    AssetDatabase.Refresh(ImportAssetOptions.ImportRecursive);
                 }
             }
         }
