@@ -118,7 +118,7 @@ namespace Anvil.Unity.Core
         /// <returns>True if at least one intersection is found.</returns>
         public static bool IntersectPlane(this Bounds bounds, float3 planeOrigin, float3 planeNormal)
         {
-            //TODO: Optimize using Unity.Mathematics.
+            //TODO: #135 - Optimize using Unity.Mathematics.
             Plane plane = new Plane(planeNormal, planeOrigin);
             float3[] corners = bounds.GetCorners();
             return EdgeLookup.Any(edge => !plane.SameSide(corners[edge.x], corners[edge.y]));
@@ -140,7 +140,7 @@ namespace Anvil.Unity.Core
         {
             float3[] corners = bounds.GetCorners();
 
-            //TODO: Avoid alloc. We know the collection can't be >12
+            //TODO: #134 - Avoid alloc. We know the collection can't be >12
             List<float3> hits = new List<float3>();
 
             foreach (int2 edge in EdgeLookup)
