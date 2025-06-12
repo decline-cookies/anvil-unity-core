@@ -6,7 +6,7 @@ namespace Anvil.Unity.Debugging
     /// <summary>
     /// A collection of utility methods to supplement Unity's <see cref="Gizmos"/> tools
     /// </summary>
-    public static class GizmoUtils
+    public static class GizmoUtil
     {
         /// <summary>
         /// Draw a Wireframe quad gizmo. Optionally showing the normal.
