@@ -36,6 +36,12 @@ namespace Anvil.Unity.Core
         /// <returns><see cref="Bounds"/> containing the points provided.</returns>
         public static Bounds CreateBoundingVolume(params Vector3[] points)
         {
+            return CreateBoundingVolume(points);
+        }
+
+        /// <inheritdoc cref="CreateBoundingVolume(UnityEngine.Vector3[])"/>
+        public static Bounds CreateBoundingVolume(IList<Vector3> points)
+        {
             float3 min = float.MaxValue;
             float3 max = float.MinValue;
 
@@ -47,12 +53,13 @@ namespace Anvil.Unity.Core
             // - Do math.min(i + 2, points.Length) instead of (i + 1) % points.Length to avoid potential cache invalidation
             // - Strides of 4 but do a separate math.min(batchMinX, minX) call
             // - Is it even worth batching?
-            for (int i = 0; i < points.Length; i += 3)
+            int pointCount = points.Count;
+            for (int i = 0; i < pointCount; i += 3)
             {
                 Vector3 point1 = points[i];
                 // wrap around if the batch size is not a multiple of points.Length
-                Vector3 point2 = points[(i + 1) % points.Length];
-                Vector3 point3 = points[(i + 2) % points.Length];
+                Vector3 point2 = points[(i + 1) % pointCount];
+                Vector3 point3 = points[(i + 2) % pointCount];
 
                 x.x = point1.x;
                 x.y = point2.x;
