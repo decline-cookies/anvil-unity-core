@@ -36,7 +36,7 @@ namespace Anvil.Unity.Core
         /// <returns><see cref="Bounds"/> containing the points provided.</returns>
         public static Bounds CreateBoundingVolume(params Vector3[] points)
         {
-            return CreateBoundingVolume(points);
+            return CreateBoundingVolume((IList<Vector3>)points);
         }
 
         /// <inheritdoc cref="CreateBoundingVolume(UnityEngine.Vector3[])"/>
