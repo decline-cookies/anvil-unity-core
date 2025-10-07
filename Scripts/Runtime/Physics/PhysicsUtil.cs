@@ -16,7 +16,7 @@ namespace Anvil.Unity.Physics
         ///       For a more accurate extrapolation <see cref="UnityEngine.Physics.Simulate"/> is more appropriate.
         /// </summary>
         /// <remarks>
-        /// Only drag and gravity values are read off of the provided <see cref="Rigidbody"/>. All other actor state is
+        /// Only damping and gravity values are read off of the provided <see cref="Rigidbody"/>. All other actor state is
         /// provided through the method parameters.
         /// </remarks>
         public static void ExtrapolateState(
@@ -27,16 +27,21 @@ namespace Anvil.Unity.Physics
             ref Vector3 linearVelocity,
             ref Vector3 angularVelocity)
         {
-            float drag = rigidbody.drag;
-            float angularDrag = rigidbody.angularDrag;
+#if UNITY_6000_0_OR_NEWER
+            float linearDamping = rigidbody.linearDamping;
+            float angularDamping = rigidbody.angularDamping;
+#else
+            float linearDamping = rigidbody.drag;
+            float angularDamping = rigidbody.angularDrag;
+#endif
             Vector3 gravity = rigidbody.useGravity ? UnityEngine.Physics.gravity : Vector3.zero;
 
             while (delta > 0f)
             {
                 float stepDelta = math.min(delta, Time.fixedDeltaTime);
                 StepState(stepDelta,
-                    drag,
-                    angularDrag,
+                    linearDamping,
+                    angularDamping,
                     gravity,
                     ref position,
                     ref rotation,
@@ -60,7 +65,7 @@ namespace Anvil.Unity.Physics
         ///       changes to the state parameters passed into the ExtrapolateState method.
         /// </param>
         /// <remarks>
-        /// Only drag and gravity values are read off of the provided <see cref="Rigidbody"/>. All other actor state is
+        /// Only damping and gravity values are read off of the provided <see cref="Rigidbody"/>. All other actor state is
         /// provided through the method parameters.
         /// </remarks>
         public static void ExtrapolateState(
@@ -72,8 +77,13 @@ namespace Anvil.Unity.Physics
             ref Vector3 angularVelocity,
             Action<float> onStep)
         {
-            float drag = rigidbody.drag;
-            float angularDrag = rigidbody.angularDrag;
+#if UNITY_6000_0_OR_NEWER
+            float linearDamping = rigidbody.linearDamping;
+            float angularDamping = rigidbody.angularDamping;
+#else
+            float linearDamping = rigidbody.drag;
+            float angularDamping = rigidbody.angularDrag;
+#endif
             Vector3 gravity = rigidbody.useGravity ? UnityEngine.Physics.gravity : Vector3.zero;
 
             while (delta > 0f)
@@ -81,8 +91,8 @@ namespace Anvil.Unity.Physics
                 float stepDelta = math.min(delta, Time.fixedDeltaTime);
 
                 StepState(stepDelta,
-                    drag,
-                    angularDrag,
+                    linearDamping,
+                    angularDamping,
                     gravity,
                     ref position,
                     ref rotation,
@@ -96,8 +106,8 @@ namespace Anvil.Unity.Physics
 
         private static void StepState(
             float delta,
-            float drag,
-            float angularDrag,
+            float linearDamping,
+            float angularDamping,
             Vector3 gravity,
             ref Vector3 position,
             ref Quaternion rotation,
@@ -105,8 +115,8 @@ namespace Anvil.Unity.Physics
             ref Vector3 angularVelocity)
         {
             linearVelocity += (gravity * delta);
-            linearVelocity *= (1f - (delta * drag));
-            angularVelocity *= (1f - (delta * angularDrag));
+            linearVelocity *= (1f - (delta * linearDamping));
+            angularVelocity *= (1f - (delta * angularDamping));
 
             position += linearVelocity * delta;
             rotation *= Quaternion.Euler(angularVelocity * delta);
