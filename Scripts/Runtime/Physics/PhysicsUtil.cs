@@ -27,8 +27,8 @@ namespace Anvil.Unity.Physics
             ref Vector3 linearVelocity,
             ref Vector3 angularVelocity)
         {
-            float drag = rigidbody.drag;
-            float angularDrag = rigidbody.angularDrag;
+            float drag = rigidbody.linearDamping;
+            float angularDrag = rigidbody.angularDamping;
             Vector3 gravity = rigidbody.useGravity ? UnityEngine.Physics.gravity : Vector3.zero;
 
             while (delta > 0f)
@@ -72,8 +72,8 @@ namespace Anvil.Unity.Physics
             ref Vector3 angularVelocity,
             Action<float> onStep)
         {
-            float drag = rigidbody.drag;
-            float angularDrag = rigidbody.angularDrag;
+            float drag = rigidbody.linearDamping;
+            float angularDrag = rigidbody.angularDamping;
             Vector3 gravity = rigidbody.useGravity ? UnityEngine.Physics.gravity : Vector3.zero;
 
             while (delta > 0f)
