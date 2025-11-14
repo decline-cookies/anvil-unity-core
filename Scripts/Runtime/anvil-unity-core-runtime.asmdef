@@ -3,7 +3,8 @@
     "rootNamespace": "Anvil.Unity",
     "references": [
         "anvil-csharp-core",
-        "Unity.Mathematics"
+        "Unity.Mathematics",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
