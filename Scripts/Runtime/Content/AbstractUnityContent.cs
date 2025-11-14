@@ -1,5 +1,6 @@
 ﻿using Anvil.CSharp.Content;
 using Anvil.Unity.Core;
+using UnityEngine;
 
 namespace Anvil.Unity.Content
 {
@@ -17,7 +18,6 @@ namespace Anvil.Unity.Content
         public new TController Controller
         {
             get => (TController)base.Controller;
-            internal set => base.Controller = value;
         }
     }
 
@@ -30,8 +30,14 @@ namespace Anvil.Unity.Content
         /// <summary>
         /// <inheritdoc cref="IContent.Controller"/>
         /// </summary>
-        public AbstractContentController Controller { get; internal set; }
+        public AbstractContentController Controller { get; private set; }
 
+        /// <inheritdoc/>
+        void IContent.BindTo(AbstractContentController controller)
+        {
+            Debug.Assert(Controller == null);
+            Controller = controller;
+        }
 
         protected override void DisposeSelf()
         {
