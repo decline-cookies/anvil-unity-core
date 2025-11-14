@@ -20,6 +20,7 @@ The code is reasonably clean but documentation and examples are sparse. Feel fre
   - .NET Standard 2.1 (Required in Player Settings)
   - [Unity.Mathematics](https://docs.unity3d.com/Packages/com.unity.mathematics@1.2/manual/index.html)
 - [anvil-csharp-core](https://github.com/decline-cookies/anvil-csharp-core)
+- [UniTask](https://github.com/Cysharp/UniTask)
 
 ## Features
 
