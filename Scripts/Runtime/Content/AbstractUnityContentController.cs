@@ -22,7 +22,7 @@ namespace Anvil.Unity.Content
         protected AbstractUnityContentController(string contentGroupID)
             :base(contentGroupID) { }
 
-        [Obsolete]
+        [Obsolete("Implementations should handle their own loading in `Load()`; Calling LoadComplete(contentInstance) when ready.")]
         protected AbstractUnityContentController(string contentGroupID, string contentLoadingID)
             : base(contentGroupID)
         {
