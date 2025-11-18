@@ -136,7 +136,7 @@ namespace Anvil.Unity.Content
         private async UniTask UnloadAllContentScenesAsync()
         {
             await m_LoadedContentScenes
-                .Select(scene => SceneManager.UnloadSceneAsync(scene).ToUniTask());
+                .Select(scene => scene.isLoaded ? SceneManager.UnloadSceneAsync(scene).ToUniTask() : UniTask.CompletedTask);
 
             m_LoadedContentScenes.Clear();
         }
