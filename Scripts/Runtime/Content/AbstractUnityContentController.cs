@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using Anvil.CSharp.Content;
 using Anvil.CSharp.Logging;
-using Anvil.Unity.Asset;
 using Anvil.Unity.Core;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
 
@@ -20,22 +18,11 @@ namespace Anvil.Unity.Content
     public abstract class AbstractUnityContentController<TContent> : AbstractContentController<TContent>
         where TContent : AbstractUnityContent
     {
-        //TODO: #142 TEMP - Remove once contentLoadingID is deprecated
-        private LoadResourceCommand<GameObject> m_LoadResourceCommand;
-        private string m_TempContentLoadingID;
-
         private readonly List<Scene> m_LoadedContentScenes = new List<Scene>();
 
 
         protected AbstractUnityContentController(string contentGroupID)
             :base(contentGroupID) { }
-
-        [Obsolete("Implementations should handle their own loading in `Load()`; Calling LoadComplete(contentInstance) when ready.")]
-        protected AbstractUnityContentController(string contentGroupID, string contentLoadingID)
-            : base(contentGroupID)
-        {
-            m_TempContentLoadingID = contentLoadingID;
-        }
 
         protected override void DisposeSelf()
         {
@@ -43,40 +30,7 @@ namespace Anvil.Unity.Content
                 .GetAwaiter()
                 .GetResult();
 
-            m_LoadResourceCommand?.Dispose();
-            m_LoadResourceCommand = null;
-
             base.DisposeSelf();
-        }
-
-        // TODO: #142 TEMP - Remove once contentLoadingID is deprecated
-        protected override void Load()
-        {
-            // TODO: #142 TEMP - Remove once contentLoadingID is deprecated
-            if (m_TempContentLoadingID != null)
-            {
-                Assert.IsTrue(m_LoadResourceCommand == null);
-                m_LoadResourceCommand = new LoadResourceCommand<GameObject>(m_TempContentLoadingID);
-                m_LoadResourceCommand.OnComplete += LoadResourceCommand_OnComplete;
-                m_LoadResourceCommand.Execute();
-            }
-            else
-            {
-                Logger.Error("Load must be overridden with content loaded and then LoadComplete called when complete. In the future this will be an abstract method");
-            }
-        }
-
-        // TODO: #142 TEMP - Remove once contentLoadingID is deprecated
-        private void LoadResourceCommand_OnComplete(LoadResourceCommand<GameObject> sender)
-        {
-            GameObject instance = m_LoadResourceCommand.CreateInstance();
-            m_LoadResourceCommand.Dispose();
-            m_LoadResourceCommand = null;
-
-            instance.RemoveCloneSuffix();
-            TContent content = instance.GetComponent<TContent>();
-
-            LoadComplete(content);
         }
 
         /// <summary>
