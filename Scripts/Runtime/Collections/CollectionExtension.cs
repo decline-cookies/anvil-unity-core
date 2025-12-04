@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Anvil.Unity.Runtime.Collections
+namespace Anvil.Unity.Collections
 {
     /// <summary>
     /// Extension methods for use with <see cref="ICollection{T}"/> instances.
