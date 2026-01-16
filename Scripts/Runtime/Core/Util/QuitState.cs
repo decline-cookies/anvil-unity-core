@@ -54,6 +54,7 @@ namespace Anvil.Unity.Core
                 return;
             }
 
+            s_IsInitialized = true;
             Application.quitting += Application_quitting;
         }
 
