@@ -1,12 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
+﻿using System;
 
 namespace Anvil.Unity.Audio
 {
-  public class AudioEventArgs : EventArgs
+  public readonly struct AudioEventArgs : EventArgs
   {
-    public AudioInstance Instance { get; readonly set; }
+    public readonly AudioInstance Instance { get; readonly set; }
 
     public AudioEventArgs(AudioInstance instance)
     {

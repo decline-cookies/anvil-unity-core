@@ -205,8 +205,8 @@ namespace Anvil.Unity.Audio
 
       AudioGroup group = GetOrCreateGroup(groupID);
       AudioInstance instance = m_InstancePool.Acquire();
+      instance.Init(clip);
       instance.Parent = (parent == null) ? m_ActiveInstanceContainer : parent;
-      instance.Clip = clip;
       instance.Group = group;
       instance.Loops = repeatCount;
       instance.StartTimeSeconds = startTimeSeconds;
