@@ -1,4 +1,9 @@
-# Anvil Unity Core — Claude Code Rules
+---
+paths:
+  - "**/*.cs"
+---
+
+# Anvil Unity Core Patterns
 
 These rules apply when working with code that uses the `anvil-unity-core` framework.
 
