@@ -53,7 +53,7 @@ namespace Anvil.Unity.Content
             ContentGroupRoot.localScale = Vector3.one;
         }
 
-        private void Self_OnLoadComplete(AbstractContentController contentController)
+        protected virtual void Self_OnLoadComplete(AbstractContentController contentController)
         {
             AbstractUnityContent content = (AbstractUnityContent)ActiveContentController.Content;
             Transform transform = content.transform;

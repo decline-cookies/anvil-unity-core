@@ -1,4 +1,6 @@
-﻿using Anvil.CSharp.Content;
+﻿using System;
+using System.Collections.Generic;
+using Anvil.CSharp.Content;
 using UnityEngine;
 
 namespace Anvil.Unity.Content
@@ -8,6 +10,13 @@ namespace Anvil.Unity.Content
     /// </summary>
     public class UnityContentManager : AbstractContentManager
     {
+        private static readonly Dictionary<Type, Func<AbstractContentManager, ContentGroupConfigVO, UnityContentGroup>> s_GroupFactoryLookup
+            = new Dictionary<Type, Func<AbstractContentManager, ContentGroupConfigVO, UnityContentGroup>>
+            {
+                { typeof(UnityCanvasContentGroupConfigVO), (manager, configVO) => new UnityCanvasContentGroup(manager, configVO) },
+                { typeof(UnityContentGroupConfigVO), (manager, configVO) => new UnityContentGroup(manager, configVO) }
+            };
+
         /// <summary>
         /// A <see cref="Transform"/> that this Content Manager corresponds to in the Unity hierarchy
         /// </summary>
@@ -28,7 +37,7 @@ namespace Anvil.Unity.Content
         {
             if (ContentRoot != null)
             {
-                Object.Destroy(ContentRoot.gameObject);
+                UnityEngine.Object.Destroy(ContentRoot.gameObject);
             }
 
             base.DisposeSelf();
@@ -36,16 +45,20 @@ namespace Anvil.Unity.Content
 
         protected override AbstractContentGroup CreateGroup(ContentGroupConfigVO configVO)
         {
-            UnityContentGroup unityContentGroup = new UnityContentGroup(this, configVO);
+            Type configVOType = configVO.GetType();
+            if (s_GroupFactoryLookup.TryGetValue(configVOType, out Func<AbstractContentManager, ContentGroupConfigVO, UnityContentGroup> factory))
+            {
+                return factory(this, configVO);
+            }
 
-            return unityContentGroup;
+            throw new InvalidOperationException($"No group factory registered for {nameof(ContentGroupConfigVO)} type \"{configVOType.Name}\". Register it in {nameof(s_GroupFactoryLookup)}.");
         }
 
         private void PreventDestroyOnLoad()
         {
             if (ContentRoot.parent == null)
             {
-                Object.DontDestroyOnLoad(ContentRoot);
+                UnityEngine.Object.DontDestroyOnLoad(ContentRoot);
             }
             else
             {
